@@ -4,8 +4,4 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 /.idea/
-/.vs/Company.Framework/config/applicationhost.config
-/.vs/Company.Framework/DesignTimeBuild
-/.vs/Company.Framework/FileContentIndex
-/.vs/Company.Framework/v17
-/.vs/ProjectEvaluation
+/.vs/

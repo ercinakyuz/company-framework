@@ -1,7 +1,7 @@
 ﻿using Company.Framework.Domain.Model.Aggregate.OfWork.Processors;
 using MediatR;
 
-namespace Company.Framework.Domain.Model.Aggregate.Event.Dispatcher;
+namespace Company.Framework.Domain.Model.Aggregate.Event.Dispatcher.Processors;
 
 public class EventDistributionProcessor : AggregateOfWorkPostProcessor
 {
@@ -11,7 +11,7 @@ public class EventDistributionProcessor : AggregateOfWorkPostProcessor
         _publisher = publisher;
     }
 
-    protected override async Task ProcessAsync(AggregateRoot args, AggregateRoot result, CancellationToken cancellationToken)
+    protected override async Task ProcessAsync(AggregateRoot args, CancellationToken cancellationToken)
     {
         foreach (var @event in args.Events)
         {

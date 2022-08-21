@@ -2,7 +2,7 @@
 
 public abstract class PreProcessor<TArgs> : IPreProcessor
 {
-    protected abstract Task ProcessAsync(TArgs args, CancellationToken cancellationToken);
+    protected abstract Task ProcessAsync(TArgs envelope, CancellationToken cancellationToken);
 
     public async Task ProcessAsync(object? args, CancellationToken cancellationToken)
     {

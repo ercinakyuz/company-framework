@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Company.Framework.Aspect\Company.Framework.Aspect.csproj" />
     <ProjectReference Include="..\Company.Framework.Core\Company.Framework.Core.csproj" />
     <ProjectReference Include="..\Company.Framework.Correlation\Company.Framework.Correlation.csproj" />
-    <ProjectReference Include="..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
-    <ProjectReference Include="..\Company.Framework.Messaging\Company.Framework.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

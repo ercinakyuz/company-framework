@@ -12,8 +12,4 @@ namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.Value
         {
         }
     }
-    //[StronglyTypedId]
-    //public partial struct ActionId
-    //{
-    //}
 }

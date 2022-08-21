@@ -1,5 +1,5 @@
 ﻿using Company.Framework.Aspect.Extensions;
-using Company.Framework.Domain.Model.Aggregate.Event.Dispatcher;
+using Company.Framework.Domain.Model.Aggregate.Event.Dispatcher.Processors;
 using Company.Framework.Domain.Model.Aggregate.OfWork.Processors;
 using Microsoft.Extensions.DependencyInjection;
 

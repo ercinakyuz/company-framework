@@ -2,18 +2,18 @@
 
 public class ActionOfWork : IActionOfWork
 {
-    public async Task<Action> InsertAsync(Action aggregate, CancellationToken cancellationToken)
+    public async Task InsertAsync(Action aggregate, CancellationToken cancellationToken)
     {
-        return await Task.FromResult(aggregate);
+        await Task.CompletedTask;
     }
 
-    public async Task<Action> UpdateAsync(Action aggregate, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Action aggregate, CancellationToken cancellationToken)
     {
-        return await Task.FromResult(aggregate);
+        await Task.CompletedTask;
     }
 
-    public async Task<Action> DeleteAsync(Action aggregate, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Action aggregate, CancellationToken cancellationToken)
     {
-        return await Task.FromResult(aggregate);
+        await Task.CompletedTask;
     }
 }

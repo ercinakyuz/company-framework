@@ -1,6 +1,7 @@
-using Company.Framework.Domain.Model.Aggregate.OfWork.Extensions;
-using Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
+using Company.Framework.ExampleApi.Domain.Extensions;
 using Company.Framework.Mediator.Extensions;
+using CorrelationId;
+using CorrelationId.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +10,11 @@ var serviceCollection = builder.Services;
 serviceCollection.AddControllers();
 serviceCollection.AddEndpointsApiExplorer();
 serviceCollection.AddSwaggerGen();
+serviceCollection.AddDefaultCorrelationId();
 serviceCollection.AddMediator();
-serviceCollection.AddAggregateOfWork<IActionOfWork, ActionOfWork>();
+serviceCollection.AddDomainComponents();
+
+
 
 var app = builder.Build();
 
@@ -19,6 +23,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCorrelationId();
 }
 
 app.UseAuthorization();

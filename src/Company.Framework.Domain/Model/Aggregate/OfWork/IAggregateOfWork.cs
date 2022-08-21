@@ -1,12 +1,12 @@
 ﻿namespace Company.Framework.Domain.Model.Aggregate.OfWork;
 
-public interface IAggregateOfWork<TAggregate> : IAggregateOfWork where TAggregate : AggregateRoot
+public interface IAggregateOfWork<in TAggregate> : IAggregateOfWork where TAggregate : AggregateRoot
 {
-    Task<TAggregate> InsertAsync(TAggregate aggregate, CancellationToken cancellationToken);
+    Task InsertAsync(TAggregate aggregate, CancellationToken cancellationToken);
 
-    Task<TAggregate> UpdateAsync(TAggregate aggregate, CancellationToken cancellationToken);
+    Task UpdateAsync(TAggregate aggregate, CancellationToken cancellationToken);
 
-    Task<TAggregate> DeleteAsync(TAggregate aggregate, CancellationToken cancellationToken);
+    Task DeleteAsync(TAggregate aggregate, CancellationToken cancellationToken);
 }
 
 public interface IAggregateOfWork { }

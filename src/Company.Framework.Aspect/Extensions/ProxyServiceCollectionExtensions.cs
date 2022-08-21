@@ -13,7 +13,7 @@ namespace Company.Framework.Aspect.Extensions
             where TPreProcessor : IPreProcessor
             where TPostProcessor : IPostProcessor
         {
-            serviceCollection
+            return serviceCollection
                 .AddSingleton<TImplementation>()
                 .AddSingleton(serviceProvider =>
                 {
@@ -24,8 +24,6 @@ namespace Company.Framework.Aspect.Extensions
                     coreProxy.SetPostProcessors(serviceProvider.GetServices<TPostProcessor>());
                     return (TAbstraction)proxy;
                 });
-
-            return serviceCollection;
         }
     }
 }

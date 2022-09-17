@@ -13,7 +13,7 @@ public class PingAppliedDispatcher : CoreEventDispatcher<PingApplied>
 
     public override async Task DispatchAsync(Envelope<PingApplied> envelope, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Ping applied: {JsonConvert.SerializeObject(envelope)}");
+        Console.WriteLine($"PingApplied applied: {JsonConvert.SerializeObject(envelope)}");
         await Task.CompletedTask;
     }
 }

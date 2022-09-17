@@ -15,7 +15,7 @@ public abstract class CoreEventDispatcher<TEvent> : IEventDispatcher<TEvent> whe
     public async Task Handle(TEvent @event, CancellationToken cancellationToken)
     {
         var envelope = Envelope<TEvent>.Create(@event, $"{GetType().DeclaringType}")
-            .WithCorrelationId(Correlation.CorrelationId.From(_correlationContextAccessor.CorrelationContext.CorrelationId));
+            .WithCorrelationId(Correlation.CorrelationCoreId.From(_correlationContextAccessor.CorrelationContext.CorrelationId));
         await DispatchAsync(envelope, cancellationToken);
     }
 

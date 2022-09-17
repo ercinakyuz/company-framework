@@ -2,18 +2,18 @@
 
 namespace Company.Framework.Messaging
 {
-    public record Envelope<TMessage>(EnvelopeId Id, TMessage Message, Log Created)
+    public record Envelope<TMessage>(EnvelopeCoreId CoreId, TMessage Message, Log Created)
     {
-        public Correlation.CorrelationId? CorrelationId { get; private set; }
+        public Correlation.CorrelationCoreId? CorrelationId { get; private set; }
 
         public static Envelope<TMessage> Create(TMessage message, string createdBy)
         {
-            return new Envelope<TMessage>(EnvelopeId.New(), message, Log.Load(createdBy));
+            return new Envelope<TMessage>(EnvelopeCoreId.New(), message, Log.Load(createdBy));
         }
 
-        public Envelope<TMessage> WithCorrelationId(Correlation.CorrelationId correlationId)
+        public Envelope<TMessage> WithCorrelationId(Correlation.CorrelationCoreId correlationCoreId)
         {
-            CorrelationId = correlationId;
+            CorrelationId = correlationCoreId;
             return this;
         }
     }

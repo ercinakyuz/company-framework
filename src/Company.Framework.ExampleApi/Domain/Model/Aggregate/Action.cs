@@ -28,12 +28,12 @@ public class Action : AggregateRoot<Action, ActionId, ActionState>
 
     public Action Ping()
     {
-        return ChangeState(ActionState.Ping);
+        return ChangeState(ActionState.PingApplied);
     }
 
     protected override Action ApplyEvents()
     {
-        if (State == ActionState.Ping)
+        if (State == ActionState.PingApplied)
         {
             Events.Add(new PingApplied(Id));
         }

@@ -13,9 +13,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Aspect", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.ExampleApi", "Company.Framework.ExampleApi\Company.Framework.ExampleApi.csproj", "{BFC8D824-D77D-4C7B-9D4B-DB9640065690}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Correlation", "Company.Framework.Correlation\Company.Framework.Correlation.csproj", "{0FB80B42-770B-419E-8692-8E634BE33D47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Correlation", "Company.Framework.Correlation\Company.Framework.Correlation.csproj", "{0FB80B42-770B-419E-8692-8E634BE33D47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Messaging", "Company.Framework.Messaging\Company.Framework.Messaging.csproj", "{C5680938-8C97-4AAF-89DA-F5066C871768}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Messaging", "Company.Framework.Messaging\Company.Framework.Messaging.csproj", "{C5680938-8C97-4AAF-89DA-F5066C871768}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{FF8C176B-4630-4A2F-A905-BEA65A1C9770}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Data", "data\Company.Framework.Data\Company.Framework.Data.csproj", "{4A185F20-6A27-4FBE-B289-FFDC435EBD39}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Data.Mongo", "data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj", "{258BE3D1-C4B5-4872-AD1B-C7C34729DDF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Data.Core", "data\Company.Framework.Data.Core\Company.Framework.Data.Core.csproj", "{529656FC-496B-48E5-B1B4-52EAB4A9333E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,9 +59,26 @@ Global
 		{C5680938-8C97-4AAF-89DA-F5066C871768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5680938-8C97-4AAF-89DA-F5066C871768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5680938-8C97-4AAF-89DA-F5066C871768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A185F20-6A27-4FBE-B289-FFDC435EBD39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A185F20-6A27-4FBE-B289-FFDC435EBD39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A185F20-6A27-4FBE-B289-FFDC435EBD39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A185F20-6A27-4FBE-B289-FFDC435EBD39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{258BE3D1-C4B5-4872-AD1B-C7C34729DDF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{258BE3D1-C4B5-4872-AD1B-C7C34729DDF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{258BE3D1-C4B5-4872-AD1B-C7C34729DDF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{258BE3D1-C4B5-4872-AD1B-C7C34729DDF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{529656FC-496B-48E5-B1B4-52EAB4A9333E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{529656FC-496B-48E5-B1B4-52EAB4A9333E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{529656FC-496B-48E5-B1B4-52EAB4A9333E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{529656FC-496B-48E5-B1B4-52EAB4A9333E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4A185F20-6A27-4FBE-B289-FFDC435EBD39} = {FF8C176B-4630-4A2F-A905-BEA65A1C9770}
+		{258BE3D1-C4B5-4872-AD1B-C7C34729DDF7} = {FF8C176B-4630-4A2F-A905-BEA65A1C9770}
+		{529656FC-496B-48E5-B1B4-52EAB4A9333E} = {FF8C176B-4630-4A2F-A905-BEA65A1C9770}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9009E75-CA69-4693-89C5-FC676565D616}

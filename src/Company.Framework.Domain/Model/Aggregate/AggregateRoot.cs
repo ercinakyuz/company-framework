@@ -2,6 +2,7 @@
 using Company.Framework.Core.Logging;
 using Company.Framework.Domain.Model.Aggregate.Dto;
 using Company.Framework.Domain.Model.Aggregate.Event;
+using Company.Framework.Domain.Model.Aggregate.State;
 
 namespace Company.Framework.Domain.Model.Aggregate
 {
@@ -33,7 +34,10 @@ namespace Company.Framework.Domain.Model.Aggregate
         }
     }
 
-    public abstract class AggregateRoot<TAggregate, TId, TState> : AggregateRoot where TAggregate : AggregateRoot where TId : CoreId<TId>
+    public abstract class AggregateRoot<TAggregate, TId, TState> : AggregateRoot
+        where TAggregate : AggregateRoot
+        where TId : CoreId<TId>
+        where TState : CoreState<TState>
     {
         public TId Id { get; }
 
@@ -54,6 +58,11 @@ namespace Company.Framework.Domain.Model.Aggregate
         {
             State = state;
             return (TAggregate)ApplyEvents();
+        }
+
+        public virtual bool HasAnyChanges()
+        {
+            return CoreState<TState>.Loaded.Equals(State);
         }
 
     }

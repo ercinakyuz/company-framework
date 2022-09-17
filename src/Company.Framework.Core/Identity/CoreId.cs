@@ -22,7 +22,7 @@ public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, 
     }
 }
 
-public abstract class CoreId<TId>
+public abstract class CoreId<TId> : IId
 {
     public static TId Empty = Default();
 
@@ -35,4 +35,8 @@ public abstract class CoreId<TId>
     {
         return (TId)Activator.CreateInstance(typeof(TId),  None)!;
     }
+}
+
+public interface IId
+{
 }

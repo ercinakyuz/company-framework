@@ -2,13 +2,13 @@
 
 namespace Company.Framework.Messaging
 {
-    public class EnvelopeId : CoreId<EnvelopeId,Guid>
+    public class EnvelopeCoreId : CoreId<EnvelopeCoreId,Guid>
     {
-        public EnvelopeId(Guid value) : base(value)
+        public EnvelopeCoreId(Guid value) : base(value)
         {
         }
 
-        public EnvelopeId(IdGenerationType generationType) : base(generationType)
+        public EnvelopeCoreId(IdGenerationType generationType) : base(generationType)
         {
         }
     }

@@ -1,6 +1,8 @@
-﻿namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.State;
+﻿using Company.Framework.Domain.Model.Aggregate.State;
 
-public enum ActionState
+namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.State;
+
+public record ActionState(string Value) : CoreState<ActionState>(Value)
 {
-    Ping
+    public static readonly ActionState PingApplied = new("PingApplied");
 }

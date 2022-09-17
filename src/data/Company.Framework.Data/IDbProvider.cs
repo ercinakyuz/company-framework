@@ -1,8 +1,8 @@
-﻿using Company.Framework.Data.Context.Provider;
+﻿using Company.Framework.Data.Db.Context.Provider;
 
 namespace Company.Framework.Data;
 
-public interface IDbConnectionProvider
+public interface IDbProvider
 {
     IDbContextProvider Resolve(string key);
 

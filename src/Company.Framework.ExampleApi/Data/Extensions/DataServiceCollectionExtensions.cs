@@ -1,4 +1,4 @@
-﻿using Company.Framework.Data.Extensions;
+﻿using Company.Framework.Data.Db.Provider.Extensions;
 using Company.Framework.Data.Mongo.Extensions;
 using Company.Framework.ExampleApi.Data.Repository;
 
@@ -9,7 +9,7 @@ namespace Company.Framework.ExampleApi.Data.Extensions
         public static IServiceCollection AddDataComponents(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
             return serviceCollection
-                .AddDbConnectionProvider(configuration)
+                .AddDbProvider(configuration)
                 .AddRepositories();
         }
 

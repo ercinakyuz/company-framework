@@ -1,4 +1,4 @@
-﻿using Company.Framework.Data.Context;
+﻿using Company.Framework.Data.Db.Context;
 using MongoDB.Driver;
 
 namespace Company.Framework.Data.Mongo.Context;

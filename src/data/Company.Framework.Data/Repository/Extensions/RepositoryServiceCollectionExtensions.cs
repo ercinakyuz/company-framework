@@ -1,9 +1,8 @@
-﻿using Company.Framework.Data.Context;
-using Company.Framework.Data.Context.Provider;
-using Company.Framework.Data.Repository;
+﻿using Company.Framework.Data.Db.Context;
+using Company.Framework.Data.Db.Context.Provider;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Company.Framework.Data.Extensions
+namespace Company.Framework.Data.Repository.Extensions
 {
     public static class RepositoryServiceCollectionExtensions
     {
@@ -15,7 +14,7 @@ namespace Company.Framework.Data.Extensions
             return serviceCollection
                 .AddSingleton<TAbstraction, TImplementation>(provider =>
                 {
-                    var dbContext = provider.GetRequiredService<IDbConnectionProvider>().Resolve<IDbContextProvider<TContext>>(instanceName).Resolve(contextKey);
+                    var dbContext = provider.GetRequiredService<IDbProvider>().Resolve<IDbContextProvider<TContext>>(instanceName).Resolve(contextKey);
                     return ActivatorUtilities.CreateInstance<TImplementation>(provider, dbContext);
                 });
         }

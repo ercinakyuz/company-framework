@@ -15,7 +15,6 @@ serviceCollection.AddSwaggerGen();
 serviceCollection.AddDefaultCorrelationId();
 serviceCollection.AddMediator();
 serviceCollection.AddDomainComponents();
-
 serviceCollection.AddDataComponents(configuration);
 
 

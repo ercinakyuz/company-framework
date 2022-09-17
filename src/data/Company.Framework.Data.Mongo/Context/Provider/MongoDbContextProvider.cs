@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using Company.Framework.Data.Settings;
+using Company.Framework.Data.Db.Settings;
 using MongoDB.Driver;
 
 namespace Company.Framework.Data.Mongo.Context.Provider;

@@ -1,4 +1,4 @@
-﻿using Company.Framework.Data.Settings;
+﻿using Company.Framework.Data.Db.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

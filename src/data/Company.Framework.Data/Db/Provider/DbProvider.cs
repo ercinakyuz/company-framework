@@ -1,6 +1,6 @@
 ﻿using Company.Framework.Data.Db.Context.Provider;
 using Company.Framework.Data.Db.Provider.Registry;
-using Company.Framework.Data.Settings;
+using Company.Framework.Data.Db.Settings;
 using Microsoft.Extensions.Options;
 
 namespace Company.Framework.Data.Db.Provider

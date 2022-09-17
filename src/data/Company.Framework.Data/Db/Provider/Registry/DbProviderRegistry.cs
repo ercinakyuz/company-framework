@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Company.Framework.Data.Db.Context.Provider;
-using Company.Framework.Data.Settings;
+using Company.Framework.Data.Db.Settings;
 
 namespace Company.Framework.Data.Db.Provider.Registry
 {

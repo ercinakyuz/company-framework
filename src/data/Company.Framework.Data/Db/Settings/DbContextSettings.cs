@@ -1,4 +1,4 @@
-﻿namespace Company.Framework.Data.Settings;
+﻿namespace Company.Framework.Data.Db.Settings;
 
 public class DbContextSettings
 {

@@ -13,7 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Company.Framework.Domain\Company.Framework.Domain.csproj" />
     <ProjectReference Include="..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
-    <ProjectReference Include="..\data\Company.Framework.Data.Core\Company.Framework.Data.Core.csproj" />
+    <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
   </ItemGroup>
 
 </Project>

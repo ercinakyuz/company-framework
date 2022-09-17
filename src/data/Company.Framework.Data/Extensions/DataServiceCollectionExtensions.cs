@@ -1,9 +1,9 @@
-﻿using Company.Framework.Data.Core.Provider;
+﻿using Company.Framework.Data.Connection.Provider;
 using Company.Framework.Data.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Company.Framework.Data.Core.Extensions
+namespace Company.Framework.Data.Extensions
 {
     public static class DataServiceCollectionExtensions
     {

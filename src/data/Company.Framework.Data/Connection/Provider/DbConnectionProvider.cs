@@ -1,18 +1,14 @@
 ﻿using System.Collections.Concurrent;
 using Company.Framework.Data.Context.Provider;
-using Company.Framework.Data.Mongo.Context.Provider;
 using Company.Framework.Data.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Company.Framework.Data.Core.Provider
+namespace Company.Framework.Data.Connection.Provider
 {
     public class DbConnectionProvider : IDbConnectionProvider
     {
-        private static readonly IDictionary<DbType, Func<DbProviderSettings, IDbContextProvider>> DbProviderDelegateDictionary =
-            new ConcurrentDictionary<DbType, Func<DbProviderSettings, IDbContextProvider>>
-            {
-                [DbType.Mongo] = dbContextSettings => new MongoDbContextProvider(dbContextSettings)
-            };
+        private static readonly IDictionary<DbType, Func<DbProviderSettings, IDbContextProvider>> DbProviderDelegateDictionary 
+            = new ConcurrentDictionary<DbType, Func<DbProviderSettings, IDbContextProvider>>();
 
         private readonly IDictionary<string, IDbContextProvider> _registeredDbProviderDictionary;
 
@@ -20,6 +16,11 @@ namespace Company.Framework.Data.Core.Provider
         {
             _registeredDbProviderDictionary = new Dictionary<string, IDbContextProvider>();
             Array.ForEach(options.Value.Instances, Register);
+        }
+
+        public static void AddDbContextProvider(DbType dbType, Func<DbProviderSettings, IDbContextProvider> dbContextProviderDelegate)
+        {
+            DbProviderDelegateDictionary.Add(dbType, dbContextProviderDelegate);
         }
         public void Register(DbInstanceSettings instanceSettings)
         {

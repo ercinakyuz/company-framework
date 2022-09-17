@@ -1,4 +1,4 @@
-﻿using Company.Framework.Data.Core.Extensions;
+﻿using Company.Framework.Data.Extensions;
 using Company.Framework.Data.Mongo.Extensions;
 using Company.Framework.ExampleApi.Data.Repository;
 

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+		<!--Add required nuget packages necessary for ApiClient build-->
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="NSwag.MSBuild" Version="13.17.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Company.Framework.ExampleApi\Company.Framework.ExampleApi.csproj">
+			<Private>False</Private>
+			<ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<NSwagInputs Include="../Company.Framework.ExampleApi/bin/$(Configuration)/net6.0/Company.Framework.ExampleApi.dll" />
+		<NSwagInputs Include="nswag.json" />
+	</ItemGroup>
+	<!--Add build step responsible for generating the source code of client api and including it to compilation-->
+	<Target Name="GenerateApiClientSourceCode" BeforeTargets="CoreCompile;PrepareResource">
+		<Exec Command="$(NSwagExe_Net60) run nswag.json /variables:Configuration=$(Configuration),Output=$(IntermediateOutputPath)\ApiClient.generated.cs" />
+		<ItemGroup>
+			<Compile Include="$(IntermediateOutputPath)\ApiClient.generated.cs" />
+		</ItemGroup>
+	</Target>
+
+</Project>

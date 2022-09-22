@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Data.Db.Provider.Extensions
 {
-    public static class DataServiceCollectionExtensions
+    public static class DbProviderServiceCollectionExtensions
     {
         public static IServiceCollection AddDbProvider(this IServiceCollection serviceCollection, IConfiguration configuration)
         {

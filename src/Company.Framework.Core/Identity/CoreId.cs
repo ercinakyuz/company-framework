@@ -4,8 +4,11 @@ namespace Company.Framework.Core.Identity;
 
 public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, TValue>
 {
-    public TValue? Value { get; }
+    public TValue? Value { get; set; }
 
+    protected CoreId()
+    {
+    }
     protected CoreId(TValue value)
     {
         Value = value;
@@ -19,6 +22,11 @@ public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, 
     public static TId From(TValue value)
     {
         return (TId)Activator.CreateInstance(typeof(TId), args: value)!;
+    }
+
+    public override string ToString()
+    {
+        return $"{Value}";
     }
 }
 

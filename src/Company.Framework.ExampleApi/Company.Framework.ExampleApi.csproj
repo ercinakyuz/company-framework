@@ -1,19 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Company.Framework.Domain\Company.Framework.Domain.csproj" />
-    <ProjectReference Include="..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
-    <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+	  <ProjectReference Include="..\Company.Framework.Domain\Company.Framework.Domain.csproj" />
+	  <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
+	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Kafka\Company.Framework.Messaging.Kafka.csproj" />
+	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.RabbitMq\Company.Framework.Messaging.RabbitMq.csproj" />
+	</ItemGroup>
 </Project>

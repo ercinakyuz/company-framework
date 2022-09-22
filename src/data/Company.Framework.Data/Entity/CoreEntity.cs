@@ -1,5 +1,4 @@
-﻿using Company.Framework.Core.Identity;
-using Company.Framework.Core.Logging;
+﻿using Company.Framework.Core.Logging;
 
 namespace Company.Framework.Data.Entity;
 

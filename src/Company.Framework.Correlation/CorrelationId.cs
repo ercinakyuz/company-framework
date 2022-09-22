@@ -2,12 +2,16 @@
 
 namespace Company.Framework.Correlation
 {
-    public class CorrelationCoreId : CoreId<CorrelationCoreId, string>
+    public class CorrelationId : CoreId<CorrelationId, string>
     {
-        public CorrelationCoreId(string value) : base(value)
+        public CorrelationId()
+        {
+            
+        }
+        public CorrelationId(string value) : base(value)
         {
         }
-        public CorrelationCoreId(IdGenerationType generationType) : base(generationType)
+        public CorrelationId(IdGenerationType generationType) : base(generationType)
         {
         }
     }

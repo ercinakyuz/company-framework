@@ -1,6 +1,8 @@
-﻿namespace Company.Framework.Messaging.RabbitMq.Producer;
+﻿using Company.Framework.Messaging.Producer;
+using Company.Framework.Messaging.RabbitMq.Producer.Args;
 
-public interface IRabbitProducer
+namespace Company.Framework.Messaging.RabbitMq.Producer;
+
+public interface IRabbitProducer : IProducer<RabbitProduceArgs>
 {
-    Task Produce<TMessage>(string queue, TMessage message) where TMessage : notnull;
 }

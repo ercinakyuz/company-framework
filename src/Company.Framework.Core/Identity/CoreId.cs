@@ -39,7 +39,7 @@ public abstract class CoreId<TId> : IId
         return (TId)Activator.CreateInstance(typeof(TId), Auto)!;
     }
 
-    protected static TId Default()
+    private static TId Default()
     {
         return (TId)Activator.CreateInstance(typeof(TId),  None)!;
     }

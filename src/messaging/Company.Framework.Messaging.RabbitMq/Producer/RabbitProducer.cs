@@ -1,25 +1,26 @@
-﻿using MassTransit;
+﻿using Company.Framework.Messaging.RabbitMq.Producer.Args;
+using RabbitMQ.Client;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Company.Framework.Messaging.RabbitMq.Producer
 {
     public class RabbitProducer : IRabbitProducer
     {
-        private readonly IBus _bus;
-        //private readonly ISendEndpointProvider _sendEndpointProvider;
+        public string Name { get; }
 
-        public RabbitProducer(IBus bus)
+        private readonly IModel _model;
+
+        public RabbitProducer(string name, IModel model)
         {
-            _bus = bus;
-            //_sendEndpointProvider = sendEndpointProvider;
+            Name = name;
+            _model = model;
         }
 
-        public async Task Produce<TMessage>(string queue, TMessage message) where TMessage : notnull
+        public Task ProduceAsync(RabbitProduceArgs args, CancellationToken cancellationToken)
         {
-            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:input-queue"));
-
-            await endpoint.Send(message);
+            _model.ExchangeDeclare(args.Exchange, "topic");
+            _model.BasicPublish(args.Exchange, args.Routing, false, null, JsonSerializer.SerializeToUtf8Bytes(args.Message));
+            return Task.CompletedTask;
         }
     }
-
-
 }

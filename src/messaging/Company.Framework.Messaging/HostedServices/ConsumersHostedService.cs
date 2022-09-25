@@ -1,6 +1,7 @@
 ﻿using Company.Framework.Messaging.Consumer;
+using Microsoft.Extensions.Hosting;
 
-namespace Company.Framework.ExampleApi.HostedServices
+namespace Company.Framework.Messaging.HostedServices
 {
     public class ConsumersHostedService : IHostedService
     {

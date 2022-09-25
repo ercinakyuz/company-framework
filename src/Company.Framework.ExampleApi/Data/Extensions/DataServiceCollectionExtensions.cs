@@ -17,6 +17,7 @@ namespace Company.Framework.ExampleApi.Data.Extensions
         {
             return serviceCollection
                 .AddMongoDb()
+                .AddMongoRepository<IActionRepository, ActionRepository>("task-management-instance", "task-management-context")
                 .AddMongoRepository<IActionRepository, ActionRepository>("task-management-instance", "task-management-context");
         }
     }

@@ -1,12 +1,8 @@
 using System.Text.Json.Serialization;
-using Company.Framework.ExampleApi.Consumers;
+using Company.Framework.ExampleApi.Bus.Extensions;
 using Company.Framework.ExampleApi.Data.Extensions;
 using Company.Framework.ExampleApi.Domain.Extensions;
-using Company.Framework.ExampleApi.Domain.Model.Aggregate.Event;
-using Company.Framework.ExampleApi.HostedServices;
 using Company.Framework.Mediator.Extensions;
-using Company.Framework.Messaging.Envelope;
-using Company.Framework.Messaging.Kafka.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 
@@ -27,11 +23,9 @@ serviceCollection.AddDefaultCorrelationId();
 serviceCollection.AddMediator();
 serviceCollection.AddDomainComponents();
 serviceCollection.AddDataComponents(configuration);
-serviceCollection.AddKafka().WithConsumer<PingAppliedConsumer, Envelope<PingApplied>>()
-    ;
-serviceCollection.AddHostedService<ConsumersHostedService>();
+serviceCollection.AddBusComponents();
 
-//serviceCollection.AddBus(configuration);
+//serviceCollection.KafkaServiceBuilder(configuration);
 //serviceCollection.AddHttpClients();
 
 

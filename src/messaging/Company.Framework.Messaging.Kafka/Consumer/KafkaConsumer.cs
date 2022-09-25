@@ -5,19 +5,19 @@ namespace Company.Framework.Messaging.Kafka.Consumer
 {
     public abstract class KafkaConsumer<TMessage> : IConsumer
     {
-        protected abstract string Topic { get; }
-
         private readonly IConsumer<Null, TMessage> _consumer;
 
+        private readonly KafkaConsumerSettings _settings;
 
-        protected KafkaConsumer(IConsumer<Null, TMessage> consumer)
+        protected KafkaConsumer(IConsumer<Null, TMessage> consumer, KafkaConsumerSettings settings)
         {
             _consumer = consumer;
+            _settings = settings;
         }
 
         public async Task SubscribeAsync(CancellationToken cancellationToken)
         {
-            _consumer.Subscribe(Topic);
+            _consumer.Subscribe(_settings.Topic);
             while (!cancellationToken.IsCancellationRequested)
             {
                 var consumeResult = _consumer.Consume(cancellationToken);

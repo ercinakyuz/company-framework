@@ -1,21 +1,23 @@
-﻿using Company.Framework.Messaging.Producer;
-using Company.Framework.Messaging.Producer.Args;
+﻿using Company.Framework.Messaging.Kafka.Producer.Args;
 using Confluent.Kafka;
 
 namespace Company.Framework.Messaging.Kafka.Producer
 {
-    public class KafkaProducer : IProducer
+    public class KafkaProducer : IKafkaProducer
     {
+        public string Name { get; }
+
         private readonly IProducer<Null, object> _producer;
 
-        public KafkaProducer(IProducer<Null, object> producer)
+        public KafkaProducer(string name, IProducer<Null, object> producer)
         {
             _producer = producer;
+            Name = name;
         }
 
-        public async Task ProduceAsync<TMessage>(ProduceArgs<TMessage> args, CancellationToken cancellationToken) where TMessage : notnull
+        public async Task ProduceAsync(KafkaProduceArgs args, CancellationToken cancellationToken)
         {
-            await _producer.ProduceAsync(args.Channel, new Message<Null, object>
+            await _producer.ProduceAsync(args.Topic, new Message<Null, object>
             {
                 Value = args.Message,
             }, cancellationToken);

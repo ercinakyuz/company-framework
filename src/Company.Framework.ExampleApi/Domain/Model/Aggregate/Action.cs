@@ -1,6 +1,8 @@
-﻿using Company.Framework.Core.Logging;
+﻿using System.Collections.Concurrent;
+using Company.Framework.Core.Logging;
 using Company.Framework.Domain.Model.Aggregate;
 using Company.Framework.Domain.Model.Aggregate.Dto;
+using Company.Framework.Domain.Model.Aggregate.Event;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Event;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.State;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
@@ -9,7 +11,15 @@ namespace Company.Framework.ExampleApi.Domain.Model.Aggregate;
 
 public class Action : AggregateRoot<Action, ActionId, ActionState>
 {
-    private Action(CreateActionDto createDto) : base(createDto)
+    static Action()
+    {
+        EventDelegations = new ConcurrentDictionary<ActionState, Func<Action, IEvent>>
+        {
+            [ActionState.PingApplied] = action => new PingApplied(action.Id),
+            [ActionState.PongApplied] = action => new PongApplied(action.Id)
+        };
+    }
+    private Action(PingActionDto pingDto) : base(pingDto)
     {
     }
 
@@ -19,28 +29,19 @@ public class Action : AggregateRoot<Action, ActionId, ActionState>
 
     public static Action Load(LoadActionDto loadDto)
     {
-        return new Action(loadDto);
+        return new Action(loadDto).ChangeState(ActionState.Loaded);
     }
-    public static Action Create(CreateActionDto createDto)
+    public static Action Ping(PingActionDto pingDto)
     {
-        return new Action(createDto);
-    }
-
-    public Action Ping()
-    {
-        return ChangeState(ActionState.PingApplied);
+        return new Action(pingDto).ChangeState(ActionState.PingApplied);
     }
 
-    protected override Action ApplyEvents()
+    public Action Pong()
     {
-        if (State == ActionState.PingApplied)
-        {
-            Events.Add(new PingApplied(Id));
-        }
-        return this;
+        return ChangeState(ActionState.PongApplied);
     }
 }
 
-public record LoadActionDto(ActionId Id, Log Created, Log Modified) : LoadAggregateDto<ActionId>(Id, Created, Modified);
+public record LoadActionDto(ActionId Id, Log Created, Log? Modified) : LoadAggregateDto<ActionId>(Id, Created, Modified);
 
-public record CreateActionDto(Log Created) : CreateAggregateDto(Created);
+public record PingActionDto(Log Created) : CreateAggregateDto(Created);

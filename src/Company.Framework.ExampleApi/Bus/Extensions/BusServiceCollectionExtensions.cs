@@ -1,4 +1,5 @@
 ﻿using Company.Framework.ExampleApi.Consumers;
+using Company.Framework.ExampleApi.Consumers.Messages;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Event;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Bus.Extensions;
@@ -12,14 +13,21 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
     {
         public static IServiceCollection AddBusComponents(this IServiceCollection serviceCollection)
         {
-            return serviceCollection.BusServiceBuilder().AddKafkaComponents().AddRabbitComponents().BuildBusServices();
+            return serviceCollection.BusServiceBuilder()
+                .AddKafkaComponents()
+                .AddRabbitComponents()
+                .BuildBusServices();
         }
 
         private static MainBusServiceBuilder AddKafkaComponents(this MainBusServiceBuilder mainBusServiceBuilder)
         {
             return mainBusServiceBuilder.WithKafka()
-                .WithBus("ActionKafka")
-                .WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("PingApplied")
+                .WithBus("ActionKafka-1")
+                .WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("MultiplePingApplied")
+                .ThatConsume<PingAppliedKafkaEnvelope>("SingularPingApplied")
+                .BuildBus()
+                .WithBus("ActionKafka-2")
+                .WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("MultiplePingApplied")
                 .BuildBus()
                 .BuildKafka();
         }
@@ -27,8 +35,12 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         private static MainBusServiceBuilder AddRabbitComponents(this MainBusServiceBuilder mainBusServiceBuilder)
         {
             return mainBusServiceBuilder.WithRabbit()
-                .WithBus("ActionRabbit")
-                .WithConsumer<PingAppliedRabbitConsumer, Envelope<PingApplied>>("PingApplied")
+                .WithBus("ActionRabbit-1")
+                .WithConsumer<PingAppliedRabbitConsumer, Envelope<PingApplied>>("MultiplePingApplied")
+                .ThatConsume<PingAppliedRabbitEnvelope>("SingularPingApplied")
+                .BuildBus()
+                .WithBus("ActionRabbit-2")
+                .WithConsumer<PingAppliedRabbitConsumer, Envelope<PingApplied>>("MultiplePingApplied")
                 .BuildBus()
                 .BuildRabbit();
         }

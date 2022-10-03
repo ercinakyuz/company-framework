@@ -1,10 +1,12 @@
-﻿namespace Company.Framework.Messaging.Bus.Provider
+﻿using Company.Framework.Messaging.Bus;
+
+namespace Company.Framework.Messaging.Producer.Context.Provider
 {
     public class BusProvider : IBusProvider
     {
         private readonly IDictionary<string, IBus> _busDictionary;
 
-        public BusProvider(IEnumerable<IBus> buses)
+        public BusProvider(IEnumerable<IBus> buses) 
         {
             _busDictionary = buses.ToDictionary(bus => bus.Name);
         }

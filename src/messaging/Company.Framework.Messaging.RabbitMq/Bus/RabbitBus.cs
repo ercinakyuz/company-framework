@@ -1,17 +1,11 @@
-﻿using Company.Framework.Messaging.Bus;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 
 namespace Company.Framework.Messaging.RabbitMq.Bus;
 
-public class RabbitBus : IBus
+public record RabbitBus(string Name, IConnection Connection) : IRabbitBus
 {
-    public string Name { get; }
-
-    public IModel Model { get; }
-
-    public RabbitBus(string name, IModel model)
+    public TConnection GetConnection<TConnection>()
     {
-        Name = name;
-        Model = model;
+        return (TConnection)Connection;
     }
 }

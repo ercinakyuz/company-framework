@@ -1,9 +1,9 @@
-﻿//using Company.Framework.Http.Client;
+﻿using Company.Framework.Http.Client;
 
-//namespace Company.Framework.ExampleApi.Http.Clients;
+namespace Company.Framework.ExampleApi.Http.Clients;
 
-//public interface IActionHttpClient : IHttpClient
-//{
-//    Task Ping(CancellationToken cancellationToken);
-//    Task Pong(CancellationToken cancellationToken);
-//}
+public interface IActionHttpClient : IHttpClient
+{
+    Task PingAsync(CancellationToken cancellationToken);
+    Task PongAsync(CancellationToken cancellationToken);
+}

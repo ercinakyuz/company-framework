@@ -1,5 +1,4 @@
-﻿using Company.Framework.Messaging.Bus.Provider;
-using Company.Framework.Messaging.HostedServices;
+﻿using Company.Framework.Messaging.HostedServices;
 using Company.Framework.Messaging.Producer.Context;
 using Company.Framework.Messaging.Producer.Context.Provider;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,10 +1,11 @@
 ﻿using Company.Framework.Messaging.Bus;
 using Company.Framework.Messaging.Bus.Builder;
-using Company.Framework.Messaging.Bus.Provider;
 using Company.Framework.Messaging.Consumer;
+using Company.Framework.Messaging.Producer.Context.Provider;
 using Company.Framework.Messaging.RabbitMq.Consumer;
 using Company.Framework.Messaging.RabbitMq.Consumer.Settings;
 using Company.Framework.Messaging.RabbitMq.Producer;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
@@ -24,8 +25,7 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var connectionFactory = new ConnectionFactory { HostName = configuration.GetSection($"Messaging:{BusName}:Host").Value };
             var connection = connectionFactory.CreateConnection();
-            var model = connection.CreateModel();
-            return new RabbitBus(BusName, model);
+            return new RabbitBus(BusName, connection);
         });
         return this;
     }
@@ -33,29 +33,47 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
     {
         ServiceCollection.AddSingleton<IRabbitProducer, RabbitProducer>(serviceProvider =>
         {
-            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<RabbitBus>(BusName);
-            return new RabbitProducer(BusName, bus.Model);
+            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<IRabbitBus>(BusName);
+            return new RabbitProducer(BusName, bus);
         });
         return this;
     }
 
     public RabbitBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name)
-        where TConsumer : RabbitConsumer<TMessage>
+        where TConsumer : AbstractRabbitConsumer<TMessage>
     {
         ServiceCollection.AddSingleton<IConsumer, TConsumer>(serviceProvider =>
         {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<RabbitBus>(BusName);
-            var consumerConfigKey = $"Messaging:{BusName}:Consumers:{name}";
-            var settings = new RabbitConsumerSettings
-            {
-                Exchange = configuration.GetSection($"{consumerConfigKey}:Exchange").Value,
-                Routing = configuration.GetSection($"{consumerConfigKey}:Routing").Value,
-                Queue = configuration.GetSection($"{consumerConfigKey}:Queue").Value
-            };
-            return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, bus.Model, settings);
+            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<IRabbitBus>(BusName);
+            var settings = BuildRabbitConsumerSettings(name, configuration);
+            return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, bus, settings);
         });
         return this;
+    }
+
+    public RabbitBusServiceBuilder ThatConsume<TMessage>(string name)
+        where TMessage : INotification
+    {
+        ServiceCollection.AddSingleton<IConsumer, GenericRabbitConsumer<TMessage>>(serviceProvider =>
+        {
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<IRabbitBus>(BusName);
+            var settings = BuildRabbitConsumerSettings(name, configuration);
+            return ActivatorUtilities.CreateInstance<GenericRabbitConsumer<TMessage>>(serviceProvider, bus, settings);
+        });
+        return this;
+    }
+
+    private RabbitConsumerSettings BuildRabbitConsumerSettings(string name, IConfiguration configuration)
+    {
+        var consumerConfigKey = $"Messaging:{BusName}:Consumers:{name}";
+        var settings = new RabbitConsumerSettings(Exchange: new RabbitExchangeSettings(
+                Name: configuration.GetSection($"{consumerConfigKey}:Exchange:Name").Value,
+                Type: configuration.GetSection($"{consumerConfigKey}:Exchange:Type").Value),
+            Routing: configuration.GetSection($"{consumerConfigKey}:Routing").Value,
+            Queue: configuration.GetSection($"{consumerConfigKey}:Queue").Value);
+        return settings;
     }
 
 

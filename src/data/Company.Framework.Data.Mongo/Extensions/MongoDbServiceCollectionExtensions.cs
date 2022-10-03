@@ -5,7 +5,10 @@ using Company.Framework.Data.Mongo.Context.Provider;
 using Company.Framework.Data.Repository;
 using Company.Framework.Data.Repository.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace Company.Framework.Data.Mongo.Extensions
 {
@@ -13,8 +16,8 @@ namespace Company.Framework.Data.Mongo.Extensions
     {
         public static IServiceCollection AddMongoDb(this IServiceCollection serviceCollection)
         {
-            var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
-            ConventionRegistry.Register("camelCase", conventionPack, _ => true);
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
+            ConventionRegistry.Register("camelCase", new ConventionPack { new CamelCaseElementNameConvention() }, _ => true);
             DbProviderRegistry.Register(DbType.Mongo, dbContextSettings => new MongoDbContextProvider(dbContextSettings));
             return serviceCollection;
         }

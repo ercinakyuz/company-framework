@@ -1,4 +1,5 @@
-﻿using Company.Framework.Messaging.RabbitMq.Producer.Args;
+﻿using Company.Framework.Messaging.RabbitMq.Bus;
+using Company.Framework.Messaging.RabbitMq.Producer.Args;
 using RabbitMQ.Client;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -8,18 +9,21 @@ namespace Company.Framework.Messaging.RabbitMq.Producer
     {
         public string Name { get; }
 
-        private readonly IModel _model;
+        private readonly IConnection _connection;
 
-        public RabbitProducer(string name, IModel model)
+        public RabbitProducer(string name, IRabbitBus bus)
         {
             Name = name;
-            _model = model;
+            _connection = bus.GetConnection<IConnection>();
         }
 
         public Task ProduceAsync(RabbitProduceArgs args, CancellationToken cancellationToken)
         {
-            _model.ExchangeDeclare(args.Exchange, "topic");
-            _model.BasicPublish(args.Exchange, args.Routing, false, null, JsonSerializer.SerializeToUtf8Bytes(args.Message));
+            var model = _connection.CreateModel();
+            var (exchange, routing, message) = args;
+            var (exchangeName, exchangeType) = exchange;
+            model.ExchangeDeclare(exchangeName, exchangeType);
+            model.BasicPublish(exchangeName, routing, false, null, JsonSerializer.SerializeToUtf8Bytes(message));
             return Task.CompletedTask;
         }
     }

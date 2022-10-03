@@ -1,17 +1,18 @@
 ﻿using Company.Framework.Messaging.Consumer;
+using Company.Framework.Messaging.Kafka.Consumer.Context;
 using Confluent.Kafka;
 
 namespace Company.Framework.Messaging.Kafka.Consumer
 {
-    public abstract class KafkaConsumer<TMessage> : IConsumer
+    public abstract class AbstractKafkaConsumer<TMessage> : IConsumer
     {
         private readonly IConsumer<Null, TMessage> _consumer;
 
         private readonly KafkaConsumerSettings _settings;
 
-        protected KafkaConsumer(IConsumer<Null, TMessage> consumer, KafkaConsumerSettings settings)
+        protected AbstractKafkaConsumer(IKafkaConsumerContext consumerContext, KafkaConsumerSettings settings)
         {
-            _consumer = consumer;
+            _consumer = consumerContext.Resolve<IConsumer<Null, TMessage>>();
             _settings = settings;
         }
 

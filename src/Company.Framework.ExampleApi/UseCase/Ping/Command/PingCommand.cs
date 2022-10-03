@@ -2,4 +2,4 @@
 
 namespace Company.Framework.ExampleApi.UseCase.Ping.Command;
 
-public record PingCommand : IRequest;
+public record PingCommand : IRequest<Guid>;

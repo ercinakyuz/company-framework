@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Company.Framework.Correlation\Company.Framework.Correlation.csproj" />
+    <ProjectReference Include="..\..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

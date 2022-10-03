@@ -1,4 +1,5 @@
-﻿using Company.Framework.ExampleApi.UseCase.Ping.Command;
+﻿using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
+using Company.Framework.ExampleApi.UseCase.Ping.Command;
 using Company.Framework.ExampleApi.UseCase.Pong.Command;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +21,15 @@ namespace Company.Framework.ExampleApi.Controllers
         [Route("ping")]
         public async Task<IActionResult> Ping()
         {
-            await _sender.Send(new PingCommand());
-            return Ok();
+            var id = await _sender.Send(new PingCommand());
+            return Created("", id);
         }
 
-        [HttpPost]
-        [Route("pong")]
-        public async Task<IActionResult> Pong()
+        [HttpPatch]
+        [Route("pong/{id}")]
+        public async Task<IActionResult> Pong(Guid id)
         {
-            await _sender.Send(new PongCommand());
+            await _sender.Send(new PongCommand(ActionId.From(id)));
             return Ok();
         }
     }

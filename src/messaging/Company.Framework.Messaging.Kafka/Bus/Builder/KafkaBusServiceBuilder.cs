@@ -1,15 +1,17 @@
 ﻿using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Kafka.Consumer;
+using Company.Framework.Messaging.Kafka.Consumer.Context;
 using Company.Framework.Messaging.Kafka.Producer;
 using Company.Framework.Messaging.Kafka.Serialization;
 using Confluent.Kafka;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Messaging.Kafka.Bus.Builder;
 
-public class KafkaBusServiceBuilder: CoreBusServiceBuilder<KafkaBusBuilder>
+public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
 {
     public KafkaBusServiceBuilder(KafkaBusBuilder busBuilder, string busName) : base(busBuilder, busName)
     {
@@ -30,7 +32,7 @@ public class KafkaBusServiceBuilder: CoreBusServiceBuilder<KafkaBusBuilder>
     }
 
     public KafkaBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name)
-        where TConsumer : KafkaConsumer<TMessage>
+        where TConsumer : AbstractKafkaConsumer<TMessage>
     {
         ServiceCollection
             .AddSingleton<IConsumer, TConsumer>(serviceProvider =>
@@ -44,11 +46,19 @@ public class KafkaBusServiceBuilder: CoreBusServiceBuilder<KafkaBusBuilder>
                     GroupId = consumerGroupId ?? defaultGroupId,
                     AllowAutoCreateTopics = true,
                 }).SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>()).Build();
-                return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, consumer, new KafkaConsumerSettings
+                IKafkaConsumerContext context = new KafkaConsumerContext<TMessage>(consumer);
+                return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context, new KafkaConsumerSettings
                 {
+                    Name = name,
                     Topic = configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Topic").Value
                 });
             });
         return this;
     }
+
+    public KafkaBusServiceBuilder ThatConsume<TMessage>(string name) where TMessage : INotification
+    {
+        return WithConsumer<GenericKafkaConsumer<TMessage>, TMessage>(name);
+    }
+
 }

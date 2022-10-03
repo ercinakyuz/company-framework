@@ -1,13 +1,25 @@
-﻿using Company.Framework.Core.Logging;
+﻿using Company.Framework.ExampleApi.Data.Entity;
+using Company.Framework.ExampleApi.Data.Repository;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 
 namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder
 {
-    public class ActionBuilder
+    public class ActionBuilder : IActionBuilder
     {
-        public Action Build(ActionId id)
+        private readonly IActionRepository _actionRepository;
+
+        public ActionBuilder(IActionRepository actionRepository)
         {
-            return Action.Load(new LoadActionDto(id, Log.Load("Creator"), Log.Load("Modifier")));
+            _actionRepository = actionRepository;
+        }
+
+        public async Task<Action> BuildAsync(ActionId id, CancellationToken cancellationToken)
+        {
+            var actionEntity = await _actionRepository.GetByIdAsync(id.Value);
+            return actionEntity is default(ActionEntity)
+                ? throw new InvalidOperationException("Action not found")
+                : Action.Load(new LoadActionDto(ActionId.From(actionEntity.Id), actionEntity.Created,
+                    actionEntity.Modified));
         }
     }
 }

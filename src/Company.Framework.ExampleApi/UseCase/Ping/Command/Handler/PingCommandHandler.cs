@@ -6,7 +6,7 @@ using Action = Company.Framework.ExampleApi.Domain.Model.Aggregate.Action;
 
 namespace Company.Framework.ExampleApi.UseCase.Ping.Command.Handler;
 
-public class PingCommandHandler : AsyncRequestHandler<PingCommand>
+public class PingCommandHandler : IRequestHandler<PingCommand,Guid>
 {
     private readonly IActionOfWork _actionOfWork;
 
@@ -15,8 +15,10 @@ public class PingCommandHandler : AsyncRequestHandler<PingCommand>
         _actionOfWork = actionOfWork;
     }
 
-    protected override async Task Handle(PingCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(PingCommand request, CancellationToken cancellationToken)
     {
-        await _actionOfWork.InsertAsync(Action.Create(new CreateActionDto(Log.Load("Creator"))).Ping(), cancellationToken);
+        var action = Action.Ping(new PingActionDto(Log.Load("Creator")));
+        await _actionOfWork.InsertAsync(action, cancellationToken);
+        return action.Id.Value;
     }
 }

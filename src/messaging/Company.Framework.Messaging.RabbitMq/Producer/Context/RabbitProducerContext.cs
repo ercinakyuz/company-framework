@@ -5,7 +5,7 @@ namespace Company.Framework.Messaging.RabbitMq.Producer.Context
 {
     public class RabbitProducerContext : CoreProducerContext<IRabbitProducer>, IRabbitProducerContext
     {
-        public RabbitProducerContext(IEnumerable<IRabbitProducer> producers) : base(producers, BusType.Rabbit)
+        public RabbitProducerContext(IEnumerable<IRabbitProducer> producers) : base(producers)
         {
         }
     }

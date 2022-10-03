@@ -25,12 +25,36 @@ namespace Company.Framework.Aspect.Proxy
         }
         protected sealed override object? Invoke(MethodInfo? targetMethod, object?[]? args)
         {
-            ExecutePreProcessorsAsync(args?.FirstOrDefault(), CancellationToken.None).Wait();
-            var result = targetMethod?.Invoke(_decoration, args);
-            ExecutePostProcessorsAsync(args?.FirstOrDefault(), result, CancellationToken.None).Wait();
+            var cancellationToken = CancellationToken.None;
+            ExecutePreProcessorsAsync(args?.FirstOrDefault(), cancellationToken).Wait(cancellationToken);
+            var result = Next(targetMethod, args, cancellationToken).Result;
+            ExecutePostProcessorsAsync(args?.FirstOrDefault(), result, cancellationToken).Wait(cancellationToken);
             return result;
         }
 
+        private async Task<object?> Next(MethodInfo? targetMethod, object?[]? args, CancellationToken cancellationToken)
+        {
+            var targetMethodResult = targetMethod?.Invoke(_decoration, args);
+
+            object? result;
+            if (targetMethodResult is Task task)
+            {
+                await task;
+                try
+                {
+                    result = ((dynamic)task).Result;
+                }
+                catch
+                {
+                    result = Task.CompletedTask;
+                }
+            }
+            else
+            {
+                result = targetMethodResult!;
+            }
+            return result;
+        }
         private async Task ExecutePreProcessorsAsync(object? args, CancellationToken cancellationToken)
         {
             foreach (var preProcessor in _preProcessors)

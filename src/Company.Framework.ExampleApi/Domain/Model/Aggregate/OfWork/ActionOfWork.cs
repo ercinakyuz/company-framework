@@ -7,9 +7,9 @@ public class ActionOfWork : IActionOfWork
 {
     private readonly IActionRepository _actionRepository;
 
-    private readonly ActionConverter _actionConverter;
+    private readonly IActionConverter _actionConverter;
 
-    public ActionOfWork(IActionRepository actionRepository, ActionConverter actionConverter)
+    public ActionOfWork(IActionRepository actionRepository, IActionConverter actionConverter)
     {
         _actionRepository = actionRepository;
         _actionConverter = actionConverter;

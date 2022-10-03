@@ -1,4 +1,6 @@
-﻿namespace Company.Framework.Messaging.Bus.Provider
+﻿using Company.Framework.Messaging.Bus;
+
+namespace Company.Framework.Messaging.Producer.Context.Provider
 {
     public interface IBusProvider
     {

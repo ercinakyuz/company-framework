@@ -23,15 +23,15 @@ public class PingAppliedDispatcher : CoreEventDispatcher<PingApplied>
         ILogger<PingAppliedDispatcher> logger)
         : base(producerContextProvider, correlationContextAccessor, logger)
     {
-        _actionKafkaProducer = ProducerContextProvider.Resolve<IKafkaProducerContext>().Resolve("ActionKafka");
-        _actionRabbitProducer = ProducerContextProvider.Resolve<IRabbitProducerContext>().Resolve("ActionRabbit");
+        _actionKafkaProducer = ProducerContextProvider.Resolve<IKafkaProducerContext>().Resolve("ActionKafka-1");
+        _actionRabbitProducer = ProducerContextProvider.Resolve<IRabbitProducerContext>().Resolve("ActionRabbit-1");
     }
 
     public override async Task DispatchAsync(Envelope<PingApplied> envelope, CancellationToken cancellationToken)
     {
         await Task.WhenAll(
-            _actionKafkaProducer.ProduceAsync(new KafkaProduceArgs("ping-applied", envelope), cancellationToken),
-            _actionRabbitProducer.ProduceAsync(new RabbitProduceArgs("action", "ping-applied", envelope), cancellationToken)
+             _actionKafkaProducer.ProduceAsync(new KafkaProduceArgs("ping-applied", envelope), cancellationToken)
+             ,_actionRabbitProducer.ProduceAsync(new RabbitProduceArgs(new ExchangeArgs("action", "topic"), "ping-applied", envelope), cancellationToken)
             );
     }
 }

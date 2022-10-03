@@ -2,4 +2,4 @@
 
 namespace Company.Framework.Messaging.RabbitMq.Producer.Args;
 
-public record RabbitProduceArgs(string Exchange, string Routing, object Message) : CoreProduceArgs(Message);
+public record RabbitProduceArgs(ExchangeArgs Exchange, string Routing, object Message) : CoreProduceArgs(Message);

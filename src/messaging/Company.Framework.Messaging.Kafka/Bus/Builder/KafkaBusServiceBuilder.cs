@@ -46,12 +46,13 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
                     GroupId = consumerGroupId ?? defaultGroupId,
                     AllowAutoCreateTopics = true,
                 }).SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>()).Build();
-                IKafkaConsumerContext context = new KafkaConsumerContext<TMessage>(consumer);
-                return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context, new KafkaConsumerSettings
+                var settings = new KafkaConsumerSettings
                 {
                     Name = name,
                     Topic = configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Topic").Value
-                });
+                };
+                var context = new KafkaConsumerContext<TMessage>(consumer, settings);
+                return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
             });
         return this;
     }

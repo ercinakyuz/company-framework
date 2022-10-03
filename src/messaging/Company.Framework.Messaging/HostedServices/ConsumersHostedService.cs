@@ -18,7 +18,6 @@ namespace Company.Framework.Messaging.HostedServices
             {
                 Task.Run(() => consumer.SubscribeAsync(cancellationToken), cancellationToken);
             }
-
             return Task.CompletedTask;
         }
 

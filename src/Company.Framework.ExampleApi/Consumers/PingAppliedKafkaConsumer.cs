@@ -9,11 +9,7 @@ namespace Company.Framework.ExampleApi.Consumers
     {
         private readonly ILogger<PingAppliedKafkaConsumer> _logger;
 
-        public PingAppliedKafkaConsumer(
-            IKafkaConsumerContext consumerContext,
-            KafkaConsumerSettings options,
-            ILogger<PingAppliedKafkaConsumer> logger) 
-            : base(consumerContext, options)
+        public PingAppliedKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger<PingAppliedKafkaConsumer> logger) : base(consumerContext)
         {
             _logger = logger;
         }

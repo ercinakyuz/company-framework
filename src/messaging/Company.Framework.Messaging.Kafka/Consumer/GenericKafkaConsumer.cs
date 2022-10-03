@@ -5,10 +5,9 @@ namespace Company.Framework.Messaging.Kafka.Consumer;
 
 public class GenericKafkaConsumer<TMessage> : AbstractKafkaConsumer<TMessage> where TMessage : INotification
 {
-
     private readonly IPublisher _publisher;
 
-    public GenericKafkaConsumer(IKafkaConsumerContext consumerContext, KafkaConsumerSettings settings, IPublisher publisher) : base(consumerContext, settings)
+    public GenericKafkaConsumer(IKafkaConsumerContext consumerContext, IPublisher publisher) : base(consumerContext)
     {
         _publisher = publisher;
     }
@@ -17,6 +16,4 @@ public class GenericKafkaConsumer<TMessage> : AbstractKafkaConsumer<TMessage> wh
     {
         await _publisher.Publish(message, cancellationToken);
     }
-
-
 }

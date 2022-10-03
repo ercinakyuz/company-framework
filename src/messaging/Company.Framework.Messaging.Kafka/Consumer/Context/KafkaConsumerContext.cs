@@ -6,9 +6,12 @@ namespace Company.Framework.Messaging.Kafka.Consumer.Context
     {
         private readonly IConsumer<Null, TMessage> _consumer;
 
-        public KafkaConsumerContext(IConsumer<Null, TMessage> consumer)
+        public KafkaConsumerSettings Settings { get; }
+
+        public KafkaConsumerContext(IConsumer<Null, TMessage> consumer, KafkaConsumerSettings settings)
         {
             _consumer = consumer;
+            Settings = settings;
         }
 
         public TConsumer Resolve<TConsumer>()

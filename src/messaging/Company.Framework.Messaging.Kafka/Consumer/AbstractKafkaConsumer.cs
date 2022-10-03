@@ -10,10 +10,10 @@ namespace Company.Framework.Messaging.Kafka.Consumer
 
         private readonly KafkaConsumerSettings _settings;
 
-        protected AbstractKafkaConsumer(IKafkaConsumerContext consumerContext, KafkaConsumerSettings settings)
+        protected AbstractKafkaConsumer(IKafkaConsumerContext consumerContext)
         {
             _consumer = consumerContext.Resolve<IConsumer<Null, TMessage>>();
-            _settings = settings;
+            _settings = consumerContext.Settings;
         }
 
         public async Task SubscribeAsync(CancellationToken cancellationToken)

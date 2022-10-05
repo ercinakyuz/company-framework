@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Company.Framework.Messaging.RabbitMq.Consumer;
 
-public class GenericRabbitConsumer<TMessage> : AbstractRabbitConsumer<TMessage> where TMessage : INotification
+public class DefaultRabbitConsumer<TMessage> : CoreRabbitConsumer<TMessage> where TMessage : INotification
 {
     private readonly IPublisher _publisher;
 
-    public GenericRabbitConsumer(IRabbitBus bus, RabbitConsumerSettings settings, IPublisher publisher) : base(bus, settings)
+    public DefaultRabbitConsumer(IRabbitBus bus, RabbitConsumerSettings settings, IPublisher publisher) : base(bus, settings)
     {
         _publisher = publisher;
     }

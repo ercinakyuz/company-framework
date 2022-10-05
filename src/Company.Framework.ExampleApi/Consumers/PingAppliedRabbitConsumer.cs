@@ -6,7 +6,7 @@ using Company.Framework.Messaging.RabbitMq.Consumer.Settings;
 
 namespace Company.Framework.ExampleApi.Consumers;
 
-public class PingAppliedRabbitConsumer : AbstractRabbitConsumer<Envelope<PingApplied>>
+public class PingAppliedRabbitConsumer : CoreRabbitConsumer<Envelope<PingApplied>>
 {
     private readonly ILogger _logger;
 

@@ -18,7 +18,7 @@ public class KafkaBusBuilder : CoreBusBuilder<KafkaBusBuilder>
     internal KafkaBusBuilder WithDefaultSerialization()
     {
         ServiceCollection
-            .AddSingleton<KafkaDefaultSerializer>()
+            .AddSingleton(typeof(KafkaMessageSerializer<>))
             .AddSingleton(typeof(KafkaMessageDeserializer<>))
             .AddSingleton(_ => new KafkaSerializationSettings(new JsonSerializerOptions
             {

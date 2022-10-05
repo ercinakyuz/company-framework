@@ -40,7 +40,7 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
     }
 
     public RabbitBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name)
-        where TConsumer : AbstractRabbitConsumer<TMessage>
+        where TConsumer : CoreRabbitConsumer<TMessage>
     {
         ServiceCollection.AddSingleton<IConsumer, TConsumer>(serviceProvider =>
         {
@@ -55,14 +55,7 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
     public RabbitBusServiceBuilder ThatConsume<TMessage>(string name)
         where TMessage : INotification
     {
-        ServiceCollection.AddSingleton<IConsumer, GenericRabbitConsumer<TMessage>>(serviceProvider =>
-        {
-            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<IRabbitBus>(BusName);
-            var settings = BuildRabbitConsumerSettings(name, configuration);
-            return ActivatorUtilities.CreateInstance<GenericRabbitConsumer<TMessage>>(serviceProvider, bus, settings);
-        });
-        return this;
+        return WithConsumer<DefaultRabbitConsumer<TMessage>, TMessage>(name);
     }
 
     private RabbitConsumerSettings BuildRabbitConsumerSettings(string name, IConfiguration configuration)

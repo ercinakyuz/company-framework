@@ -2,21 +2,20 @@
 using Company.Framework.Messaging.Envelope;
 using Company.Framework.Messaging.Kafka.Consumer;
 using Company.Framework.Messaging.Kafka.Consumer.Context;
+using Confluent.Kafka;
 
 namespace Company.Framework.ExampleApi.Consumers
 {
-    public class PingAppliedKafkaConsumer : AbstractKafkaConsumer<Envelope<PingApplied>>
+    public class PingAppliedKafkaConsumer : CoreKafkaConsumer<Envelope<PingApplied>>
     {
-        private readonly ILogger<PingAppliedKafkaConsumer> _logger;
-
-        public PingAppliedKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger<PingAppliedKafkaConsumer> logger) : base(consumerContext)
+        public PingAppliedKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger<PingAppliedKafkaConsumer> logger) : base(consumerContext, logger)
         {
-            _logger = logger;
         }
 
         public override Task ConsumeAsync(Envelope<PingApplied> message, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("PingApplied event consumed, {}", message);
+            throw new ArgumentException();
+            Logger.LogInformation("PingApplied event consumed, {}", message);
             return Task.CompletedTask;
         }
     }

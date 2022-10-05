@@ -1,13 +1,14 @@
 ﻿using Company.Framework.Messaging.Kafka.Consumer.Context;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Company.Framework.Messaging.Kafka.Consumer;
 
-public class GenericKafkaConsumer<TMessage> : AbstractKafkaConsumer<TMessage> where TMessage : INotification
+public class DefaultKafkaConsumer<TMessage> : CoreKafkaConsumer<TMessage> where TMessage : INotification
 {
     private readonly IPublisher _publisher;
 
-    public GenericKafkaConsumer(IKafkaConsumerContext consumerContext, IPublisher publisher) : base(consumerContext)
+    public DefaultKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger logger, IPublisher publisher) : base(consumerContext, logger)
     {
         _publisher = publisher;
     }

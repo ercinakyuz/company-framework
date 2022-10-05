@@ -8,13 +8,13 @@ using RabbitMQ.Client.Events;
 
 namespace Company.Framework.Messaging.RabbitMq.Consumer
 {
-    public abstract class AbstractRabbitConsumer<TMessage> : IConsumer
+    public abstract class CoreRabbitConsumer<TMessage> : IConsumer
     {
         private readonly EventingBasicConsumer _consumer;
         private readonly RabbitConsumerSettings _settings;
         private readonly IModel _model;
 
-        protected AbstractRabbitConsumer(IRabbitBus bus, RabbitConsumerSettings settings)
+        protected CoreRabbitConsumer(IRabbitBus bus, RabbitConsumerSettings settings)
         {
             _settings = settings;
             _model = bus.GetConnection<IConnection>().CreateModel();

@@ -1,18 +1,8 @@
-﻿using System.Text.Json;
-using Confluent.Kafka;
+﻿namespace Company.Framework.Messaging.Kafka.Serialization;
 
-namespace Company.Framework.Messaging.Kafka.Serialization;
-
-public class KafkaDefaultSerializer : ISerializer<object>
+public class KafkaDefaultSerializer : KafkaMessageSerializer<object>
 {
-    private readonly KafkaSerializationSettings _kafkaSerializationSettings;
-
-    public KafkaDefaultSerializer(KafkaSerializationSettings kafkaSerializationSettings)
+    public KafkaDefaultSerializer(KafkaSerializationSettings kafkaSerializationSettings) : base(kafkaSerializationSettings)
     {
-        _kafkaSerializationSettings = kafkaSerializationSettings;
-    }
-    public byte[] Serialize(object data, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(data, _kafkaSerializationSettings.JsonSerializerOptions);
     }
 }

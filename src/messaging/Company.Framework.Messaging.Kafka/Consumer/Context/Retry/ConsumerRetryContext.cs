@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using Company.Framework.Messaging.Kafka.Consumer.Settings;
+﻿using Company.Framework.Messaging.Kafka.Consumer.Settings;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Company.Framework.Messaging.Kafka.Consumer.Context.Retry
 {
@@ -22,7 +22,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer.Context.Retry
             _logger = logger;
             _settings = settings;
         }
-        
+
         public async Task RetryAsync(object message, Type exceptionType, CancellationToken cancellationToken)
         {
             if (message is not Message<Null, TMessage> retryMessage)
@@ -37,7 +37,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer.Context.Retry
                     retryAttempts++;
                     await Task.Delay(TimeSpan.FromMilliseconds(_settings.ExponentialIntervalMs * retryAttempts), cancellationToken);
                     retryMessage.Headers.Add(RetryAttemptsHeaderKey, JsonSerializer.SerializeToUtf8Bytes(retryAttempts));
-                    await _producer.ProduceAsync(_settings.Topic, retryMessage, cancellationToken);
+                    await _producer.ProduceAsync(_settings.Topic, retryMessage, cancellationToken).ConfigureAwait(false);
                     _logger.LogInformation("Message sent to the retry topic: {} for number of {} tries: {}", _settings.Topic,
                         retryAttempts, retryMessage.Value);
                 }

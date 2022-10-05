@@ -25,11 +25,11 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         {
             return mainBusServiceBuilder.WithKafka()
                 .WithBus("ActionKafka-1")
-                .WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("MultiplePingApplied", new ConsumerRetriability(true, new HashSet<Type>
-                {
-                    typeof(ArgumentException)
-                }))
-                //.ThatConsume<PingAppliedKafkaEnvelope>("SingularPingApplied")
+                //.WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("MultiplePingApplied", new ConsumerRetriability(true, new HashSet<Type>
+                //{
+                //    typeof(ArgumentException)
+                //}))
+                .ThatConsume<PingAppliedKafkaEnvelope>("SingularPingApplied", new ConsumerRetriability(true, new HashSet<Type>()))
                 .BuildBus()
                 //.WithBus("ActionKafka-2")
                 //.WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("MultiplePingApplied")

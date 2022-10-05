@@ -18,7 +18,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
         private readonly bool _hasRetrial;
 
         protected readonly ILogger Logger;
-        
+
 
         protected CoreKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger logger)
         {
@@ -32,7 +32,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
         public async Task SubscribeAsync(CancellationToken cancellationToken)
         {
             if (_hasRetrial)
-                _consumer.Subscribe(new []{ _settings.Topic, _retrialContext!.Topic });
+                _consumer.Subscribe(new[] { _settings.Topic, _retrialContext!.Topic });
             else
                 _consumer.Subscribe(_settings.Topic);
             while (!cancellationToken.IsCancellationRequested)
@@ -59,7 +59,9 @@ namespace Company.Framework.Messaging.Kafka.Consumer
             {
                 Logger.LogError(exception, exception.Message);
                 if (_hasRetrial)
-                    await _retrialContext!.RetryAsync(message, exception.GetType(), cancellationToken);
+                {
+                    await Task.Run(() => _retrialContext!.RetryAsync(message, exception.GetType(), cancellationToken).ConfigureAwait(false), cancellationToken);
+                }
             }
         }
 

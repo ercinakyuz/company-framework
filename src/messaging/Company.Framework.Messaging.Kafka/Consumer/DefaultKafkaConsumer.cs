@@ -8,7 +8,7 @@ public class DefaultKafkaConsumer<TMessage> : CoreKafkaConsumer<TMessage> where 
 {
     private readonly IPublisher _publisher;
 
-    public DefaultKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger logger, IPublisher publisher) : base(consumerContext, logger)
+    public DefaultKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger<DefaultKafkaConsumer<TMessage>> logger, IPublisher publisher) : base(consumerContext, logger)
     {
         _publisher = publisher;
     }

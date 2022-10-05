@@ -23,6 +23,6 @@ public class PongCommandHandler : AsyncRequestHandler<PongCommand>
         var action = await _actionBuilder.BuildAsync(request.Id, cancellationToken);
         action.Pong();
         await _actionOfWork.UpdateAsync(action, cancellationToken);
-        //await _actionHttpClient.PingAsync(cancellationToken);
+        await _actionHttpClient.PingAsync(cancellationToken);
     }
 }

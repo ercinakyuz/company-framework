@@ -20,9 +20,10 @@ public class PongCommandHandler : AsyncRequestHandler<PongCommand>
 
     protected override async Task Handle(PongCommand request, CancellationToken cancellationToken)
     {
+        throw new NotImplementedException();
         var action = await _actionBuilder.BuildAsync(request.Id, cancellationToken);
         action.Pong();
         await _actionOfWork.UpdateAsync(action, cancellationToken);
-        await _actionHttpClient.PingAsync(cancellationToken);
+        //await _actionHttpClient.PingAsync(cancellationToken);
     }
 }

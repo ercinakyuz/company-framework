@@ -1,6 +1,7 @@
 ﻿using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Kafka.Consumer.Context;
-using Company.Framework.Messaging.Kafka.Consumer.Context.Retry;
+using Company.Framework.Messaging.Kafka.Consumer.Retrial.Context;
+using Company.Framework.Messaging.Kafka.Consumer.Retrial.Context.Args;
 using Company.Framework.Messaging.Kafka.Consumer.Settings;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
 {
     public abstract class CoreKafkaConsumer<TMessage> : IConsumer
     {
-        private readonly IConsumer<Null, TMessage> _consumer;
+        private readonly IConsumer<Ignore, TMessage> _consumer;
 
         private readonly KafkaConsumerSettings _settings;
 
@@ -22,7 +23,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
 
         protected CoreKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger logger)
         {
-            _consumer = consumerContext.Resolve<IConsumer<Null, TMessage>>();
+            _consumer = consumerContext.Resolve<IConsumer<Ignore, TMessage>>();
             _settings = consumerContext.Settings;
             _retrialContext = consumerContext.Retrial;
             _hasRetrial = _retrialContext != default;
@@ -38,7 +39,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
             while (!cancellationToken.IsCancellationRequested)
             {
                 var message = _consumer.Consume(cancellationToken).Message;
-                await TryConsumeAsync(message, cancellationToken);
+                await TryConsumeAsync(message, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -49,7 +50,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
 
         public abstract Task ConsumeAsync(TMessage message, CancellationToken cancellationToken);
 
-        private async Task TryConsumeAsync(Message<Null, TMessage> message, CancellationToken cancellationToken)
+        private async Task TryConsumeAsync(Message<Ignore, TMessage> message, CancellationToken cancellationToken)
         {
             try
             {
@@ -59,9 +60,9 @@ namespace Company.Framework.Messaging.Kafka.Consumer
             {
                 Logger.LogError(exception, exception.Message);
                 if (_hasRetrial)
-                {
-                    await Task.Run(() => _retrialContext!.RetryAsync(message, exception.GetType(), cancellationToken).ConfigureAwait(false), cancellationToken);
-                }
+                    await Task.Run(() => 
+                        _retrialContext!.RetryAsync(new KafkaRetryArgs(message.Value!, message.Headers, exception.GetType()), cancellationToken)
+                        .ConfigureAwait(false), cancellationToken);
             }
         }
 

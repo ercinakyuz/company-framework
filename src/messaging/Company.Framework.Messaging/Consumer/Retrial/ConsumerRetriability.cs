@@ -1,4 +1,4 @@
-﻿namespace Company.Framework.Messaging.Kafka.Consumer.Context.Retry;
+﻿namespace Company.Framework.Messaging.Consumer.Retrial;
 
 public record ConsumerRetriability(bool IsRetriable, IReadOnlySet<Type> RetriableExceptionTypes)
 {

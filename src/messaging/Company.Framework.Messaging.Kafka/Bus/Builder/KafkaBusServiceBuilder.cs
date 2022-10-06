@@ -1,11 +1,15 @@
-﻿using System.Collections.Concurrent;
+﻿using Company.Framework.Core.Delay;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
+using Company.Framework.Messaging.Consumer.Retrial;
+using Company.Framework.Messaging.Consumer.Settings;
 using Company.Framework.Messaging.Kafka.Consumer;
 using Company.Framework.Messaging.Kafka.Consumer.Context;
-using Company.Framework.Messaging.Kafka.Consumer.Context.Retry;
+using Company.Framework.Messaging.Kafka.Consumer.Retrial;
+using Company.Framework.Messaging.Kafka.Consumer.Retrial.Context;
 using Company.Framework.Messaging.Kafka.Consumer.Settings;
 using Company.Framework.Messaging.Kafka.Producer;
+using Company.Framework.Messaging.Kafka.Producer.Context;
 using Company.Framework.Messaging.Kafka.Serialization;
 using Confluent.Kafka;
 using MediatR;
@@ -44,7 +48,7 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
                 var consumerGroupId = configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:GroupId").Value;
                 var defaultGroupId = configuration.GetSection($"Messaging:{BusName}:DefaultConsumerGroupId").Value;
                 var nodes = configuration.GetSection($"Messaging:{BusName}:Nodes").Value;
-                var consumer = new ConsumerBuilder<Null, TMessage>(new ConsumerConfig
+                var consumer = new ConsumerBuilder<Ignore, TMessage>(new ConsumerConfig
                 {
                     BootstrapServers = nodes,
                     GroupId = consumerGroupId ?? defaultGroupId,
@@ -55,20 +59,15 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
                 IKafkaRetrialContext? retrialContext = default;
                 if (retriability != default)
                 {
+                    Enum.TryParse<DelayType>(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:Delay:Type").Value, out var delayType);
+                    var delayInterval = TimeSpan.FromMilliseconds(long.Parse(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:Delay:IntervalMs").Value));
                     var kafkaRetrySettings = new KafkaRetrySettings(
                         $"retry_{topic}",
-                        short.Parse(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:Count")
-                            .Value),
-                        long.Parse(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:ExponentialIntervalMs")
-                            .Value)
+                        short.Parse(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:Count").Value),
+                        new DelaySettings(delayType, delayInterval)
                     );
-                    var retryProducer = new ProducerBuilder<Null, TMessage>(new ProducerConfig
-                    {
-                        BootstrapServers = nodes,
-                    }).SetValueSerializer(serviceProvider.GetRequiredService<KafkaMessageSerializer<TMessage>>()).Build();
-
-                    retrialContext = ActivatorUtilities.CreateInstance<KafkaRetrialContext<TMessage>>(serviceProvider, retryProducer,
-                        retriability, kafkaRetrySettings);
+                    var producer = serviceProvider.GetRequiredService<IKafkaProducerContext>().Resolve(BusName);
+                    retrialContext = ActivatorUtilities.CreateInstance<KafkaRetrialContext>(serviceProvider, producer, retriability, kafkaRetrySettings);
                 }
                 var context = new KafkaConsumerContext<TMessage>(consumer, settings, retrialContext);
                 return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);

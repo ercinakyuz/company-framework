@@ -16,7 +16,7 @@ namespace Company.Framework.Messaging.HostedServices
         {
             foreach (var consumer in _consumers)
             {
-                Task.Run(() => consumer.SubscribeAsync(cancellationToken), cancellationToken);
+                Task.Run(() => consumer.SubscribeAsync(cancellationToken).ConfigureAwait(false), cancellationToken);
             }
             return Task.CompletedTask;
         }

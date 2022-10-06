@@ -10,5 +10,4 @@ public interface IProducer<in TArgs> : IProducer where TArgs : CoreProduceArgs
 public interface IProducer
 {
     string Name { get; }
-
 }

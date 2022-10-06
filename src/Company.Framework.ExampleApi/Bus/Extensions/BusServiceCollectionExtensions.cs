@@ -3,10 +3,11 @@ using Company.Framework.ExampleApi.Consumers.Messages;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Event;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Bus.Extensions;
+using Company.Framework.Messaging.Consumer.Retrial;
 using Company.Framework.Messaging.Envelope;
 using Company.Framework.Messaging.Kafka.Bus.Extensions;
 using Company.Framework.Messaging.Kafka.Consumer.Context;
-using Company.Framework.Messaging.Kafka.Consumer.Context.Retry;
+using Company.Framework.Messaging.Kafka.Consumer.Retrial;
 using Company.Framework.Messaging.RabbitMq.Bus.Extensions;
 
 namespace Company.Framework.ExampleApi.Bus.Extensions

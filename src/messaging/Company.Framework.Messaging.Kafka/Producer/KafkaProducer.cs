@@ -20,7 +20,8 @@ namespace Company.Framework.Messaging.Kafka.Producer
             await _producer.ProduceAsync(args.Topic, new Message<Null, object>
             {
                 Value = args.Message,
-            }, cancellationToken);
+                Headers = args.Headers as Headers
+            }, cancellationToken).ConfigureAwait(false);
         }
     }
 }

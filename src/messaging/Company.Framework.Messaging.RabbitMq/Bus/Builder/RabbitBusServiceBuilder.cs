@@ -1,7 +1,7 @@
 ﻿using Company.Framework.Messaging.Bus;
 using Company.Framework.Messaging.Bus.Builder;
+using Company.Framework.Messaging.Bus.Provider;
 using Company.Framework.Messaging.Consumer;
-using Company.Framework.Messaging.Producer.Context.Provider;
 using Company.Framework.Messaging.RabbitMq.Consumer;
 using Company.Framework.Messaging.RabbitMq.Consumer.Settings;
 using Company.Framework.Messaging.RabbitMq.Producer;

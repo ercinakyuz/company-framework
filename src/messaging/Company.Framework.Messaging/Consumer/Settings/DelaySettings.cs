@@ -2,4 +2,8 @@
 
 namespace Company.Framework.Messaging.Consumer.Settings;
 
-public record DelaySettings(DelayType Type, TimeSpan Interval);
+public class DelaySettings
+{
+    public DelayType Type { get; init; }
+    public TimeSpan Interval { get; init; }
+}

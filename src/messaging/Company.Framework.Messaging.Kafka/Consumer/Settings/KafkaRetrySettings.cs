@@ -2,4 +2,7 @@
 
 namespace Company.Framework.Messaging.Kafka.Consumer.Settings;
 
-public record KafkaRetrySettings(string Topic, short Count, DelaySettings Delay) : CoreRetrySettings(Count, Delay);
+public class KafkaRetrySettings : CoreRetrySettings
+{
+    public string Topic { get; set; }
+} 

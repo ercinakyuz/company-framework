@@ -7,6 +7,7 @@ namespace Company.Framework.Messaging.RabbitMq.Producer
 {
     public class RabbitProducer : IRabbitProducer
     {
+        public string BusName { get; }
         public string Name { get; }
 
         private readonly IConnection _connection;

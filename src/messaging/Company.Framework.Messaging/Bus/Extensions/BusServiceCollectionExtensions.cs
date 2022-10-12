@@ -9,7 +9,6 @@ namespace Company.Framework.Messaging.Bus.Extensions
         {
             return new MainBusServiceBuilder(serviceCollection)
                 .WithBusProvider()
-                .WithProducerContextProvider()
                 .WithConsumersHostedService();
         }
     }

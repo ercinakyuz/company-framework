@@ -1,27 +1,33 @@
-﻿using Company.Framework.Core.Delay;
+﻿using Company.Framework.Core.Identity;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrial;
-using Company.Framework.Messaging.Consumer.Settings;
 using Company.Framework.Messaging.Kafka.Consumer;
 using Company.Framework.Messaging.Kafka.Consumer.Context;
-using Company.Framework.Messaging.Kafka.Consumer.Retrial;
 using Company.Framework.Messaging.Kafka.Consumer.Retrial.Context;
 using Company.Framework.Messaging.Kafka.Consumer.Settings;
 using Company.Framework.Messaging.Kafka.Producer;
 using Company.Framework.Messaging.Kafka.Producer.Context;
+using Company.Framework.Messaging.Kafka.Producer.Context.Provider;
+using Company.Framework.Messaging.Kafka.Producer.Settings;
 using Company.Framework.Messaging.Kafka.Serialization;
 using Confluent.Kafka;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using static Company.Framework.Messaging.Constant.MessagingConstants;
 
 namespace Company.Framework.Messaging.Kafka.Bus.Builder;
 
 public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
 {
+    private const string BusPrefix = "Messaging:Kafka:Buses";
+
+    private readonly string _namedBusPrefix;
+
     public KafkaBusServiceBuilder(KafkaBusBuilder busBuilder, string busName) : base(busBuilder, busName)
     {
+        _namedBusPrefix = $"{BusPrefix}:{BusName}";
     }
     internal KafkaBusServiceBuilder WithDefaultProducer()
     {
@@ -31,10 +37,27 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var producer = new ProducerBuilder<Null, object>(new ProducerConfig
                 {
-                    BootstrapServers = configuration.GetSection($"Messaging:{BusName}:Nodes").Value,
+                    BootstrapServers = NodesFromConfiguration(configuration),
                 }).SetValueSerializer(serviceProvider.GetRequiredService<KafkaMessageSerializer<object>>()).Build();
-                return new KafkaProducer($"{BusName}", producer);
+                return new KafkaProducer(new KafkaProducerSettings(DefaultProducerName, BusName), producer);
             });
+        return this;
+    }
+
+    public KafkaBusServiceBuilder WithProducer<TId, TMessage>(string name) where TId : CoreId<TId>
+    {
+        ServiceCollection.AddSingleton<ITypedKafkaProducer>(serviceProvider =>
+        {
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var producer = new ProducerBuilder<TId, TMessage>(new ProducerConfig
+            {
+                BootstrapServers = NodesFromConfiguration(configuration)
+            }).SetKeySerializer(serviceProvider.GetRequiredService<KafkaIdSerializer<TId>>())
+              .SetValueSerializer(serviceProvider.GetRequiredService<KafkaMessageSerializer<TMessage>>())
+              .Build();
+            var topic = configuration.GetSection($"{_namedBusPrefix}:Producers:{name}:Topic").Value;
+            return new KafkaProducer<TId, TMessage>(new TypedKafkaProducerSettings(name, BusName, topic), producer);
+        });
         return this;
     }
 
@@ -45,28 +68,22 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
             .AddSingleton<IConsumer, TConsumer>(serviceProvider =>
             {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                var consumerGroupId = configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:GroupId").Value;
-                var defaultGroupId = configuration.GetSection($"Messaging:{BusName}:DefaultConsumerGroupId").Value;
-                var nodes = configuration.GetSection($"Messaging:{BusName}:Nodes").Value;
+                var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
+                var consumerGroupId = consumerSection.GetSection("GroupId").Value;
                 var consumer = new ConsumerBuilder<Ignore, TMessage>(new ConsumerConfig
                 {
-                    BootstrapServers = nodes,
-                    GroupId = consumerGroupId ?? defaultGroupId,
+                    BootstrapServers = NodesFromConfiguration(configuration),
+                    GroupId = consumerGroupId ?? configuration.GetSection($"{BusPrefix}:Defaults:ConsumerGroupId").Value,
                     AllowAutoCreateTopics = true,
                 }).SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>()).Build();
-                var topic = configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Topic").Value;
+                var topic = consumerSection.GetSection("Topic").Value;
                 var settings = new KafkaConsumerSettings(name, topic);
                 IKafkaRetrialContext? retrialContext = default;
                 if (retriability != default)
                 {
-                    Enum.TryParse<DelayType>(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:Delay:Type").Value, out var delayType);
-                    var delayInterval = TimeSpan.FromMilliseconds(long.Parse(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:Delay:IntervalMs").Value));
-                    var kafkaRetrySettings = new KafkaRetrySettings(
-                        $"retry_{topic}",
-                        short.Parse(configuration.GetSection($"Messaging:{BusName}:Consumers:{name}:Retry:Count").Value),
-                        new DelaySettings(delayType, delayInterval)
-                    );
-                    var producer = serviceProvider.GetRequiredService<IKafkaProducerContext>().Resolve(BusName);
+                    var kafkaRetrySettings = consumerSection.GetSection("Retry").Get<KafkaRetrySettings>();
+                    kafkaRetrySettings.Topic = $"retry_{topic}";
+                    var producer = serviceProvider.GetRequiredService<IKafkaProducerContextProvider>().Resolve(BusName).Default();
                     retrialContext = ActivatorUtilities.CreateInstance<KafkaRetrialContext>(serviceProvider, producer, retriability, kafkaRetrySettings);
                 }
                 var context = new KafkaConsumerContext<TMessage>(consumer, settings, retrialContext);
@@ -78,6 +95,11 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
     public KafkaBusServiceBuilder ThatConsume<TMessage>(string name, ConsumerRetriability? retryContext = default) where TMessage : INotification
     {
         return WithConsumer<DefaultKafkaConsumer<TMessage>, TMessage>(name, retryContext);
+    }
+
+    private string NodesFromConfiguration(IConfiguration configuration)
+    {
+        return configuration.GetSection($"{_namedBusPrefix}:Nodes").Value;
     }
 
 }

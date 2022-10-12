@@ -7,7 +7,7 @@ namespace Company.Framework.Messaging.Kafka.Bus.Extensions
     {
         public static KafkaBusBuilder WithKafka(this MainBusServiceBuilder mainBusServiceBuilder)
         {
-            var kafkaServiceBuilder = new KafkaBusBuilder(mainBusServiceBuilder).WithDefaultSerialization().WithProducerContext();
+            var kafkaServiceBuilder = new KafkaBusBuilder(mainBusServiceBuilder).WithDefaultSerialization().WithProducerContextProviders();
             return kafkaServiceBuilder;
         }
     }

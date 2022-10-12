@@ -1,4 +1,5 @@
-﻿using Company.Framework.Data.Db.Context.Provider;
+﻿using System.Collections.Immutable;
+using Company.Framework.Data.Db.Context.Provider;
 using Company.Framework.Data.Db.Provider.Registry;
 using Company.Framework.Data.Db.Settings;
 using Microsoft.Extensions.Options;
@@ -7,19 +8,12 @@ namespace Company.Framework.Data.Db.Provider
 {
     public class DbProvider : IDbProvider
     {
-        private readonly IDictionary<string, IDbContextProvider> _registeredDbProviderDictionary;
+        private readonly IReadOnlyDictionary<string, IDbContextProvider> _registeredDbProviderDictionary;
 
         public DbProvider(IOptions<DbSettings> options)
         {
-            _registeredDbProviderDictionary = new Dictionary<string, IDbContextProvider>();
-            Array.ForEach(options.Value.Instances, Register);
-        }
-
-        public void Register(DbInstanceSettings instanceSettings)
-        {
-            if (!DbProviderRegistry.DbProviderDelegationRegistries.TryGetValue(instanceSettings.Type, out var dbProviderDelegate))
-                throw new InvalidOperationException($"No available database provider type for {instanceSettings.Type}");
-            _registeredDbProviderDictionary[instanceSettings.Name] = dbProviderDelegate(instanceSettings.Provider);
+            _registeredDbProviderDictionary= options.Value.Instances.ToImmutableDictionary(instance => instance.Name,
+                instance => DbProviderRegistry.Resolve(instance.Type).Invoke(instance.Provider));
         }
 
         public TProvider Resolve<TProvider>(string key) where TProvider : IDbContextProvider

@@ -2,7 +2,6 @@
 
 namespace Company.Framework.Messaging.Kafka.Producer.Context;
 
-public interface IKafkaProducerContext: IProducerContext
+public interface IKafkaProducerContext: IProducerContext<IKafkaProducer>
 {
-    public IKafkaProducer Resolve(string name);
 }

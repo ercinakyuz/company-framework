@@ -13,5 +13,12 @@ namespace Company.Framework.Data.Db.Provider.Registry
         {
             DbProviderDelegationRegistries.TryAdd(dbType, dbContextProviderDelegate);
         }
+
+        internal static Func<DbProviderSettings, IDbContextProvider> Resolve(DbType dbType)
+        {
+            if (!DbProviderDelegationRegistries.TryGetValue(dbType, out var dbProviderDelegate))
+                throw new InvalidOperationException($"No available database provider type for {dbType}");
+            return dbProviderDelegate;
+        }
     }
 }

@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Company.Framework.Messaging.Kafka.Consumer;
 
-public class DefaultKafkaConsumer<TMessage> : CoreKafkaConsumer<TMessage> where TMessage : INotification
+public class DefaultKafkaConsumer<TId, TMessage> : CoreKafkaConsumer<TMessage> where TMessage : INotification
 {
     private readonly IPublisher _publisher;
 
-    public DefaultKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger<DefaultKafkaConsumer<TMessage>> logger, IPublisher publisher) : base(consumerContext, logger)
+    public DefaultKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger<DefaultKafkaConsumer<TId, TMessage>> logger, IPublisher publisher) : base(consumerContext, logger)
     {
         _publisher = publisher;
     }

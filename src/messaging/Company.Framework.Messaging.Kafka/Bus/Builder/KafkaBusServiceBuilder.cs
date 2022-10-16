@@ -1,13 +1,14 @@
 ﻿using Company.Framework.Core.Identity;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
-using Company.Framework.Messaging.Consumer.Retrial;
+using Company.Framework.Messaging.Consumer.Retrying;
+using Company.Framework.Messaging.Kafka.AdminClient.Context;
+using Company.Framework.Messaging.Kafka.AdminClient.Context.Provider;
 using Company.Framework.Messaging.Kafka.Consumer;
 using Company.Framework.Messaging.Kafka.Consumer.Context;
-using Company.Framework.Messaging.Kafka.Consumer.Retrial.Context;
+using Company.Framework.Messaging.Kafka.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.Kafka.Consumer.Settings;
 using Company.Framework.Messaging.Kafka.Producer;
-using Company.Framework.Messaging.Kafka.Producer.Context;
 using Company.Framework.Messaging.Kafka.Producer.Context.Provider;
 using Company.Framework.Messaging.Kafka.Producer.Settings;
 using Company.Framework.Messaging.Kafka.Serialization;
@@ -21,7 +22,8 @@ namespace Company.Framework.Messaging.Kafka.Bus.Builder;
 
 public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
 {
-    private const string BusPrefix = "Messaging:Kafka:Buses";
+    private const string KafkaPrefix = "Messaging:Kafka";
+    private const string BusPrefix = $"{KafkaPrefix}:Buses";
 
     private readonly string _namedBusPrefix;
 
@@ -31,6 +33,23 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
     }
     internal KafkaBusServiceBuilder WithDefaultProducer()
     {
+        return WithProducer(DefaultProducerName);
+    }
+    internal KafkaBusServiceBuilder WithAdminClientContext()
+    {
+        ServiceCollection.AddSingleton<IKafkaAdminClientContext>(serviceProvider =>
+        {
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var adminClient = new AdminClientBuilder(new AdminClientConfig
+            {
+                BootstrapServers = NodesFromConfiguration(configuration)
+            }).Build();
+            return new KafkaAdminClientContext(BusName, adminClient);
+        });
+        return this;
+    }
+    public KafkaBusServiceBuilder WithProducer(string name)
+    {
         ServiceCollection
             .AddSingleton<IKafkaProducer, KafkaProducer>(serviceProvider =>
             {
@@ -39,11 +58,10 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
                 {
                     BootstrapServers = NodesFromConfiguration(configuration),
                 }).SetValueSerializer(serviceProvider.GetRequiredService<KafkaMessageSerializer<object>>()).Build();
-                return new KafkaProducer(new KafkaProducerSettings(DefaultProducerName, BusName), producer);
+                return new KafkaProducer(new KafkaProducerSettings(name, BusName), producer);
             });
         return this;
     }
-
     public KafkaBusServiceBuilder WithProducer<TId, TMessage>(string name) where TId : CoreId<TId>
     {
         ServiceCollection.AddSingleton<ITypedKafkaProducer>(serviceProvider =>
@@ -64,37 +82,48 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
     public KafkaBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name, ConsumerRetriability? retriability = default)
         where TConsumer : CoreKafkaConsumer<TMessage>
     {
+        return WithConsumer<TConsumer, Ignore, TMessage>(name, retriability);
+    }
+
+    public KafkaBusServiceBuilder WithConsumer<TConsumer, TId, TMessage>(string name, ConsumerRetriability? retriability = default)
+    where TConsumer : CoreKafkaConsumer<TId, TMessage>
+    {
         ServiceCollection
             .AddSingleton<IConsumer, TConsumer>(serviceProvider =>
             {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
                 var consumerGroupId = consumerSection.GetSection("GroupId").Value;
-                var consumer = new ConsumerBuilder<Ignore, TMessage>(new ConsumerConfig
+                var consumer = new ConsumerBuilder<TId, TMessage>(new ConsumerConfig
                 {
                     BootstrapServers = NodesFromConfiguration(configuration),
-                    GroupId = consumerGroupId ?? configuration.GetSection($"{BusPrefix}:Defaults:ConsumerGroupId").Value,
-                    AllowAutoCreateTopics = true,
+                    GroupId = consumerGroupId ?? configuration.GetSection($"{KafkaPrefix}:Defaults:ConsumerGroupId").Value,
                 }).SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>()).Build();
                 var topic = consumerSection.GetSection("Topic").Value;
                 var settings = new KafkaConsumerSettings(name, topic);
-                IKafkaRetrialContext? retrialContext = default;
+                IKafkaConsumerRetryingHandler? retrialContext = default;
                 if (retriability != default)
                 {
                     var kafkaRetrySettings = consumerSection.GetSection("Retry").Get<KafkaRetrySettings>();
-                    kafkaRetrySettings.Topic = $"retry_{topic}";
+                    kafkaRetrySettings.Topic.Name = $"retry_{topic}";
                     var producer = serviceProvider.GetRequiredService<IKafkaProducerContextProvider>().Resolve(BusName).Default();
-                    retrialContext = ActivatorUtilities.CreateInstance<KafkaRetrialContext>(serviceProvider, producer, retriability, kafkaRetrySettings);
+                    retrialContext = ActivatorUtilities.CreateInstance<KafkaConsumerRetryingHandler>(serviceProvider, producer, retriability, kafkaRetrySettings);
                 }
-                var context = new KafkaConsumerContext<TMessage>(consumer, settings, retrialContext);
+                var adminClientContext = serviceProvider.GetRequiredService<IKafkaAdminClientContextProvider>().Resolve(BusName);
+                var context = new KafkaConsumerContext<TId, TMessage>(consumer, settings, adminClientContext, retrialContext);
                 return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
             });
         return this;
     }
 
-    public KafkaBusServiceBuilder ThatConsume<TMessage>(string name, ConsumerRetriability? retryContext = default) where TMessage : INotification
+    public KafkaBusServiceBuilder ThatConsume<TMessage>(string name, ConsumerRetriability? retriability = default) where TMessage : INotification
     {
-        return WithConsumer<DefaultKafkaConsumer<TMessage>, TMessage>(name, retryContext);
+        return ThatConsume<Ignore, TMessage>(name, retriability);
+    }
+
+    public KafkaBusServiceBuilder ThatConsume<TId, TMessage>(string name, ConsumerRetriability? retriability = default) where TMessage : INotification
+    {
+        return WithConsumer<DefaultKafkaConsumer<TId, TMessage>, TMessage>(name, retriability);
     }
 
     private string NodesFromConfiguration(IConfiguration configuration)

@@ -2,7 +2,6 @@
 
 namespace Company.Framework.Messaging.RabbitMq.Producer.Context;
 
-public interface IRabbitProducerContext : IProducerContext
+public interface IRabbitProducerContext : IProducerContext<IRabbitProducer>
 {
-    public IRabbitProducer Resolve(string name);
 }

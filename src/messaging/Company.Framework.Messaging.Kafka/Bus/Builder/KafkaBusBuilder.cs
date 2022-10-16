@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Company.Framework.Messaging.Bus;
 using Company.Framework.Messaging.Bus.Builder;
+using Company.Framework.Messaging.Kafka.AdminClient.Context.Provider;
 using Company.Framework.Messaging.Kafka.Producer.Context.Provider;
 using Company.Framework.Messaging.Kafka.Serialization;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,7 @@ public class KafkaBusBuilder : CoreBusBuilder<KafkaBusBuilder>
     public KafkaBusServiceBuilder WithBus(string busName)
     {
         ServiceCollection.AddSingleton<IBus>(serviceProvider => ActivatorUtilities.CreateInstance<KafkaBus>(serviceProvider, busName));
-        return new KafkaBusServiceBuilder(this, busName).WithDefaultProducer();
+        return new KafkaBusServiceBuilder(this, busName).WithAdminClientContext().WithDefaultProducer();
     }
     internal KafkaBusBuilder WithDefaultSerialization()
     {
@@ -29,9 +30,10 @@ public class KafkaBusBuilder : CoreBusBuilder<KafkaBusBuilder>
             }));
         return this;
     }
-    internal KafkaBusBuilder WithProducerContextProviders()
+    internal KafkaBusBuilder WithProviders()
     {
         ServiceCollection
+            .AddSingleton<IKafkaAdminClientContextProvider, KafkaAdminClientContextProvider>()
             .AddSingleton<IKafkaProducerContextProvider, KafkaProducerContextProvider>()
             .AddSingleton<ITypedKafkaProducerContextProvider, TypedKafkaProducerContextProvider>();
         return this;

@@ -7,7 +7,7 @@ namespace Company.Framework.Messaging.RabbitMq.Bus.Extensions
     {
         public static RabbitBusBuilder WithRabbit(this MainBusServiceBuilder mainBusServiceBuilder)
         {
-            return new RabbitBusBuilder(mainBusServiceBuilder).WithProducerContext();
+            return new RabbitBusBuilder(mainBusServiceBuilder).WithProviders();
         }
     }
 }

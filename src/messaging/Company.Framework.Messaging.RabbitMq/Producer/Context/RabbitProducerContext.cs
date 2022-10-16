@@ -1,5 +1,4 @@
-﻿using Company.Framework.Messaging.Bus;
-using Company.Framework.Messaging.Producer.Context;
+﻿using Company.Framework.Messaging.Producer.Context;
 
 namespace Company.Framework.Messaging.RabbitMq.Producer.Context
 {

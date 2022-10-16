@@ -1,10 +1,9 @@
-﻿using Company.Framework.ExampleApi.Consumers;
-using Company.Framework.ExampleApi.Consumers.Messages;
+﻿using Company.Framework.ExampleApi.Consumers.Messages;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Event;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Bus.Extensions;
-using Company.Framework.Messaging.Consumer.Retrial;
+using Company.Framework.Messaging.Consumer.Retrying;
 using Company.Framework.Messaging.Envelope;
 using Company.Framework.Messaging.Kafka.Bus.Extensions;
 using Company.Framework.Messaging.RabbitMq.Bus.Extensions;
@@ -17,7 +16,7 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         {
             return serviceCollection.BusServiceBuilder()
                 .AddKafkaComponents()
-                //.AddRabbitComponents()
+                .AddRabbitComponents()
                 .BuildBusServices();
         }
 
@@ -26,15 +25,11 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
             return mainBusServiceBuilder.WithKafka()
                 .WithBus("ActionKafka-1")
                 .WithProducer<ActionId, Envelope<PingApplied>>("PingApplied")
-                //.WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("MultiplePingApplied", new ConsumerRetriability(true, new HashSet<Type>
-                //{
-                //    typeof(ArgumentException)
-                //}))
-                .ThatConsume<PingAppliedKafkaEnvelope>("SingularPingApplied", new ConsumerRetriability(true, new HashSet<Type>()))
+                .ThatConsume<PingAppliedKafkaEnvelope>("PingApplied", ConsumerRetriability.Default)
                 .BuildBus()
                 .WithBus("ActionKafka-2")
                 .WithProducer<ActionId, Envelope<PingApplied>>("PingApplied")
-                //.WithConsumer<PingAppliedKafkaConsumer, Envelope<PingApplied>>("MultiplePingApplied")
+                //.ThatConsume<PingAppliedKafkaEnvelope>("PingApplied", new ConsumerRetriability(true, new HashSet<Type>()))
                 .BuildBus()
                 .BuildKafka();
         }
@@ -43,15 +38,12 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         {
             return mainBusServiceBuilder.WithRabbit()
                 .WithBus("ActionRabbit-1")
-                .WithConsumer<PingAppliedRabbitConsumer, Envelope<PingApplied>>("MultiplePingApplied")
-                .ThatConsume<PingAppliedRabbitEnvelope>("SingularPingApplied")
+                .ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
                 .BuildBus()
                 .WithBus("ActionRabbit-2")
-                .WithConsumer<PingAppliedRabbitConsumer, Envelope<PingApplied>>("MultiplePingApplied")
+                .ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
                 .BuildBus()
                 .BuildRabbit();
         }
-
-
     }
 }

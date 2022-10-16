@@ -1,11 +1,16 @@
-﻿using RabbitMQ.Client;
+﻿using Company.Framework.Messaging.RabbitMq.Producer.Context;
+using Company.Framework.Messaging.RabbitMq.Producer.Provider;
 
 namespace Company.Framework.Messaging.RabbitMq.Bus;
 
-public record RabbitBus(string Name, IConnection Connection) : IRabbitBus
+public class RabbitBus : IRabbitBus
 {
-    public TConnection GetConnection<TConnection>()
+    public string Name { get; }
+    public IRabbitProducerContext ProducerContext { get; }
+
+    public RabbitBus(string name, IRabbitProducerContextProvider producerContextProvider)
     {
-        return (TConnection)Connection;
+        Name = name;
+        ProducerContext = producerContextProvider.Resolve(name);
     }
 }

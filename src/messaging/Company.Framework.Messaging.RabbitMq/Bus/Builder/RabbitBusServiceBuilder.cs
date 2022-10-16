@@ -1,73 +1,99 @@
-﻿using Company.Framework.Messaging.Bus;
-using Company.Framework.Messaging.Bus.Builder;
-using Company.Framework.Messaging.Bus.Provider;
+﻿using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
+using Company.Framework.Messaging.Consumer.Retrying;
+using Company.Framework.Messaging.RabbitMq.Connection;
+using Company.Framework.Messaging.RabbitMq.Connection.Context;
+using Company.Framework.Messaging.RabbitMq.Connection.Context.Provider;
 using Company.Framework.Messaging.RabbitMq.Consumer;
+using Company.Framework.Messaging.RabbitMq.Consumer.Context;
+using Company.Framework.Messaging.RabbitMq.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.RabbitMq.Consumer.Settings;
 using Company.Framework.Messaging.RabbitMq.Producer;
+using Company.Framework.Messaging.RabbitMq.Producer.Provider;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
+using static Company.Framework.Messaging.Constant.MessagingConstants;
 
 namespace Company.Framework.Messaging.RabbitMq.Bus.Builder;
 
 public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
 {
+    private const string RabbitPrefix = "Messaging:Rabbit";
+    private const string BusPrefix = $"{RabbitPrefix}:Buses";
+    private readonly string _namedBusPrefix;
+
     public RabbitBusServiceBuilder(RabbitBusBuilder busBuilder, string busName) : base(busBuilder, busName)
     {
+        _namedBusPrefix = $"{BusPrefix}:{BusName}";
     }
-
-    internal RabbitBusServiceBuilder WithDefaultBus()
+    internal RabbitBusServiceBuilder WithConnectionContext()
     {
-        ServiceCollection.AddSingleton<IBus>(serviceProvider =>
+        ServiceCollection.AddSingleton<IRabbitConnectionContext>(serviceProvider =>
         {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var connectionFactory = new ConnectionFactory { HostName = configuration.GetSection($"Messaging:{BusName}:Host").Value };
-            var connection = connectionFactory.CreateConnection();
-            return new RabbitBus(BusName, connection);
+            var settings = configuration.GetSection($"{_namedBusPrefix}:Connection").Get<RabbitConnectionSettings>();
+            var connectionFactory = new ConnectionFactory
+            {
+                DispatchConsumersAsync = true
+            };
+            if (settings?.Port != null)
+                connectionFactory.Port = settings.Port.Value;
+
+            var connection = settings?.Nodes != null
+                ? connectionFactory.CreateConnection(settings.Nodes.Split(";"))
+                : connectionFactory.CreateConnection();
+            return new RabbitConnectionContext(BusName, connection);
         });
         return this;
     }
     internal RabbitBusServiceBuilder WithDefaultProducer()
     {
+        return WithProducer(DefaultProducerName);
+    }
+    public RabbitBusServiceBuilder WithProducer(string name)
+    {
         ServiceCollection.AddSingleton<IRabbitProducer, RabbitProducer>(serviceProvider =>
         {
-            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<IRabbitBus>(BusName);
-            return new RabbitProducer(BusName, bus);
+            var connectionContext = serviceProvider.GetRequiredService<IRabbitConnectionContextProvider>().Resolve(BusName);
+            return new RabbitProducer(name, BusName, connectionContext);
         });
         return this;
     }
-
-    public RabbitBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name)
+    public RabbitBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name, ConsumerRetriability? retriability = default)
         where TConsumer : CoreRabbitConsumer<TMessage>
     {
         ServiceCollection.AddSingleton<IConsumer, TConsumer>(serviceProvider =>
         {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var bus = serviceProvider.GetRequiredService<IBusProvider>().Resolve<IRabbitBus>(BusName);
-            var settings = BuildRabbitConsumerSettings(name, configuration);
-            return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, bus, settings);
+            var connectionContext = serviceProvider.GetRequiredService<IRabbitConnectionContextProvider>().Resolve(BusName);
+            var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
+            var settings = consumerSection.Get<RabbitConsumerSettings>();
+            IRabbitConsumerRetryingHandler? retryingHandler = default;
+            if (retriability != default)
+            {
+                var consumerDeclaration = settings.Declaration;
+                var rabbitRetrySettings = consumerSection.GetSection("Retry").Get<RabbitRetrySettings>();
+                rabbitRetrySettings.Declaration = new RabbitDeclarationArgs
+                {
+                    Exchange = new RabbitExchangeArgs { Name = $"retry_{consumerDeclaration.Exchange.Name}", Type = ExchangeType.Topic },
+                    Routing = consumerDeclaration.Routing,
+                    Queue = $"retry_{consumerDeclaration.Queue}"
+                };
+                var producer = serviceProvider.GetRequiredService<IRabbitProducerContextProvider>().Resolve(BusName).Default();
+                retryingHandler = ActivatorUtilities.CreateInstance<RabbitConsumerRetryingHandler>(serviceProvider, producer, retriability, rabbitRetrySettings);
+            }
+
+            var context = new RabbitConsumerContext(connectionContext, settings, retryingHandler);
+            return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
         });
         return this;
     }
 
-    public RabbitBusServiceBuilder ThatConsume<TMessage>(string name)
+    public RabbitBusServiceBuilder ThatConsume<TMessage>(string name, ConsumerRetriability? retriability = default)
         where TMessage : INotification
     {
-        return WithConsumer<DefaultRabbitConsumer<TMessage>, TMessage>(name);
+        return WithConsumer<DefaultRabbitConsumer<TMessage>, TMessage>(name, retriability);
     }
-
-    private RabbitConsumerSettings BuildRabbitConsumerSettings(string name, IConfiguration configuration)
-    {
-        var consumerConfigKey = $"Messaging:{BusName}:Consumers:{name}";
-        var settings = new RabbitConsumerSettings(Exchange: new RabbitExchangeSettings(
-                Name: configuration.GetSection($"{consumerConfigKey}:Exchange:Name").Value,
-                Type: configuration.GetSection($"{consumerConfigKey}:Exchange:Type").Value),
-            Routing: configuration.GetSection($"{consumerConfigKey}:Routing").Value,
-            Queue: configuration.GetSection($"{consumerConfigKey}:Queue").Value);
-        return settings;
-    }
-
-
 }

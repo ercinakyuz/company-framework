@@ -1,5 +1,9 @@
-﻿using Company.Framework.Messaging.Bus.Builder;
+﻿using Company.Framework.Messaging.Bus;
+using Company.Framework.Messaging.Bus.Builder;
+using Company.Framework.Messaging.RabbitMq.Connection.Context.Provider;
 using Company.Framework.Messaging.RabbitMq.Producer.Context;
+using Company.Framework.Messaging.RabbitMq.Producer.Provider;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Messaging.RabbitMq.Bus.Builder;
 
@@ -10,11 +14,16 @@ public class RabbitBusBuilder : CoreBusBuilder<RabbitBusBuilder>
     }
     public RabbitBusServiceBuilder WithBus(string busName)
     {
-        return new RabbitBusServiceBuilder(this, busName).WithDefaultBus().WithDefaultProducer();
+        ServiceCollection.AddSingleton<IBus>(serviceProvider => ActivatorUtilities.CreateInstance<RabbitBus>(serviceProvider, busName));
+        return new RabbitBusServiceBuilder(this, busName).WithConnectionContext().WithDefaultProducer();
     }
-    internal RabbitBusBuilder WithProducerContext()
+
+    internal RabbitBusBuilder WithProviders()
     {
-        return WithProducerContext<IRabbitProducerContext, RabbitProducerContext>();
+        ServiceCollection
+            .AddSingleton<IRabbitConnectionContextProvider, RabbitConnectionContextProvider>()
+            .AddSingleton<IRabbitProducerContextProvider, RabbitProducerContextProvider>();
+        return this;
     }
     public MainBusServiceBuilder BuildRabbit()
     {

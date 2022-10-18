@@ -98,6 +98,7 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
                 {
                     BootstrapServers = NodesFromConfiguration(configuration),
                     GroupId = consumerGroupId ?? configuration.GetSection($"{KafkaPrefix}:Defaults:ConsumerGroupId").Value,
+                    AutoOffsetReset = AutoOffsetReset.Earliest
                 }).SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>()).Build();
                 var topic = consumerSection.GetSection("Topic").Value;
                 var settings = new KafkaConsumerSettings(name, topic);

@@ -20,6 +20,7 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
                 .BuildBusServices();
         }
 
+        //Group coordinator allows consuming from a single cluster, you can consume other cluster topics with different applications.
         private static MainBusServiceBuilder AddKafkaComponents(this MainBusServiceBuilder mainBusServiceBuilder)
         {
             return mainBusServiceBuilder.WithKafka()
@@ -29,7 +30,6 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
                 .BuildBus()
                 .WithBus("ActionKafka-2")
                 .WithProducer<ActionId, Envelope<PingApplied>>("PingApplied")
-                //.ThatConsume<PingAppliedKafkaEnvelope>("PingApplied", new ConsumerRetriability(true, new HashSet<Type>()))
                 .BuildBus()
                 .BuildKafka();
         }

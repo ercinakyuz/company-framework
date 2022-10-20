@@ -1,4 +1,5 @@
-﻿using static Company.Framework.Core.Identity.IdGenerationType;
+﻿using Company.Framework.Core.Identity.Factory;
+using static Company.Framework.Core.Identity.IdGenerationType;
 
 namespace Company.Framework.Core.Identity;
 
@@ -16,12 +17,12 @@ public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, 
 
     protected CoreId(IdGenerationType generationType)
     {
-        Value = generationType == Auto ? ValueOfCoreIdProvider<TValue>.Provide() : default;
+        Value = generationType == Auto ? CoreIdValueProvider<TValue>.Provide() : default;
     }
 
     public static TId From(TValue value)
     {
-        return (TId)Activator.CreateInstance(typeof(TId), args: value)!;
+        return CoreIdFactory<TId, TValue>.Instance(value);
     }
 
     public override string ToString()
@@ -30,18 +31,18 @@ public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, 
     }
 }
 
-public abstract class CoreId<TId> : IId
+public abstract class CoreId<TId> : IId where TId : CoreId<TId>
 {
     public static TId Empty = Default();
 
     public static TId New()
     {
-        return (TId)Activator.CreateInstance(typeof(TId), Auto)!;
+        return CoreIdFactory<TId>.Instance(Auto);
     }
 
     private static TId Default()
     {
-        return (TId)Activator.CreateInstance(typeof(TId),  None)!;
+        return CoreIdFactory<TId>.Instance(None);
     }
 }
 

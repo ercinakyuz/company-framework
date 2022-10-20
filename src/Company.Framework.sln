@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Messaging
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Messaging.Kafka", "messaging\Company.Framework.Messaging.Kafka\Company.Framework.Messaging.Kafka.csproj", "{20572CDF-90D5-4840-96B3-E98B760AA84B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Benchmark", "Company.Framework.Benchmark\Company.Framework.Benchmark.csproj", "{EB28E0D5-9CCA-4085-8586-1DBD41B19119}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{20572CDF-90D5-4840-96B3-E98B760AA84B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20572CDF-90D5-4840-96B3-E98B760AA84B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20572CDF-90D5-4840-96B3-E98B760AA84B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB28E0D5-9CCA-4085-8586-1DBD41B19119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB28E0D5-9CCA-4085-8586-1DBD41B19119}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB28E0D5-9CCA-4085-8586-1DBD41B19119}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB28E0D5-9CCA-4085-8586-1DBD41B19119}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

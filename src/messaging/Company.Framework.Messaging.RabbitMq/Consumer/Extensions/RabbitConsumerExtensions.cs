@@ -12,7 +12,7 @@ public static class RabbitConsumerExtensions
         var (exchange, routing, queue) = declarationArgs;
         var (exchangeName, exchangeType) = exchange;
         model.ExchangeDeclare(exchangeName, exchangeType);
-        model.QueueDeclare(queue, true);
+        model.QueueDeclare(queue, true, false, false);
         model.QueueBind(queue, exchangeName, routing);
         return model;
     }

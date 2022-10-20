@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Company.Framework.Core.Identity;
 
-internal class ValueOfCoreIdProvider<TValue>
+internal class CoreIdValueProvider<TValue>
 {
     private static readonly IReadOnlyDictionary<Type, Func<TValue>> ProviderDictionary =
         new ConcurrentDictionary<Type, Func<TValue>>

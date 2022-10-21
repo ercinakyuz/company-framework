@@ -1,10 +1,12 @@
 using System.Text.Json.Serialization;
+using Company.Framework.Api.Extensions;
+using Company.Framework.Api.Localization.Extensions;
+using Company.Framework.ExampleApi;
 using Company.Framework.ExampleApi.Bus.Extensions;
 using Company.Framework.ExampleApi.Data.Extensions;
 using Company.Framework.ExampleApi.Domain.Extensions;
 using Company.Framework.ExampleApi.Http.Extensions;
 using Company.Framework.Mediator.Extensions;
-using CorrelationId;
 using CorrelationId.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +28,8 @@ serviceCollection.AddDomainComponents();
 serviceCollection.AddDataComponents(configuration);
 serviceCollection.AddBusComponents();
 serviceCollection.AddHttpClients();
+serviceCollection.AddApiExceptionHandler();
+serviceCollection.AddLocalization<ExampleApiResource>();
 
 
 
@@ -40,7 +44,7 @@ if (app.Environment.IsDevelopment())
 
 //await app.UseConsumersAsync();
 
-app.UseCorrelationId();
+app.UseApi();
 
 app.UseAuthorization();
 

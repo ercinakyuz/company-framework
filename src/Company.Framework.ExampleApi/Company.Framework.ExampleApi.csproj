@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Company.Framework.Api\Company.Framework.Api.csproj" />
 	  <ProjectReference Include="..\Company.Framework.Domain\Company.Framework.Domain.csproj" />
 	  <ProjectReference Include="..\Company.Framework.Http\Company.Framework.Http.csproj" />
 	  <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />

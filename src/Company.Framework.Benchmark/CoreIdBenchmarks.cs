@@ -14,7 +14,7 @@ namespace Company.Framework.Benchmark
         private static readonly Guid FakeIdValue = Guid.NewGuid();
 
         [Benchmark]
-        public void EmptyConstructorInstance()
+        public void EmptyConstructor()
         {
             new FakeId();
         }

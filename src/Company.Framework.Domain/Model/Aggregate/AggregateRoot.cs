@@ -1,4 +1,5 @@
-﻿using Company.Framework.Core.Identity;
+﻿using System.Collections.Immutable;
+using Company.Framework.Core.Identity;
 using Company.Framework.Core.Logging;
 using Company.Framework.Domain.Model.Aggregate.Dto;
 using Company.Framework.Domain.Model.Aggregate.Event;
@@ -8,13 +9,17 @@ namespace Company.Framework.Domain.Model.Aggregate
 {
     public abstract class AggregateRoot
     {
+        protected readonly ISet<IEvent> AddableEvents;
         public Log Created { get; }
         public Log? Modified { get; private set; }
-        public ISet<IEvent> Events { get; }
-        protected AggregateRoot(Log created)
+
+        public IReadOnlySet<IEvent> Events => AddableEvents.ToImmutableHashSet();
+
+        protected AggregateRoot(Log created, Log? modified = default)
         {
             Created = created;
-            Events = new HashSet<IEvent>();
+            Modified = modified;
+            AddableEvents = new HashSet<IEvent>();
         }
         protected AggregateRoot Modify(Log modified)
         {
@@ -24,7 +29,7 @@ namespace Company.Framework.Domain.Model.Aggregate
 
         internal AggregateRoot ClearEvents()
         {
-            Events.Clear();
+            AddableEvents.Clear();
             return this;
         }
     }
@@ -45,10 +50,9 @@ namespace Company.Framework.Domain.Model.Aggregate
             Id = CoreId<TId>.New();
         }
 
-        protected AggregateRoot(LoadAggregateDto<TId> loadDto) : base(loadDto.Created)
+        protected AggregateRoot(LoadAggregateDto<TId> loadDto) : base(loadDto.Created, loadDto.Modified)
         {
             Id = loadDto.Id;
-            Modify(loadDto.Modified);
         }
 
         protected TAggregate ChangeState(TState state)
@@ -59,7 +63,7 @@ namespace Company.Framework.Domain.Model.Aggregate
         protected virtual TAggregate ApplyEvents()
         {
             if (EventDelegations.TryGetValue(State, out var eventDelegation))
-                Events.Add(eventDelegation((TAggregate)this));
+                AddableEvents.Add(eventDelegation((TAggregate)this));
             return (TAggregate)this;
         }
         public virtual bool HasAnyChanges()

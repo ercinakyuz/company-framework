@@ -1,20 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Company.Framework.Correlation\Company.Framework.Correlation.csproj" />
-    <ProjectReference Include="..\..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Company.Framework.Correlation\Company.Framework.Correlation.csproj" />
+		<ProjectReference Include="..\..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
-      <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.6\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.Extensions.Hosting.Abstractions">
+			<HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.6\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+	<Target Name="NugetAdd" AfterTargets="Pack">
+		<Exec Command="nuget add bin/release/$(AssemblyName).$(VersionPrefix).nupkg -source C:\Users\Imploser\.nuget\packages" />
+	</Target>
 
 </Project>

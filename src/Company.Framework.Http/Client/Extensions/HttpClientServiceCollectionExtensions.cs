@@ -27,7 +27,7 @@ namespace Company.Framework.Http.Client.Extensions
 
         public static IHttpClientBuilder WithMessageHandler<THandler>(this IHttpClientBuilder httpClientBuilder) where THandler : DelegatingHandler
         {
-            httpClientBuilder.Services.AddSingleton<THandler>();
+            httpClientBuilder.Services.AddTransient<THandler>();
             return httpClientBuilder.AddHttpMessageHandler<THandler>();
         }
     }

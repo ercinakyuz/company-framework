@@ -1,6 +1,8 @@
-﻿using Company.Framework.ExampleApi.Data.Entity;
+﻿using Company.Framework.Core.Error;
+using Company.Framework.Domain.Model.Exception;
 using Company.Framework.ExampleApi.Data.Repository;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
+using LanguageExt.Common;
 
 namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder
 {
@@ -13,13 +15,13 @@ namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder
             _actionRepository = actionRepository;
         }
 
-        public async Task<Action> BuildAsync(ActionId id, CancellationToken cancellationToken)
+        public async Task<Result<Action>> BuildAsync(ActionId id, CancellationToken cancellationToken)
         {
-            var actionEntity = await _actionRepository.GetByIdAsync(id.Value);
-            return actionEntity is default(ActionEntity)
-                ? throw new InvalidOperationException("Action not found")
-                : Action.Load(new LoadActionDto(ActionId.From(actionEntity.Id), actionEntity.Created,
-                    actionEntity.Modified));
+            return (await _actionRepository.GetByIdAsync(id.Value))
+                .Match(
+                 entity => new Result<Action>(Action.Load(new LoadActionDto(ActionId.From(entity.Id), entity.Created, entity.Modified))),
+                 () => new Result<Action>(new AggregateBuilderException(new CoreError("ACDBE-1", "Action not found")))
+                );
         }
     }
 }

@@ -4,7 +4,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Title>Core Components</Title>
+		<Title>Logging Components</Title>
 		<Authors>Erçin Akyüz</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageVersion>1.0.0.2</PackageVersion>
@@ -13,8 +13,14 @@
 		<FileVersion>1.0.0.2</FileVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <Optimize>True</Optimize>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<ProjectReference Include="..\..\Company.Framework.Core\Company.Framework.Core.csproj" />
+		<PackageReference Include="Ben.Demystifier" Version="0.4.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 	</ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">

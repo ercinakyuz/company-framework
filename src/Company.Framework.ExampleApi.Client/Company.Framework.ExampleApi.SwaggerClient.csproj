@@ -24,11 +24,11 @@
 		<NSwagInputs Include="nswag.json" />
 	</ItemGroup>
 	<!--Add build step responsible for generating the source code of client api and including it to compilation-->
-	<Target Name="GenerateApiClientSourceCode" BeforeTargets="CoreCompile;PrepareResource">
+	<!--<Target Name="GenerateApiClientSourceCode" BeforeTargets="CoreCompile;PrepareResource">
 		<Exec Command="$(NSwagExe_Net60) run nswag.json /variables:Configuration=$(Configuration),Output=$(IntermediateOutputPath)\ApiClient.generated.cs" />
 		<ItemGroup>
 			<Compile Include="$(IntermediateOutputPath)\ApiClient.generated.cs" />
 		</ItemGroup>
-	</Target>
+	</Target>-->
 
 </Project>

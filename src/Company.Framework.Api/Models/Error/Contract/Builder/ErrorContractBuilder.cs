@@ -7,19 +7,20 @@ namespace Company.Framework.Api.Models.Error.Contract.Builder
 {
     public class ErrorContractBuilder
     {
-        private readonly ILocalizationContext _localizerContext;
+        private readonly ILocalizationContext _localizationContext;
 
-        public ErrorContractBuilder(ILocalizationContextProvider localizerContextProvider)
+        public ErrorContractBuilder(ILocalizationContextProvider localizationContextProvider)
         {
-            _localizerContext = localizerContextProvider.Resolve(LocalizationType.Internal);
+            _localizationContext = localizationContextProvider.Resolve(LocalizationType.Internal);
         }
 
-        public ErrorContract Build(CoreException coreException)
+        public ErrorContract Build(StatefulCoreException statefulCoreException)
         {
+            var (code, _, userMessage) = statefulCoreException.ActualError;
             return new ErrorContract
             {
-                Code = coreException.Code,
-                Message = string.IsNullOrWhiteSpace(coreException.UserMessage) ? _localizerContext.GetMessage(coreException.Code) : coreException.UserMessage
+                Code = code,
+                Message = string.IsNullOrWhiteSpace(userMessage) ? _localizationContext.GetMessage(code) : userMessage
             };
         }
 
@@ -27,7 +28,7 @@ namespace Company.Framework.Api.Models.Error.Contract.Builder
         {
             return new ErrorContract
             {
-                Message = _localizerContext.GetMessage()
+                Message = _localizationContext.GetMessage()
             };
         }
     }

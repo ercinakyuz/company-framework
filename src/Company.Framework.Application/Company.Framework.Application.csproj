@@ -7,18 +7,15 @@
 		<Title>Core Components</Title>
 		<Authors>Erçin Akyüz</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>1.0.0.4</PackageVersion>
-		<Version>1.0.0.4</Version>
-		<AssemblyVersion>1.0.0.4</AssemblyVersion>
-		<FileVersion>1.0.0.4</FileVersion>
+		<PackageVersion>1.0.0.2</PackageVersion>
+		<Version>1.0.0.2</Version>
+		<AssemblyVersion>1.0.0.2</AssemblyVersion>
+		<FileVersion>1.0.0.2</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MongoDB.Driver" Version="2.17.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Company.Framework.Data\Company.Framework.Data.csproj" />
+		<ProjectReference Include="..\Company.Framework.Core\Company.Framework.Core.csproj" />
+		<ProjectReference Include="..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
 	</ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">

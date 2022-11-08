@@ -7,7 +7,7 @@ namespace Company.Framework.Messaging.Kafka.Bus
     public class KafkaBus : CoreBus, IKafkaBus
     {
         public IKafkaProducerContext ProducerContext { get; }
-        public ITypedKafkaProducerContext TypedProducerContext { get; }
+        public ITypedKafkaProducerContext? TypedProducerContext { get; }
 
         public KafkaBus(string name, IKafkaProducerContextProvider producerContextProvider, ITypedKafkaProducerContextProvider typedProducerContextProvider) : base(name)
         {

@@ -8,13 +8,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Company.Framework.Api\Company.Framework.Api.csproj" />
+	  <ProjectReference Include="..\Company.Framework.Application\Company.Framework.Application.csproj" />
 	  <ProjectReference Include="..\Company.Framework.Domain\Company.Framework.Domain.csproj" />
 	  <ProjectReference Include="..\Company.Framework.Http\Company.Framework.Http.csproj" />
+	  <ProjectReference Include="..\Company.Framework.Logging\Company.Framework.Logging.csproj" />
 	  <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Kafka\Company.Framework.Messaging.Kafka.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.RabbitMq\Company.Framework.Messaging.RabbitMq.csproj" />

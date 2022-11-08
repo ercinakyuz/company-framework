@@ -9,13 +9,19 @@ namespace Company.Framework.Api.Extensions
 {
     public static class ApiApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseApi(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder UseApi(this WebApplication webApplication)
         {
-            return applicationBuilder
+            webApplication.MapControllers();
+            return webApplication
+                .UseSwagger()
+                .UseSwaggerUI()
                 .UseCorrelationId()
                 .UseLocalization()
                 .UseMiddleware<LogHandlerMiddleware>()
-                .UseExceptionHandler(app => app.Run(app.ApplicationServices.GetRequiredService<ApiExceptionHandler>().Handle));
+                .UseExceptionHandler(app =>
+                    app.Run(app.ApplicationServices.GetRequiredService<ApiExceptionHandler>().Handle));
+
+
         }
     }
 }

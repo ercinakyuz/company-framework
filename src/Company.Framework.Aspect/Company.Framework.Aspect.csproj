@@ -4,7 +4,13 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>Aspect Components</Title>
+		<Authors>Erçin Akyüz</Authors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageVersion>1.0.0.3</PackageVersion>
+		<Version>1.0.0.3</Version>
+		<AssemblyVersion>1.0.0.3</AssemblyVersion>
+		<FileVersion>1.0.0.3</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -12,7 +18,7 @@
 	</ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">
-		<Exec Command="nuget add bin/release/$(AssemblyName).$(VersionPrefix).nupkg -source C:\Users\Imploser\.nuget\packages" />
+		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source D:\nuget\packages" />
 	</Target>
 
 </Project>

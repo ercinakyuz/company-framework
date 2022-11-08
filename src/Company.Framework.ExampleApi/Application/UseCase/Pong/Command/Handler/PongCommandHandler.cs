@@ -1,9 +1,12 @@
-﻿using Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder;
+﻿using Company.Framework.Core.Exception;
+using Company.Framework.Domain.Model.Exception;
+using Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
 using Company.Framework.ExampleApi.Http.Clients;
 using MediatR;
+using ApplicationException = Company.Framework.Application.Exception.ApplicationException;
 
-namespace Company.Framework.ExampleApi.UseCase.Pong.Command.Handler;
+namespace Company.Framework.ExampleApi.Application.UseCase.Pong.Command.Handler;
 
 public class PongCommandHandler : AsyncRequestHandler<PongCommand>
 {
@@ -20,8 +23,9 @@ public class PongCommandHandler : AsyncRequestHandler<PongCommand>
 
     protected override async Task Handle(PongCommand request, CancellationToken cancellationToken)
     {
-        var action = await _actionBuilder.BuildAsync(request.Id, cancellationToken);
-        action.Pong();
+        var action = (await _actionBuilder.BuildAsync(request.Id, cancellationToken))
+            .IfFail(exception => throw new ApplicationException(ExceptionState.UnProcessable, (AggregateBuilderException)exception))
+            .Pong();
         await _actionOfWork.UpdateAsync(action, cancellationToken);
         await _actionHttpClient.PingAsync(cancellationToken);
     }

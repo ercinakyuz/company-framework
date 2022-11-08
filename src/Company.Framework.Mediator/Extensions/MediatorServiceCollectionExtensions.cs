@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Mediator.Extensions
@@ -8,7 +7,7 @@ namespace Company.Framework.Mediator.Extensions
     {
         public static IServiceCollection AddMediator(this IServiceCollection services)
         {
-            return services.AddMediatR(Assembly.GetCallingAssembly());
+            return services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using Company.Framework.Api.Models.Error.Contract.Builder;
 using Company.Framework.Api.Models.Error.Response;
 using Company.Framework.Core.Exception;
@@ -35,11 +36,14 @@ namespace Company.Framework.Api.Handlers
             var exception = context.Features.Get<IExceptionHandlerPathFeature>()!.Error;
             var errorResponse = new ErrorResponse();
             ExceptionState exceptionState;
-            if (exception is CoreException coreException)
+            if (exception is StatefulCoreException coreException)
             {
                 exceptionState = coreException.State;
                 errorResponse.Error = _errorContractBuilder.Build(coreException);
-                _logger.LogError(exception, "[CoreException] Code: {errorCode} State: {state} Message: {message}", coreException.Code, exceptionState, coreException.Message);
+                using (_logger.BeginScope(BuildExceptionScopeState))
+                    _logger.LogError(exception.Demystify(),
+                        "[CoreException] Code: {errorCode} State: {state} Message: {message}",
+                        coreException.ActualError.Code, exceptionState, coreException.Message);
             }
             else
             {
@@ -48,8 +52,24 @@ namespace Company.Framework.Api.Handlers
             }
 
 
-            context.Response.StatusCode = (int) HttpStatusCodeFromExceptionState[exceptionState];
+            context.Response.StatusCode = (int)HttpStatusCodeFromExceptionState[exceptionState];
             await context.Response.WriteAsJsonAsync(errorResponse);
+        }
+
+        private static Dictionary<string, object> BuildExceptionScopeState(StatefulCoreException exception)
+        {
+            var (code, message, _) = exception.ActualError;
+
+            var parameters = new Dictionary<string, object>
+            {
+                ["Code"] = $"{code}",
+                ["Message"] = $"{message}"
+            };
+
+            return new Dictionary<string, object>
+            {
+                { "ActualError", parameters }
+            };
         }
     }
 }

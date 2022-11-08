@@ -124,7 +124,7 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
 
     public KafkaBusServiceBuilder ThatConsume<TId, TMessage>(string name, ConsumerRetriability? retriability = default) where TMessage : INotification
     {
-        return WithConsumer<DefaultKafkaConsumer<TId, TMessage>, TMessage>(name, retriability);
+        return WithConsumer<DefaultKafkaConsumer<TId, TMessage>, TId, TMessage>(name, retriability);
     }
 
     private string NodesFromConfiguration(IConfiguration configuration)

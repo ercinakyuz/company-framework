@@ -1,5 +1,5 @@
-﻿using Company.Framework.ExampleApi.Consumers.Messages;
-using Company.Framework.ExampleApi.UseCase.Pong.Command;
+﻿using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
+using Company.Framework.ExampleApi.Consumers.Messages;
 using MediatR;
 
 namespace Company.Framework.ExampleApi.Consumers;

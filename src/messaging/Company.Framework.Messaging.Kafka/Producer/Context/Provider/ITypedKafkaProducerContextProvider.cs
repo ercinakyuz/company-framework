@@ -2,5 +2,5 @@
 
 public interface ITypedKafkaProducerContextProvider
 {
-    ITypedKafkaProducerContext Resolve(string busName);
+    ITypedKafkaProducerContext? Resolve(string busName);
 }

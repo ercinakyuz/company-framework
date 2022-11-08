@@ -1,6 +1,6 @@
-﻿using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
-using Company.Framework.ExampleApi.UseCase.Ping.Command;
-using Company.Framework.ExampleApi.UseCase.Pong.Command;
+﻿using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
+using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
+using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

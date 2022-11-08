@@ -37,8 +37,8 @@ public class PingAppliedDispatcher : CoreEventDispatcher<PingApplied>
         var actionRabbit1Bus = busProvider.Resolve<IRabbitBus>("ActionRabbit-1");
         var actionRabbit2Bus = busProvider.Resolve<IRabbitBus>("ActionRabbit-2");
 
-        _pingAppliedKafkaProducer1 = actionKafka1Bus.TypedProducerContext.Resolve<ActionId, Envelope<PingApplied>>();
-        _pingAppliedKafkaProducer2 = actionKafka2Bus.TypedProducerContext.Resolve<ActionId, Envelope<PingApplied>>();
+        _pingAppliedKafkaProducer1 = actionKafka1Bus.TypedProducerContext!.Resolve<ActionId, Envelope<PingApplied>>();
+        _pingAppliedKafkaProducer2 = actionKafka2Bus.TypedProducerContext!.Resolve<ActionId, Envelope<PingApplied>>();
         _actionKafkaProducer1 = actionKafka1Bus.ProducerContext.Default();
         _actionKafkaProducer2 = actionKafka2Bus.ProducerContext.Default();
         _actionRabbitProducer1 = actionRabbit1Bus.ProducerContext.Default();

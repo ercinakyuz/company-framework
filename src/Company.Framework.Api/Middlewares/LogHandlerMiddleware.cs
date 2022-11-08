@@ -31,7 +31,7 @@ namespace Company.Framework.Api.Middlewares
                     $"[API] Request Ended {context.Request.Method} {context.Request.GetDisplayUrl()} {context.Response.StatusCode}");
             }
         }
-        
+
         private async Task<Dictionary<string, object>> BuildHttpContextRequestParametersAsync(HttpRequest httpRequest)
         {
             var httpContext = httpRequest.HttpContext;
@@ -56,11 +56,8 @@ namespace Company.Framework.Api.Middlewares
 
             return new Dictionary<string, object>
             {
-                {"Api",
-                    new Dictionary<string,object>
-                    {
-                        {"Request", httpRequestParameters}
-                    }
+                {
+                    "Api", new Dictionary<string,object> { {"Request", httpRequestParameters} }
                 }
             };
         }
@@ -84,8 +81,8 @@ namespace Company.Framework.Api.Middlewares
 
             return new Dictionary<string, object>
             {
-                {"Api",
-                    new Dictionary<string,object>
+                {
+                    "Api", new Dictionary<string,object> 
                     {
                         {"Request", httpRequestParameters},
                         {"Response", httpResponseParameters}

@@ -1,13 +1,14 @@
 using System.Text.Json.Serialization;
 using Company.Framework.Api.Extensions;
 using Company.Framework.Api.Localization.Extensions;
+using Company.Framework.Correlation.Extensions;
 using Company.Framework.ExampleApi;
+using Company.Framework.ExampleApi.Application.Extensions;
 using Company.Framework.ExampleApi.Bus.Extensions;
 using Company.Framework.ExampleApi.Data.Extensions;
 using Company.Framework.ExampleApi.Domain.Extensions;
 using Company.Framework.ExampleApi.Http.Extensions;
-using Company.Framework.Mediator.Extensions;
-using CorrelationId.DependencyInjection;
+using Company.Framework.Logging.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -22,8 +23,8 @@ serviceCollection.AddControllers()
     });
 serviceCollection.AddEndpointsApiExplorer();
 serviceCollection.AddSwaggerGen();
-serviceCollection.AddDefaultCorrelationId();
-serviceCollection.AddMediator();
+serviceCollection.AddCorrelation();
+serviceCollection.AddApplicationComponents();
 serviceCollection.AddDomainComponents();
 serviceCollection.AddDataComponents(configuration);
 serviceCollection.AddBusComponents();
@@ -32,6 +33,8 @@ serviceCollection.AddApiExceptionHandler();
 serviceCollection.AddLocalization<ExampleApiResource>();
 
 
+var hostBuilder = builder.Host;
+hostBuilder.WithSerilog();
 
 var app = builder.Build();
 
@@ -42,6 +45,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
 //await app.UseConsumersAsync();
 
 app.UseApi();
@@ -49,5 +54,6 @@ app.UseApi();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Company.Framework.Messaging.Kafka.Consumer;
 
-public class DefaultKafkaConsumer<TId, TMessage> : CoreKafkaConsumer<TMessage> where TMessage : INotification
+public class DefaultKafkaConsumer<TId, TMessage> : CoreKafkaConsumer<TId, TMessage> where TMessage : INotification
 {
     private readonly IPublisher _publisher;
 

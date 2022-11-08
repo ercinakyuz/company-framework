@@ -6,5 +6,5 @@ namespace Company.Framework.Messaging.Kafka.Bus;
 public interface IKafkaBus : IBus
 {
     public IKafkaProducerContext ProducerContext { get; }
-    ITypedKafkaProducerContext TypedProducerContext { get; }
+    ITypedKafkaProducerContext? TypedProducerContext { get; }
 }

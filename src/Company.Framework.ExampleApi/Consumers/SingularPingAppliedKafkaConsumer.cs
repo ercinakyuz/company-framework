@@ -18,6 +18,6 @@ public class SingularPingAppliedKafkaConsumer : INotificationHandler<PingApplied
     public async Task Handle(PingAppliedKafkaEnvelope notification, CancellationToken cancellationToken)
     {
         await _sender.Send(new PongCommand(notification.Message.AggregateId), cancellationToken);
-        _logger.LogInformation("Singular PingApplied KafkaEvent consumed, {}", notification);
+        _logger.LogInformation("Singular PingApplied KafkaEvent consumed, {notification}", notification);
     }
 }

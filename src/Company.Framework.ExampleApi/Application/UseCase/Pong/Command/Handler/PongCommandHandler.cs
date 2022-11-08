@@ -27,6 +27,6 @@ public class PongCommandHandler : AsyncRequestHandler<PongCommand>
             .IfFail(exception => throw new ApplicationException(ExceptionState.UnProcessable, (AggregateBuilderException)exception))
             .Pong();
         await _actionOfWork.UpdateAsync(action, cancellationToken);
-        await _actionHttpClient.PingAsync(cancellationToken);
+        //await _actionHttpClient.PingAsync(cancellationToken);
     }
 }

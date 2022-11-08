@@ -1,27 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Title>Messaging Components</Title>
 		<Authors>Erçin Akyüz</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>1.0.0.5</PackageVersion>
-		<Version>1.0.0.5</Version>
-		<AssemblyVersion>1.0.0.5</AssemblyVersion>
-		<FileVersion>1.0.0.5</FileVersion>
+		<PackageVersion>1.0.1</PackageVersion>
+		<Version>1.0.1</Version>
+		<AssemblyVersion>1.0.1</AssemblyVersion>
+		<FileVersion>1.0.1</FileVersion>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Company.Framework.Correlation\Company.Framework.Correlation.csproj" />
 		<ProjectReference Include="..\..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="Microsoft.Extensions.Hosting.Abstractions">
-			<HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.6\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 	<Target Name="NugetAdd" AfterTargets="Pack">
 		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source D:\nuget\packages" />

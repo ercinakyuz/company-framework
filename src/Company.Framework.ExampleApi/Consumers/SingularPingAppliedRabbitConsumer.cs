@@ -18,6 +18,6 @@ public class SingularPingAppliedRabbitConsumer : INotificationHandler<PingApplie
     public async Task Handle(PingAppliedRabbitEnvelope notification, CancellationToken cancellationToken)
     {
         await _sender.Send(new PongCommand(notification.Message.AggregateId), cancellationToken);
-        _logger.LogInformation("Singular PingApplied RabbitEvent consumed, {}", notification);
+        _logger.LogInformation("Singular PingApplied RabbitEvent consumed, {notification}", notification);
     }
 }

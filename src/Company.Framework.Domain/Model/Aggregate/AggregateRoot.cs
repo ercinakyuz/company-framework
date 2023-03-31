@@ -9,17 +9,17 @@ namespace Company.Framework.Domain.Model.Aggregate
 {
     public abstract class AggregateRoot
     {
-        protected readonly ISet<IEvent> AddableEvents;
+        private readonly ISet<IEvent> _events;
         public Log Created { get; }
         public Log? Modified { get; private set; }
 
-        public IReadOnlySet<IEvent> Events => AddableEvents.ToImmutableHashSet();
+        public IReadOnlySet<IEvent> Events => _events.ToImmutableHashSet();
 
         protected AggregateRoot(Log created, Log? modified = default)
         {
             Created = created;
             Modified = modified;
-            AddableEvents = new HashSet<IEvent>();
+            _events = new HashSet<IEvent>();
         }
         protected AggregateRoot Modify(Log modified)
         {
@@ -27,9 +27,15 @@ namespace Company.Framework.Domain.Model.Aggregate
             return this;
         }
 
+        protected AggregateRoot AddEvent(IEvent @event)
+        {
+            _events.Add(@event);
+            return this;
+        }
+
         internal AggregateRoot ClearEvents()
         {
-            AddableEvents.Clear();
+            _events.Clear();
             return this;
         }
     }
@@ -39,15 +45,15 @@ namespace Company.Framework.Domain.Model.Aggregate
         where TId : CoreId<TId>
         where TState : CoreState<TState>
     {
-        protected static IReadOnlyDictionary<TState, Func<TAggregate, IEvent>> EventDelegations;
+        protected static IReadOnlyDictionary<TState, Func<TAggregate, IEvent>>? EventDelegations;
 
         public TId Id { get; }
 
         public TState? State { get; private set; }
 
-        protected AggregateRoot(CreateAggregateDto pingDto) : base(pingDto.Created)
+        protected AggregateRoot(CreateAggregateDto createDto) : base(createDto.Created)
         {
-            Id = CoreId<TId>.New();
+            Id = CoreId<TId>.New;
         }
 
         protected AggregateRoot(LoadAggregateDto<TId> loadDto) : base(loadDto.Created, loadDto.Modified)
@@ -62,8 +68,9 @@ namespace Company.Framework.Domain.Model.Aggregate
         }
         protected virtual TAggregate ApplyEvents()
         {
-            if (EventDelegations.TryGetValue(State, out var eventDelegation))
-                AddableEvents.Add(eventDelegation((TAggregate)this));
+            if (EventDelegations is not null && State is not null 
+                && EventDelegations.TryGetValue(State, out var eventDelegation))
+                AddEvent(eventDelegation((TAggregate)this));
             return (TAggregate)this;
         }
         public virtual bool HasAnyChanges()

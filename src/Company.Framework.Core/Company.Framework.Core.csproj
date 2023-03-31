@@ -7,10 +7,10 @@
 		<Title>Core Components</Title>
 	    <Authors>Erçin Akyüz</Authors>
 	    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	    <PackageVersion>1.0.1</PackageVersion>
-	    <Version>1.0.1</Version>
-	    <AssemblyVersion>1.0.1</AssemblyVersion>
-	    <FileVersion>1.0.1</FileVersion>
+	    <PackageVersion>1.0.2</PackageVersion>
+	    <Version>1.0.2</Version>
+	    <AssemblyVersion>1.0.2</AssemblyVersion>
+	    <FileVersion>1.0.2</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -18,10 +18,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
+      <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     </ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">

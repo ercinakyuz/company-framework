@@ -5,7 +5,7 @@ namespace Company.Framework.Core.Identity;
 
 public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, TValue>
 {
-    public TValue? Value { get; set; }
+    public TValue? Value { get; }
 
     protected CoreId()
     {
@@ -29,21 +29,20 @@ public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, 
     {
         return $"{Value}";
     }
+
+    public bool Equals(CoreId<TId, TValue> that)
+    {
+        return Equals(that.Value, Value);
+    }
 }
 
 public abstract class CoreId<TId> : IId where TId : CoreId<TId>
 {
-    public static TId Empty = Default();
+    public static readonly TId Empty = Default;
 
-    public static TId New()
-    {
-        return CoreIdFactory<TId>.Instance(Auto);
-    }
+    public static TId New => CoreIdFactory<TId>.Instance(Auto);
 
-    private static TId Default()
-    {
-        return CoreIdFactory<TId>.Instance(None);
-    }
+    private static TId Default => CoreIdFactory<TId>.Instance(None);
 }
 
 public interface IId

@@ -25,12 +25,14 @@ public class Action : AggregateRoot<Action, ActionId, ActionState>
 
     private Action(LoadActionDto loadDto) : base(loadDto)
     {
+        ChangeState(ActionState.Loaded);
     }
 
     public static Action Load(LoadActionDto loadDto)
     {
-        return new Action(loadDto).ChangeState(ActionState.Loaded);
+        return new Action(loadDto);
     }
+
     public static Action Ping(PingActionDto pingDto)
     {
         return new Action(pingDto).ChangeState(ActionState.PingApplied);

@@ -35,14 +35,14 @@ public class PingAppliedDispatcher : CoreEventDispatcher<PingApplied>
         var actionKafka1Bus = busProvider.Resolve<IKafkaBus>("ActionKafka-1");
         var actionKafka2Bus = busProvider.Resolve<IKafkaBus>("ActionKafka-2");
         var actionRabbit1Bus = busProvider.Resolve<IRabbitBus>("ActionRabbit-1");
-        var actionRabbit2Bus = busProvider.Resolve<IRabbitBus>("ActionRabbit-2");
+        //var actionRabbit2Bus = busProvider.Resolve<IRabbitBus>("ActionRabbit-2");
 
         _pingAppliedKafkaProducer1 = actionKafka1Bus.TypedProducerContext!.Resolve<ActionId, Envelope<PingApplied>>();
         _pingAppliedKafkaProducer2 = actionKafka2Bus.TypedProducerContext!.Resolve<ActionId, Envelope<PingApplied>>();
         _actionKafkaProducer1 = actionKafka1Bus.ProducerContext.Default();
         _actionKafkaProducer2 = actionKafka2Bus.ProducerContext.Default();
         _actionRabbitProducer1 = actionRabbit1Bus.ProducerContext.Default();
-        _actionRabbitProducer2 = actionRabbit2Bus.ProducerContext.Default();
+        //_actionRabbitProducer2 = actionRabbit2Bus.ProducerContext.Default();
     }
 
     public override async Task DispatchAsync(Envelope<PingApplied> envelope, CancellationToken cancellationToken)
@@ -55,8 +55,8 @@ public class PingAppliedDispatcher : CoreEventDispatcher<PingApplied>
             _pingAppliedKafkaProducer2.ProduceAsync(typedKafkaProduceArgs, cancellationToken),
             _actionKafkaProducer1.ProduceAsync(kafkaProducerArgs, cancellationToken),
             _actionKafkaProducer2.ProduceAsync(kafkaProducerArgs, cancellationToken),
-            _actionRabbitProducer1.ProduceAsync(rabbitProducerArgs, cancellationToken),
-            _actionRabbitProducer2.ProduceAsync(rabbitProducerArgs, cancellationToken)
+            _actionRabbitProducer1.ProduceAsync(rabbitProducerArgs, cancellationToken)
+            //_actionRabbitProducer2.ProduceAsync(rabbitProducerArgs, cancellationToken)
         );
     }
 }

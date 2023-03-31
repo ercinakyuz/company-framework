@@ -9,6 +9,7 @@ using Company.Framework.ExampleApi.Data.Extensions;
 using Company.Framework.ExampleApi.Domain.Extensions;
 using Company.Framework.ExampleApi.Http.Extensions;
 using Company.Framework.Logging.Extensions;
+using Company.Framework.Socket.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -31,6 +32,7 @@ serviceCollection.AddBusComponents();
 serviceCollection.AddHttpClients();
 serviceCollection.AddApiExceptionHandler();
 serviceCollection.AddLocalization<ExampleApiResource>();
+serviceCollection.AddSocket();
 
 
 var hostBuilder = builder.Host;
@@ -54,6 +56,8 @@ app.UseApi();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseSocket<MyHub>("/hub");
 
 
 app.Run();

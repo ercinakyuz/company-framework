@@ -40,9 +40,9 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
                 .WithBus("ActionRabbit-1")
                 .ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
                 .BuildBus()
-                .WithBus("ActionRabbit-2")
-                .ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
-                .BuildBus()
+                //.WithBus("ActionRabbit-2")
+                //.ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
+                //.BuildBus()
                 .BuildRabbit();
         }
     }

@@ -7,10 +7,10 @@
 		<Title>Domain Components</Title>
 		<Authors>Erçin Akyüz</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>1.0.1</PackageVersion>
-		<Version>1.0.1</Version>
-		<AssemblyVersion>1.0.1</AssemblyVersion>
-		<FileVersion>1.0.1</FileVersion>
+		<PackageVersion>1.0.3</PackageVersion>
+		<Version>1.0.3</Version>
+		<AssemblyVersion>1.0.3</AssemblyVersion>
+		<FileVersion>1.0.3</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace Company.Framework.Core.Serializer
+﻿namespace Company.Framework.Core.Serialization
 {
     public interface IJsonSerializer
     {

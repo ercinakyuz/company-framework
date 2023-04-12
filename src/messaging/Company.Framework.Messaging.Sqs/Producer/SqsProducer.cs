@@ -1,6 +1,6 @@
 ﻿using Amazon.SQS;
 using Amazon.SQS.Model;
-using Company.Framework.Core.Serializer;
+using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Sqs.Client.Context;
 using Company.Framework.Messaging.Sqs.Producer.Args;
 

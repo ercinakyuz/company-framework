@@ -1,15 +1,13 @@
 ﻿using System.Net;
-using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using Company.Framework.Core.Serializer;
+using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrying.Args;
 using Company.Framework.Messaging.Sqs.Consumer.Context;
 using Company.Framework.Messaging.Sqs.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.Sqs.Consumer.Settings;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Company.Framework.Messaging.Sqs.Consumer
 {
@@ -61,12 +59,7 @@ namespace Company.Framework.Messaging.Sqs.Consumer
                 }
 
                 await _client.DeleteMessageBatchAsync(new DeleteMessageBatchRequest(queueUrl, deleteMessageBatchRequestEntries), cancellationToken).ConfigureAwait(false);
-
             }
-
-
-
-
         }
 
         public void Unsubscribe()

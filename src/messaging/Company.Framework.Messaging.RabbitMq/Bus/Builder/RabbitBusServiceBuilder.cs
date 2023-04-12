@@ -1,4 +1,4 @@
-﻿using Company.Framework.Core.Serializer;
+﻿using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrying;

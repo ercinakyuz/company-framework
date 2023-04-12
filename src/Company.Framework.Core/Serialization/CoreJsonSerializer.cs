@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Text.Json;
 
-namespace Company.Framework.Core.Serializer;
+namespace Company.Framework.Core.Serialization;
 
 public class CoreJsonSerializer : IJsonSerializer
 {

@@ -1,13 +1,13 @@
 ﻿using Amazon;
 using Amazon.Runtime;
 using Amazon.SQS;
-using Company.Framework.Core.Serializer;
+using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrying;
-using Company.Framework.Messaging.Sqs.Client;
 using Company.Framework.Messaging.Sqs.Client.Context;
 using Company.Framework.Messaging.Sqs.Client.Context.Provider;
+using Company.Framework.Messaging.Sqs.Client.Settings;
 using Company.Framework.Messaging.Sqs.Consumer;
 using Company.Framework.Messaging.Sqs.Consumer.Context;
 using Company.Framework.Messaging.Sqs.Consumer.Retrying.Handler;
@@ -37,13 +37,35 @@ public class SqsBusServiceBuilder : CoreBusServiceBuilder<SqsBusBuilder>
         {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var settings = configuration.GetSection($"{_namedBusPrefix}:Client").Get<SqsClientSettings>();
-            var credentials = new BasicAWSCredentials("notValidKey", "notValidKey");
-            var amazonSqsConfig = new AmazonSQSConfig
+            IAmazonSQS client;
+            if (settings != null)
             {
-                ServiceURL = "http://localhost:9324",
-            };
+                var amazonSqsConfig = new AmazonSQSConfig();
 
-            var client = new AmazonSQSClient(credentials, amazonSqsConfig);
+                if (!string.IsNullOrWhiteSpace(settings.ServiceUrl))
+                {
+                    amazonSqsConfig.ServiceURL = settings.ServiceUrl;
+                }
+
+                if (!string.IsNullOrWhiteSpace(settings.Region))
+                {
+                    amazonSqsConfig.RegionEndpoint = RegionEndpoint.GetBySystemName(settings.Region);
+                }
+
+                if (settings.Credentials is { } credentialSettings)
+                {
+                    var credentials = new BasicAWSCredentials(credentialSettings.AccessKey, credentialSettings.SecretKey);
+                    client = new AmazonSQSClient(credentials, amazonSqsConfig);
+                }
+                else
+                {
+                    client = new AmazonSQSClient(amazonSqsConfig);
+                }
+            }
+            else
+            {
+                client = new AmazonSQSClient();
+            }
 
             return new SqsClientContext(BusName, client);
         });
@@ -71,21 +93,16 @@ public class SqsBusServiceBuilder : CoreBusServiceBuilder<SqsBusBuilder>
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var connectionContext = serviceProvider.GetRequiredService<ISqsClientContextProvider>().Resolve(BusName);
             var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
-            var settings = consumerSection.Get<SqsConsumerSettings>();
+            var settings = consumerSection.Get<SqsConsumerSettings>()!;
             ISqsConsumerRetryingHandler? retryingHandler = default;
             if (retriability != default)
             {
-                var retrySettings = consumerSection.GetSection("Retry").Get<SqsRetrySettings>();
-                retrySettings.Consumer = new SqsConsumerSettings
-                {
-                    Queue = $"retry_{settings.Queue}",
-                    Concurrency = settings.Concurrency
-                };
+                var retrySettings = consumerSection.GetSection("Retry").Get<SqsRetrySettings>()!;
                 var producer = serviceProvider.GetRequiredService<ISqsProducerContextProvider>().Resolve(BusName).Default();
                 retryingHandler = ActivatorUtilities.CreateInstance<SqsConsumerRetryingHandler>(serviceProvider, producer, retriability, retrySettings);
             }
             var jsonSerializer = serviceProvider.GetRequiredService<IJsonSerializer>();
-            var context = new SqsConsumerContext(connectionContext, settings,jsonSerializer, retryingHandler);
+            var context = new SqsConsumerContext(connectionContext, settings, jsonSerializer, retryingHandler);
             return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
         });
         return this;

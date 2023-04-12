@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Company.Framework.Api.Extensions;
 using Company.Framework.Api.Localization.Extensions;
-using Company.Framework.Core.Serializer.Extensions;
+using Company.Framework.Core.Serialization.Extensions;
 using Company.Framework.Correlation.Extensions;
 using Company.Framework.ExampleApi;
 using Company.Framework.ExampleApi.Application.Extensions;

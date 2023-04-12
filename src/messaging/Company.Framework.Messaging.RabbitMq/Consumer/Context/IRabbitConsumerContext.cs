@@ -1,4 +1,4 @@
-﻿using Company.Framework.Core.Serializer;
+﻿using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.RabbitMq.Connection.Context;
 using Company.Framework.Messaging.RabbitMq.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.RabbitMq.Consumer.Settings;

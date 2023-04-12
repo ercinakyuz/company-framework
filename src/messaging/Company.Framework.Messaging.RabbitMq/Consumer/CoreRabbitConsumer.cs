@@ -1,5 +1,5 @@
 ﻿using System.Runtime.Serialization;
-using Company.Framework.Core.Serializer;
+using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrying.Args;
 using Company.Framework.Messaging.RabbitMq.Consumer.Context;

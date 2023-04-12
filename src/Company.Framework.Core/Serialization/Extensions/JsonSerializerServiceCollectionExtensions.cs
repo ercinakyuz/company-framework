@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Company.Framework.Core.Identity;
+using Company.Framework.Core.Identity.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Company.Framework.Core.Serializer.Extensions
+namespace Company.Framework.Core.Serialization.Extensions
 {
     public static class JsonSerializerServiceCollectionExtensions
     {

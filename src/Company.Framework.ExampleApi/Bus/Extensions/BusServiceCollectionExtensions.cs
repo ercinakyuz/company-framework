@@ -7,6 +7,7 @@ using Company.Framework.Messaging.Consumer.Retrying;
 using Company.Framework.Messaging.Envelope;
 using Company.Framework.Messaging.Kafka.Bus.Extensions;
 using Company.Framework.Messaging.RabbitMq.Bus.Extensions;
+using Company.Framework.Messaging.Sqs.Bus.Extensions;
 
 namespace Company.Framework.ExampleApi.Bus.Extensions
 {
@@ -15,8 +16,9 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         public static IServiceCollection AddBusComponents(this IServiceCollection serviceCollection)
         {
             return serviceCollection.BusServiceBuilder()
-                .AddKafkaComponents()
-                .AddRabbitComponents()
+                //.AddKafkaComponents()
+                //.AddRabbitComponents()
+                .AddSqsComponents()
                 .BuildBusServices();
         }
 
@@ -44,6 +46,15 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
                 //.ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
                 //.BuildBus()
                 .BuildRabbit();
+        }
+
+        private static MainBusServiceBuilder AddSqsComponents(this MainBusServiceBuilder mainBusServiceBuilder)
+        {
+            return mainBusServiceBuilder.WithSqs()
+                .WithBus("ActionSqs-1")
+                .ThatConsume<PingAppliedSqsEnvelope>("PingApplied", ConsumerRetriability.Default)
+                .BuildBus()
+                .BuildSqs();
         }
     }
 }

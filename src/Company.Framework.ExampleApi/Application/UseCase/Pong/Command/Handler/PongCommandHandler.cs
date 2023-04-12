@@ -1,11 +1,8 @@
 ﻿using Company.Framework.Core.Exception;
-using Company.Framework.Core.Result.Extensions;
-using Company.Framework.Domain.Model.Exception;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
 using Company.Framework.ExampleApi.Http.Clients;
 using MediatR;
-using Action = Company.Framework.ExampleApi.Domain.Model.Aggregate.Action;
 using ApplicationException = Company.Framework.Application.Exception.ApplicationException;
 
 namespace Company.Framework.ExampleApi.Application.UseCase.Pong.Command.Handler;

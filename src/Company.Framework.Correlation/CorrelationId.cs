@@ -4,10 +4,6 @@ namespace Company.Framework.Correlation
 {
     public class CorrelationId : CoreId<CorrelationId, string>
     {
-        public CorrelationId()
-        {
-            
-        }
         public CorrelationId(string value) : base(value)
         {
         }

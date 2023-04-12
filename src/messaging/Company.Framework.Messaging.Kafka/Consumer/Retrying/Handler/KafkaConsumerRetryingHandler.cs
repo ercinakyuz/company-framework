@@ -36,7 +36,7 @@ public class KafkaConsumerRetryingHandler : IKafkaConsumerRetryingHandler
     {
         if (_retriability.IsRetriableException(args.ExceptionType))
         {
-            var currentHeaders = (Headers)args.Headers;
+            var currentHeaders = (Headers)args.Attributes;
             var retryAttempts = currentHeaders.TryGetLastBytes(RetryAttemptsHeaderKey, out var lastHeader)
                 ? JsonSerializer.Deserialize<short>(lastHeader)
                 : (short)0;

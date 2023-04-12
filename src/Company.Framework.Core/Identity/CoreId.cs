@@ -7,9 +7,6 @@ public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, 
 {
     public TValue? Value { get; }
 
-    protected CoreId()
-    {
-    }
     protected CoreId(TValue value)
     {
         Value = value;
@@ -34,15 +31,16 @@ public abstract class CoreId<TId, TValue> : CoreId<TId> where TId : CoreId<TId, 
     {
         return Equals(that.Value, Value);
     }
+
 }
 
 public abstract class CoreId<TId> : IId where TId : CoreId<TId>
 {
-    public static readonly TId Empty = Default;
+    public static readonly TId Empty = CoreIdFactory<TId>.Instance(None);
 
-    public static TId New => CoreIdFactory<TId>.Instance(Auto);
+    public static TId New() => CoreIdFactory<TId>.Instance(Auto);
 
-    private static TId Default => CoreIdFactory<TId>.Instance(None);
+
 }
 
 public interface IId

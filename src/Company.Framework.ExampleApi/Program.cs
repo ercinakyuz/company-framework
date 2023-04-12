@@ -1,6 +1,8 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Company.Framework.Api.Extensions;
 using Company.Framework.Api.Localization.Extensions;
+using Company.Framework.Core.Serializer.Extensions;
 using Company.Framework.Correlation.Extensions;
 using Company.Framework.ExampleApi;
 using Company.Framework.ExampleApi.Application.Extensions;
@@ -16,6 +18,8 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 var serviceCollection = builder.Services;
+
+serviceCollection.AddJsonSerializer();
 serviceCollection.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -33,7 +37,6 @@ serviceCollection.AddHttpClients();
 serviceCollection.AddApiExceptionHandler();
 serviceCollection.AddLocalization<ExampleApiResource>();
 serviceCollection.AddSocket();
-
 
 var hostBuilder = builder.Host;
 hostBuilder.WithSerilog();

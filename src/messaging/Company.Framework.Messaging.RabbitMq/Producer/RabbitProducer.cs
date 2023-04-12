@@ -1,8 +1,8 @@
 ﻿using System.Collections.Concurrent;
+using Company.Framework.Core.Serializer;
 using Company.Framework.Messaging.RabbitMq.Connection.Context;
 using Company.Framework.Messaging.RabbitMq.Producer.Args;
 using RabbitMQ.Client;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Company.Framework.Messaging.RabbitMq.Producer
 {
@@ -13,8 +13,11 @@ namespace Company.Framework.Messaging.RabbitMq.Producer
 
         private readonly IConnection _connection;
 
-        public RabbitProducer(string name, string busName, IRabbitConnectionContext connectionContext)
+        private readonly IJsonSerializer _jsonSerializer;
+
+        public RabbitProducer(string name, string busName, IRabbitConnectionContext connectionContext, IJsonSerializer jsonSerializer)
         {
+            _jsonSerializer = jsonSerializer;
             Name = name;
             BusName = busName;
             _connection = connectionContext.Resolve<IConnection>();
@@ -38,7 +41,7 @@ namespace Company.Framework.Messaging.RabbitMq.Producer
                     }
                 }
                 model.ExchangeDeclare(exchangeName, exchangeType);
-                model.BasicPublish(exchangeName, routing, false, basicProperties, JsonSerializer.SerializeToUtf8Bytes(message));
+                model.BasicPublish(exchangeName, routing, false, basicProperties, _jsonSerializer.SerializeToUtf8Bytes(message));
             }
 
             return Task.CompletedTask;

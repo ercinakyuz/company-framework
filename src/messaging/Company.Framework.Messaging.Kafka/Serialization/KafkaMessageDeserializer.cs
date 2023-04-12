@@ -16,9 +16,7 @@ public class KafkaMessageDeserializer<TMessage> : IDeserializer<TMessage>
     {
         if (isNull)
             throw new SerializationException("Byte array of message cannot be null");
-        var nullableMessage = JsonSerializer.Deserialize<TMessage>(data, _kafkaSerializationSettings.JsonSerializerOptions);
-        if (nullableMessage == null)
-            throw new SerializationException("Cannot serialize given message");
-        return nullableMessage;
+        return JsonSerializer.Deserialize<TMessage>(data, _kafkaSerializationSettings.JsonSerializerOptions) 
+               ?? throw new SerializationException("Cannot serialize given message");
     }
 }

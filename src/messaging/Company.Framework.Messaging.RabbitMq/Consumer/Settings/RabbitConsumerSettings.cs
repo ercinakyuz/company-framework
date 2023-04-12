@@ -2,10 +2,10 @@
 
 public class RabbitConsumerSettings
 {
-    public RabbitDeclarationArgs Declaration { get; init; }
+    public required RabbitDeclarationArgs Declaration { get; init; }
 
-    public void Deconstruct(out RabbitDeclarationArgs Declaration)
+    public void Deconstruct(out RabbitDeclarationArgs declaration)
     {
-        Declaration = this.Declaration;
+        declaration = Declaration;
     }
 }

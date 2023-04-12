@@ -2,15 +2,15 @@
 
 public class RabbitDeclarationArgs
 {
-    public RabbitExchangeArgs Exchange { get; init; }
-    public string Routing { get; init; }
-    public string Queue { get; init; }
+    public required RabbitExchangeArgs Exchange { get; init; }
+    public required string Routing { get; init; }
+    public required string Queue { get; init; }
 
-    public void Deconstruct(out RabbitExchangeArgs Exchange, out string Routing, out string Queue)
+    public void Deconstruct(out RabbitExchangeArgs exchange, out string routing, out string queue)
     {
-        Exchange = this.Exchange;
-        Routing = this.Routing;
-        Queue = this.Queue;
+        exchange = Exchange;
+        routing = Routing;
+        queue = Queue;
     }
 
 }

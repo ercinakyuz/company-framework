@@ -24,6 +24,7 @@
 	  <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Kafka\Company.Framework.Messaging.Kafka.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.RabbitMq\Company.Framework.Messaging.RabbitMq.csproj" />
+	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Sqs\Company.Framework.Messaging.Sqs.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

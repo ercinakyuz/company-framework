@@ -53,7 +53,7 @@ namespace Company.Framework.Domain.Model.Aggregate
 
         protected AggregateRoot(CreateAggregateDto createDto) : base(createDto.Created)
         {
-            Id = CoreId<TId>.New;
+            Id = CoreId<TId>.New();
         }
 
         protected AggregateRoot(LoadAggregateDto<TId> loadDto) : base(loadDto.Created, loadDto.Modified)

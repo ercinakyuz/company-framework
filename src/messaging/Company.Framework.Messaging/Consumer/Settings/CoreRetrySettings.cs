@@ -2,6 +2,6 @@
 
 public abstract class CoreRetrySettings
 {
-    public short Count { get; init; }
-    public DelaySettings Delay { get; init; }
+    public required short Count { get; init; }
+    public required DelaySettings Delay { get; init; }
 }

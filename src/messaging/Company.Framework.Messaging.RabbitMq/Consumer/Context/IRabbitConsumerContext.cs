@@ -1,4 +1,5 @@
-﻿using Company.Framework.Messaging.RabbitMq.Connection.Context;
+﻿using Company.Framework.Core.Serializer;
+using Company.Framework.Messaging.RabbitMq.Connection.Context;
 using Company.Framework.Messaging.RabbitMq.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.RabbitMq.Consumer.Settings;
 
@@ -10,5 +11,7 @@ public interface IRabbitConsumerContext
     RabbitConsumerSettings Settings { get; }
 
     IRabbitConsumerRetryingHandler? RetryingHandler { get; }
+
+    IJsonSerializer JsonSerializer { get; }
 
 }

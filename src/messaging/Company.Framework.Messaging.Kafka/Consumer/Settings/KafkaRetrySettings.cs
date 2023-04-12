@@ -4,5 +4,5 @@ namespace Company.Framework.Messaging.Kafka.Consumer.Settings;
 
 public class KafkaRetrySettings : CoreRetrySettings
 {
-    public KafkaTopicSettings Topic { get; set; }
+    public required KafkaTopicSettings Topic { get; init; }
 }

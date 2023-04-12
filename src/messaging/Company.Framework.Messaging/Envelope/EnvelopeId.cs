@@ -4,10 +4,6 @@ namespace Company.Framework.Messaging.Envelope
 {
     public class EnvelopeId : CoreId<EnvelopeId, Guid>
     {
-        public EnvelopeId()
-        {
-            
-        }
         public EnvelopeId(Guid value) : base(value)
         {
         }

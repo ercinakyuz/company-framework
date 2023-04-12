@@ -4,9 +4,9 @@ namespace Company.Framework.Messaging.Kafka.Consumer.Settings;
 
 public class KafkaTopicSettings : CoreRetrySettings
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    public short Replication { get; set; }
+    public required short Replication { get; init; }
 
-    public short Partition { get; set; }
+    public required short Partition { get; init; }
 }

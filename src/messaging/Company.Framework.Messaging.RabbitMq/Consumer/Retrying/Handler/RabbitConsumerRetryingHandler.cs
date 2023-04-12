@@ -39,7 +39,7 @@ public class RabbitConsumerRetryingHandler : IRabbitConsumerRetryingHandler
     {
         if (_retriability.IsRetriableException(args.ExceptionType))
         {
-            var currentHeaders = args.Headers as IDictionary<string, object> ?? new ConcurrentDictionary<string, object>();
+            var currentHeaders = args.Attributes as IDictionary<string, object> ?? new ConcurrentDictionary<string, object>();
 
             var retryAttempts = currentHeaders.TryGetValue(RetryAttemptsHeaderKey, out var retryAttemptsHeaderValue)
                 ? short.Parse(retryAttemptsHeaderValue.ToString()!)

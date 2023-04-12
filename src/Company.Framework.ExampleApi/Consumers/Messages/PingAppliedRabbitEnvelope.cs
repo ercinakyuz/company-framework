@@ -6,5 +6,4 @@ using MediatR;
 namespace Company.Framework.ExampleApi.Consumers.Messages;
 
 public record PingAppliedRabbitEnvelope(EnvelopeId Id, PingApplied Message, Log Created, Correlation.CorrelationId? CorrelationId = null)
-    : Envelope<PingApplied>(Id, Message, Created, CorrelationId), INotification
-{ }
+    : Envelope<PingApplied>(Id, Message, Created, CorrelationId), INotification;

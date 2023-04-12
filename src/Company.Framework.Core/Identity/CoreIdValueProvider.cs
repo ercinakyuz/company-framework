@@ -21,8 +21,8 @@ internal class CoreIdValueProvider<TValue>
 
     public static TValue Provide()
     {
-        return ProviderDictionary.TryGetValue(typeof(TValue), out var func)
-            ? func.Invoke()
+        return ProviderDictionary.TryGetValue(typeof(TValue), out var provider)
+            ? provider.Invoke()
             : throw new NotSupportedException("Given id type is not supported");
     }
 }

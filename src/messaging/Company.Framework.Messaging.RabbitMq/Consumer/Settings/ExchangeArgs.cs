@@ -2,12 +2,12 @@
 
 public class RabbitExchangeArgs
 {
-    public string Name { get; init; }
-    public string Type { get; init; }
+    public required string Name { get; init; }
+    public required string Type { get; init; }
 
-    public void Deconstruct(out string Name, out string Type)
+    public void Deconstruct(out string name, out string type)
     {
-        Name = this.Name;
-        Type = this.Type;
+        name = Name;
+        type = Type;
     }
 }

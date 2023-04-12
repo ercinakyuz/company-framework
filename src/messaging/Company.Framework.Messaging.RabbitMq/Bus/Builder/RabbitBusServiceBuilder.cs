@@ -1,4 +1,5 @@
-﻿using Company.Framework.Messaging.Bus.Builder;
+﻿using Company.Framework.Core.Serializer;
+using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrying;
 using Company.Framework.Messaging.RabbitMq.Connection;
@@ -57,7 +58,8 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
         ServiceCollection.AddSingleton<IRabbitProducer, RabbitProducer>(serviceProvider =>
         {
             var connectionContext = serviceProvider.GetRequiredService<IRabbitConnectionContextProvider>().Resolve(BusName);
-            return new RabbitProducer(name, BusName, connectionContext);
+            var jsonSerializer = serviceProvider.GetRequiredService<IJsonSerializer>();
+            return new RabbitProducer(name, BusName, connectionContext, jsonSerializer);
         });
         return this;
     }
@@ -68,6 +70,7 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
         {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var connectionContext = serviceProvider.GetRequiredService<IRabbitConnectionContextProvider>().Resolve(BusName);
+            var jsonSerializer = serviceProvider.GetRequiredService<IJsonSerializer>();
             var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
             var settings = consumerSection.Get<RabbitConsumerSettings>();
             IRabbitConsumerRetryingHandler? retryingHandler = default;
@@ -85,7 +88,7 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
                 retryingHandler = ActivatorUtilities.CreateInstance<RabbitConsumerRetryingHandler>(serviceProvider, producer, retriability, rabbitRetrySettings);
             }
 
-            var context = new RabbitConsumerContext(connectionContext, settings, retryingHandler);
+            var context = new RabbitConsumerContext(connectionContext, settings, jsonSerializer, retryingHandler);
             return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
         });
         return this;

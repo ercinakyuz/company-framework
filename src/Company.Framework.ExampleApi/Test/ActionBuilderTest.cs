@@ -92,7 +92,7 @@ namespace Company.Framework.ExampleApi.Test
 
         public ActionId Id()
         {
-            return ActionId.New;
+            return ActionId.New();
         }
 
         public ActionEntity ActionEntity()

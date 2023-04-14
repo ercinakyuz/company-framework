@@ -40,7 +40,13 @@ namespace Company.Framework.Messaging.Sqs.Producer
                 var typedAttributes = new Dictionary<string, MessageAttributeValue>();
                 foreach (var attribute in attributes)
                 {
-                    typedAttributes.Add(attribute.Key, (MessageAttributeValue)attribute.Value);
+                    typedAttributes.Add(attribute.Key, new MessageAttributeValue
+                    {
+                        DataType = "Binary",
+                        BinaryValue = _jsonSerializer.SerializeToStream(attribute.Value)
+                        //DataType = "String",
+                        //StringValue = _jsonSerializer.Serialize(attribute.Value)
+                    });
                 }
                 request.MessageAttributes = typedAttributes;
             }

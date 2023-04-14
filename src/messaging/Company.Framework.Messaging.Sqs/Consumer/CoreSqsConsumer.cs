@@ -14,10 +14,14 @@ namespace Company.Framework.Messaging.Sqs.Consumer
     public abstract class CoreSqsConsumer<TMessage> : IConsumer
     {
         private readonly SqsConsumerSettings _settings;
+        private readonly SqsConsumerSettings? _retryingSettings;
         private readonly IAmazonSQS _client;
         private readonly ILogger _logger;
         private readonly ISqsConsumerRetryingHandler? _retryingHandler;
         private readonly IJsonSerializer _jsonSerializer;
+
+        private Func<SqsConsumerSettings, CancellationToken, Task> SubscriptionDelegate =>
+            (settings, ct) => Task.Run(() => SubscribeToQueue(settings, ct).ConfigureAwait(false));
 
         protected CoreSqsConsumer(ISqsConsumerContext context, ILogger logger)
         {
@@ -26,11 +30,25 @@ namespace Company.Framework.Messaging.Sqs.Consumer
             _jsonSerializer = context.JsonSerializer;
             _logger = logger;
             _retryingHandler = context.RetryingHandler;
+            _retryingSettings = _retryingHandler?.ConsumerSettings;
         }
 
         public async Task SubscribeAsync(CancellationToken cancellationToken)
         {
-            var (queue, concurrency) = _settings;
+            await SubscriptionDelegate(_settings, cancellationToken).ConfigureAwait(false);
+            if (_retryingSettings != default) await SubscriptionDelegate(_retryingSettings, cancellationToken).ConfigureAwait(false);
+        }
+
+        public void Unsubscribe()
+        {
+        }
+
+        protected abstract Task ConsumeAsync(TMessage message, CancellationToken cancellationToken);
+
+
+        private async Task SubscribeToQueue(SqsConsumerSettings settings, CancellationToken cancellationToken)
+        {
+            var (queue, concurrency) = settings;
             var queueUrl = await GetQueueUrlAsync(queue, cancellationToken);
 
             while (!cancellationToken.IsCancellationRequested)
@@ -48,25 +66,16 @@ namespace Company.Framework.Messaging.Sqs.Consumer
 
                 foreach (var message in receiveMessageResponse.Messages)
                 {
-                    await TryConsumeAsync(message, cancellationToken).ConfigureAwait(false);
-
-                    deleteMessageBatchRequestEntries.Add(new DeleteMessageBatchRequestEntry
+                    await _client.DeleteMessageAsync(new DeleteMessageRequest
                     {
-                        Id = message.MessageId,
+                        QueueUrl = queueUrl,
                         ReceiptHandle = message.ReceiptHandle
-                    });
+                    }, cancellationToken).ConfigureAwait(false);
 
+                    await TryConsumeAsync(message, cancellationToken).ConfigureAwait(false);
                 }
-
-                await _client.DeleteMessageBatchAsync(new DeleteMessageBatchRequest(queueUrl, deleteMessageBatchRequestEntries), cancellationToken).ConfigureAwait(false);
             }
         }
-
-        public void Unsubscribe()
-        {
-        }
-
-        protected abstract Task ConsumeAsync(TMessage message, CancellationToken cancellationToken);
 
         private async Task<string> GetQueueUrlAsync(string queue, CancellationToken cancellationToken)
         {
@@ -93,7 +102,7 @@ namespace Company.Framework.Messaging.Sqs.Consumer
             catch (Exception exception)
             {
                 _logger.LogError(exception, exception.Message);
-                await Task.Run(() => _retryingHandler?.HandleAsync(new ConsumerRetrialArgs(typedMessage, message.Attributes, exception.GetType()), cancellationToken)
+                await Task.Run(() => _retryingHandler?.HandleAsync(new ConsumerRetrialArgs(typedMessage, message.MessageAttributes, exception.GetType()), cancellationToken)
                         .ConfigureAwait(false), cancellationToken);
             }
         }

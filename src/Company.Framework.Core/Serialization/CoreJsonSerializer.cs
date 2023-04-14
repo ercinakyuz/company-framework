@@ -17,6 +17,13 @@ public class CoreJsonSerializer : IJsonSerializer
         return JsonSerializer.Serialize(value, _options);
     }
 
+    public MemoryStream SerializeToStream(object value)
+    {
+        var stream = new MemoryStream();
+        JsonSerializer.Serialize(stream, value, _options);
+        return stream;
+    }
+
     public byte[] SerializeToUtf8Bytes(object value)
     {
         return JsonSerializer.SerializeToUtf8Bytes(value, _options);

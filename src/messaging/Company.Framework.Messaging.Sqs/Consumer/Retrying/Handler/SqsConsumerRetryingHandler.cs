@@ -20,7 +20,9 @@ public class SqsConsumerRetryingHandler : ISqsConsumerRetryingHandler
     private readonly IDelayStrategy _delayStrategy;
     private readonly ILogger _logger;
 
-    public string Queue => _settings.Consumer.Queue;
+    public SqsConsumerSettings ConsumerSettings => _settings.Consumer;
+
+    private string Queue => ConsumerSettings.Queue;
 
     public SqsConsumerRetryingHandler(
         ISqsProducer producer,
@@ -48,12 +50,12 @@ public class SqsConsumerRetryingHandler : ISqsConsumerRetryingHandler
             {
                 retryAttempts++;
                 await _delayStrategy.DelayAsync(new DelayStrategyArgs(_settings.Delay.Interval, retryAttempts), cancellationToken).ConfigureAwait(false);
-                var nextHeaders = new ConcurrentDictionary<string, object>
+                var nextAttributes = new ConcurrentDictionary<string, object>
                 {
                     [RetryAttemptsHeaderKey] = retryAttempts
                 };
-                await _producer.ProduceAsync(new SqsProduceArgs(Queue, args.Message, nextHeaders), cancellationToken).ConfigureAwait(false);
-                _logger.LogInformation("Message sent to the retry queue: {} for number of {} tries: {}",
+                await _producer.ProduceAsync(new SqsProduceArgs(Queue, args.Message, nextAttributes), cancellationToken).ConfigureAwait(false);
+                _logger.LogInformation("Message sent to the retry Queue: {} for number of {} tries: {}",
                     Queue, retryAttempts, args.Message);
             }
         }

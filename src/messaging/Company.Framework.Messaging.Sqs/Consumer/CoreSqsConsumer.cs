@@ -62,8 +62,6 @@ namespace Company.Framework.Messaging.Sqs.Consumer
                 if (receiveMessageResponse is null || receiveMessageResponse.HttpStatusCode != HttpStatusCode.OK || !receiveMessageResponse.Messages.Any())
                     continue;
 
-                var deleteMessageBatchRequestEntries = new List<DeleteMessageBatchRequestEntry>();
-
                 foreach (var message in receiveMessageResponse.Messages)
                 {
                     await _client.DeleteMessageAsync(new DeleteMessageRequest

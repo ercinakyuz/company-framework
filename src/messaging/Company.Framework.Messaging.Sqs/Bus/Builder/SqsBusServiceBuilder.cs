@@ -4,16 +4,13 @@ using Amazon.SQS;
 using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
-using Company.Framework.Messaging.Consumer.Retrying;
 using Company.Framework.Messaging.Sqs.Client.Context;
 using Company.Framework.Messaging.Sqs.Client.Context.Provider;
 using Company.Framework.Messaging.Sqs.Client.Settings;
 using Company.Framework.Messaging.Sqs.Consumer;
 using Company.Framework.Messaging.Sqs.Consumer.Context;
-using Company.Framework.Messaging.Sqs.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.Sqs.Consumer.Settings;
 using Company.Framework.Messaging.Sqs.Producer;
-using Company.Framework.Messaging.Sqs.Producer.Provider;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -85,7 +82,7 @@ public class SqsBusServiceBuilder : CoreBusServiceBuilder<SqsBusBuilder>
         });
         return this;
     }
-    public SqsBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name, ConsumerRetriability? retriability = default)
+    public SqsBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name)
         where TConsumer : CoreSqsConsumer<TMessage>
     {
         ServiceCollection.AddSingleton<IConsumer, TConsumer>(serviceProvider =>
@@ -94,23 +91,16 @@ public class SqsBusServiceBuilder : CoreBusServiceBuilder<SqsBusBuilder>
             var connectionContext = serviceProvider.GetRequiredService<ISqsClientContextProvider>().Resolve(BusName);
             var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
             var settings = consumerSection.Get<SqsConsumerSettings>()!;
-            ISqsConsumerRetryingHandler? retryingHandler = default;
-            if (retriability != default)
-            {
-                var retrySettings = consumerSection.GetSection("Retry").Get<SqsRetrySettings>()!;
-                var producer = serviceProvider.GetRequiredService<ISqsProducerContextProvider>().Resolve(BusName).Default();
-                retryingHandler = ActivatorUtilities.CreateInstance<SqsConsumerRetryingHandler>(serviceProvider, producer, retriability, retrySettings);
-            }
             var jsonSerializer = serviceProvider.GetRequiredService<IJsonSerializer>();
-            var context = new SqsConsumerContext(connectionContext, settings, jsonSerializer, retryingHandler);
+            var context = new SqsConsumerContext(connectionContext, settings, jsonSerializer);
             return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
         });
         return this;
     }
 
-    public SqsBusServiceBuilder ThatConsume<TMessage>(string name, ConsumerRetriability? retriability = default)
+    public SqsBusServiceBuilder ThatConsume<TMessage>(string name)
         where TMessage : INotification
     {
-        return WithConsumer<DefaultSqsConsumer<TMessage>, TMessage>(name, retriability);
+        return WithConsumer<DefaultSqsConsumer<TMessage>, TMessage>(name);
     }
 }

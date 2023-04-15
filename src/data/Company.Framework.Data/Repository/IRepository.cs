@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Company.Framework.Core.Monad;
 using Company.Framework.Data.Entity;
-using LanguageExt;
 
 namespace Company.Framework.Data.Repository
 {

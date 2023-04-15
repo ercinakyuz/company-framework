@@ -46,7 +46,7 @@ public class KafkaConsumerRetryingHandler : IKafkaConsumerRetryingHandler
                 await _delayStrategy.DelayAsync(new DelayStrategyArgs(_settings.Delay.Interval, retryAttempts), cancellationToken).ConfigureAwait(false);
                 var nextHeaders = new Headers { { RetryAttemptsHeaderKey, JsonSerializer.SerializeToUtf8Bytes(retryAttempts) } };
                 await _producer.ProduceAsync(new KafkaProduceArgs(TopicSettings.Name, args.Message, nextHeaders), cancellationToken).ConfigureAwait(false);
-                _logger.LogInformation("Timestamp: {} Message sent to the retry topic: {} for number of {} tries: {}", DateTime.Now, _settings.Topic,
+                _logger.LogInformation("Timestamp: {0} Message sent to the retry topic: {1} for number of {2} tries: {3}", DateTime.Now, _settings.Topic,
                     retryAttempts, args.Message);
             }
         }

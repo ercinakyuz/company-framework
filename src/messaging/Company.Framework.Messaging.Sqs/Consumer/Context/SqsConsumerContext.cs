@@ -1,6 +1,5 @@
 ﻿using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Sqs.Client.Context;
-using Company.Framework.Messaging.Sqs.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.Sqs.Consumer.Settings;
 
 namespace Company.Framework.Messaging.Sqs.Consumer.Context
@@ -12,14 +11,11 @@ namespace Company.Framework.Messaging.Sqs.Consumer.Context
 
         public IJsonSerializer JsonSerializer { get; }
 
-        public ISqsConsumerRetryingHandler? RetryingHandler { get; }
-
-        public SqsConsumerContext(ISqsClientContext clientContext, SqsConsumerSettings settings, IJsonSerializer jsonSerializer, ISqsConsumerRetryingHandler? retryingHandler = default)
+        public SqsConsumerContext(ISqsClientContext clientContext, SqsConsumerSettings settings, IJsonSerializer jsonSerializer)
         {
             ClientContext = clientContext;
             Settings = settings;
             JsonSerializer = jsonSerializer;
-            RetryingHandler = retryingHandler;
         }
     }
 }

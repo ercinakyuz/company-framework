@@ -35,19 +35,8 @@ namespace Company.Framework.Messaging.Sqs.Producer
                 MessageBody = _jsonSerializer.Serialize(message),
             };
 
-            if (attributes != default)
+            if (attributes is Dictionary<string, MessageAttributeValue> typedAttributes)
             {
-                var typedAttributes = new Dictionary<string, MessageAttributeValue>();
-                foreach (var attribute in attributes)
-                {
-                    typedAttributes.Add(attribute.Key, new MessageAttributeValue
-                    {
-                        DataType = "Binary",
-                        BinaryValue = _jsonSerializer.SerializeToStream(attribute.Value)
-                        //DataType = "String",
-                        //StringValue = _jsonSerializer.Serialize(attribute.Value)
-                    });
-                }
                 request.MessageAttributes = typedAttributes;
             }
 

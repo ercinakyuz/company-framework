@@ -19,8 +19,6 @@ namespace Company.Framework.Messaging.Sqs.Consumer
         private readonly ILogger _logger;
         private readonly IJsonSerializer _jsonSerializer;
 
-        private Func<SqsConsumerSettings, CancellationToken, Task> SubscriptionDelegate =>
-            (settings, ct) => Task.Run(() => SubscribeToQueue(settings, ct).ConfigureAwait(false));
 
         protected CoreSqsConsumer(ISqsConsumerContext context, ILogger logger)
         {

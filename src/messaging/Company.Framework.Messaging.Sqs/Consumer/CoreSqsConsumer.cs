@@ -12,8 +12,6 @@ namespace Company.Framework.Messaging.Sqs.Consumer
     public abstract class CoreSqsConsumer<TMessage> : IConsumer
     {
 
-        private static readonly List<string> AttributeNames = new() { "All" };
-
         private readonly SqsConsumerSettings _settings;
         private readonly IAmazonSQS _client;
         private readonly ILogger _logger;
@@ -42,7 +40,7 @@ namespace Company.Framework.Messaging.Sqs.Consumer
 
         private async Task SubscribeToQueue(SqsConsumerSettings settings, CancellationToken cancellationToken)
         {
-            var (queue, concurrency) = settings;
+            var (queue, concurrency, attributeNames) = settings;
             var queueUrl = await GetQueueUrlAsync(queue, cancellationToken);
 
             while (!cancellationToken.IsCancellationRequested)
@@ -50,18 +48,18 @@ namespace Company.Framework.Messaging.Sqs.Consumer
                 var receiveMessageResponse = await _client.ReceiveMessageAsync(new ReceiveMessageRequest
                 {
                     QueueUrl = queueUrl,
-                    AttributeNames = AttributeNames,
-                    MessageAttributeNames = AttributeNames,
+                    AttributeNames = attributeNames,
+                    MessageAttributeNames = attributeNames,
                     MaxNumberOfMessages = concurrency,
 
                 }, cancellationToken).ConfigureAwait(false);
 
-                if (receiveMessageResponse is null || receiveMessageResponse.HttpStatusCode != HttpStatusCode.OK || !receiveMessageResponse.Messages.Any())
+                if (receiveMessageResponse is null || receiveMessageResponse.HttpStatusCode != HttpStatusCode.OK)
                     continue;
 
                 foreach (var message in receiveMessageResponse.Messages)
                 {
-                    if (await TryConsumeAsync(message, queueUrl, cancellationToken).ConfigureAwait(false))
+                    if (await TryConsumeAsync(message, cancellationToken).ConfigureAwait(false))
                     {
                         await _client.DeleteMessageAsync(new DeleteMessageRequest
                         {
@@ -91,7 +89,7 @@ namespace Company.Framework.Messaging.Sqs.Consumer
 
         }
 
-        private async Task<bool> TryConsumeAsync(Message message, string queueUrl, CancellationToken cancellationToken)
+        private async Task<bool> TryConsumeAsync(Message message, CancellationToken cancellationToken)
         {
             var typedMessage = _jsonSerializer.Deserialize<TMessage>(message.Body);
             if (typedMessage is null)

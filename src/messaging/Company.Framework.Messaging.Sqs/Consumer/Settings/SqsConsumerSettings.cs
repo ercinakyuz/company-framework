@@ -6,9 +6,12 @@ public class SqsConsumerSettings
 
     public int Concurrency { get; init; } = 1;
 
-    public void Deconstruct(out string queue, out int concurrency)
+    public IReadOnlyList<string> AttributeNames { get; init; } = new List<string> { "All" };
+
+    public void Deconstruct(out string queue, out int concurrency, out List<string> attributeNames)
     {
         queue = Queue;
         concurrency = Concurrency;
+        attributeNames = AttributeNames.ToList();
     }
 }

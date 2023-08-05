@@ -1,4 +1,5 @@
-﻿using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
+﻿using Company.Framework.Core.Logging;
+using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
 using Company.Framework.ExampleApi.Consumers.Messages;
 using MediatR;
 
@@ -17,7 +18,7 @@ public class SingularPingAppliedKafkaConsumer : INotificationHandler<PingApplied
 
     public async Task Handle(PingAppliedKafkaEnvelope notification, CancellationToken cancellationToken)
     {
-        await _sender.Send(new PongCommand(notification.Message.AggregateId), cancellationToken);
+        await _sender.Send(new PongCommand(notification.Message.AggregateId, Log.Load(notification.Created.By)), cancellationToken);
         _logger.LogInformation("Singular PingApplied KafkaEvent consumed, {notification}", notification);
     }
 }

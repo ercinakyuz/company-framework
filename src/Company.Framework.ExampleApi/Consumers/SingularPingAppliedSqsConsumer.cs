@@ -1,4 +1,5 @@
-﻿using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
+﻿using Company.Framework.Core.Logging;
+using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
 using Company.Framework.ExampleApi.Consumers.Messages;
 using MediatR;
 
@@ -17,8 +18,7 @@ public class SingularPingAppliedSqsConsumer : INotificationHandler<PingAppliedSq
 
     public async Task Handle(PingAppliedSqsEnvelope notification, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        await _sender.Send(new PongCommand(notification.Message.AggregateId), cancellationToken);
+        await _sender.Send(new PongCommand(notification.Message.AggregateId, Log.Load(notification.Created.By)), cancellationToken);
         _logger.LogInformation("Singular PingApplied RabbitEvent consumed, {notification}", notification);
     }
 }

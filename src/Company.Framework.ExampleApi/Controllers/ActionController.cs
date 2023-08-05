@@ -1,6 +1,8 @@
-﻿using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
+﻿using Company.Framework.Core.Logging;
+using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
 using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
+using Company.Framework.ExampleApi.Models.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,9 +29,9 @@ namespace Company.Framework.ExampleApi.Controllers
 
         [HttpPatch]
         [Route("pong/{id}")]
-        public async Task<IActionResult> Pong(Guid id)
+        public async Task<IActionResult> Pong(Guid id, [FromBody] PongActionRequest request)
         {
-            await _sender.Send(new PongCommand(ActionId.From(id)));
+            await _sender.Send(new PongCommand(ActionId.From(id),Log.Load(request.By)));
             return Ok();
         }
     }

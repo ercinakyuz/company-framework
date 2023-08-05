@@ -2,13 +2,8 @@
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.Messaging.Bus.Provider;
 using Company.Framework.Messaging.Envelope;
-using Company.Framework.Messaging.Kafka.Bus;
 using Company.Framework.Messaging.Kafka.Producer;
-using Company.Framework.Messaging.Kafka.Producer.Args;
-using Company.Framework.Messaging.RabbitMq.Bus;
-using Company.Framework.Messaging.RabbitMq.Consumer.Settings;
 using Company.Framework.Messaging.RabbitMq.Producer;
-using Company.Framework.Messaging.RabbitMq.Producer.Args;
 using Company.Framework.Messaging.Sqs.Bus;
 using Company.Framework.Messaging.Sqs.Producer;
 using Company.Framework.Messaging.Sqs.Producer.Args;

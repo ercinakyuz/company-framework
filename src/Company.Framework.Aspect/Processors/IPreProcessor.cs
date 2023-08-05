@@ -2,5 +2,5 @@
 
 public interface IPreProcessor
 {
-    Task ProcessAsync(object? args, CancellationToken cancellationToken);
+    Task ExecuteAsync(object? args, CancellationToken cancellationToken);
 }

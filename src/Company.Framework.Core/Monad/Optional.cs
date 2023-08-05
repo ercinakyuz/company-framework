@@ -1,5 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
+﻿
 namespace Company.Framework.Core.Monad;
 
 public class Optional<TData>

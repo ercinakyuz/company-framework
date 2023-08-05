@@ -38,12 +38,14 @@ public class Action : AggregateRoot<Action, ActionId, ActionState>
         return new Action(pingDto).ChangeState(ActionState.PingApplied);
     }
 
-    public Action Pong()
+    public Action Pong(PongActionDto dto)
     {
-        return ChangeState(ActionState.PongApplied);
+        return Modify(dto.Modified).ChangeState(ActionState.PongApplied);
     }
 }
 
 public record LoadActionDto(ActionId Id, Log Created, Log? Modified) : LoadAggregateDto<ActionId>(Id, Created, Modified);
 
 public record PingActionDto(Log Created) : CreateAggregateDto(Created);
+
+public record PongActionDto(Log Modified);

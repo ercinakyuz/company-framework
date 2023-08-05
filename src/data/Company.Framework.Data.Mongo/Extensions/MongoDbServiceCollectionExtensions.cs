@@ -18,15 +18,15 @@ namespace Company.Framework.Data.Mongo.Extensions
         {
             BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
             ConventionRegistry.Register("camelCase", new ConventionPack { new CamelCaseElementNameConvention() }, _ => true);
-            DbProviderRegistry.Register(DbType.Mongo, dbContextSettings => new MongoDbContextProvider(dbContextSettings));
+            DbProviderRegistry.Register(DbType.Mongo, settings => new MongoDbContextProvider(settings));
             return serviceCollection;
         }
 
-        public static IServiceCollection AddMongoRepository<TAbstraction, TImplementation>(this IServiceCollection serviceCollection, string instanceName, string contextKey)
+        public static IServiceCollection AddMongoRepository<TAbstraction, TImplementation>(this IServiceCollection serviceCollection, RepositorySettings settings)
         where TAbstraction : class, IRepository
             where TImplementation : class, TAbstraction
         {
-            return serviceCollection.AddRepository<TAbstraction, TImplementation, IMongoDbContext>(instanceName, contextKey);
+            return serviceCollection.AddRepository<TAbstraction, TImplementation, IMongoDbContext>(settings);
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Company.Framework.Aspect.Proxy
         {
             foreach (var preProcessor in _preProcessors)
             {
-                await preProcessor.ProcessAsync(args, cancellationToken);
+                await preProcessor.ExecuteAsync(args, cancellationToken);
             }
         }
 

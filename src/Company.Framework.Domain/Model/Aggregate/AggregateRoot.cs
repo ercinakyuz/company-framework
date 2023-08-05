@@ -15,13 +15,9 @@ namespace Company.Framework.Domain.Model.Aggregate
 
         public IReadOnlySet<IEvent> Events => _events.ToImmutableHashSet();
 
-        protected AggregateRoot(Log created, Log? modified = default)
-        {
-            Created = created;
-            Modified = modified;
-            _events = new HashSet<IEvent>();
-        }
-        protected AggregateRoot Modify(Log modified)
+        protected AggregateRoot(Log created, Log? modified = default) => (Created, Modified, _events) = (created, modified, new HashSet<IEvent>());
+
+        protected virtual AggregateRoot Modify(Log modified)
         {
             Modified = modified;
             return this;
@@ -61,6 +57,11 @@ namespace Company.Framework.Domain.Model.Aggregate
             Id = loadDto.Id;
         }
 
+        protected override TAggregate Modify(Log modified)
+        {
+            return (TAggregate)base.Modify(modified);
+        }
+
         protected TAggregate ChangeState(TState state)
         {
             State = state;
@@ -68,7 +69,7 @@ namespace Company.Framework.Domain.Model.Aggregate
         }
         protected virtual TAggregate ApplyEvents()
         {
-            if (EventDelegations is not null && State is not null 
+            if (EventDelegations is not null && State is not null
                 && EventDelegations.TryGetValue(State, out var eventDelegation))
                 AddEvent(eventDelegation((TAggregate)this));
             return (TAggregate)this;
@@ -77,6 +78,5 @@ namespace Company.Framework.Domain.Model.Aggregate
         {
             return !CoreState<TState>.Loaded.Equals(State);
         }
-
     }
 }

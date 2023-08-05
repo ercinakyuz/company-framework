@@ -11,6 +11,7 @@ namespace Company.Framework.Data.Repository
         Task InsertAsync(TEntity entity);
         Task InsertManyAsync(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entity);
+        Task UpdateManyAsync(IEnumerable<TEntity> entities);
         Task DeleteManyAsync(Expression<Func<TEntity, bool>> filter);
         Task DeleteAsync(TId id);
     }

@@ -16,7 +16,7 @@ namespace Company.Framework.Data.Mongo.Repository
         }
         protected CoreMongoRepository(IMongoDbContext dbContext, string collectionName)
         {
-            Collection = dbContext.GetCollection<TEntity>(collectionName);
+            Collection =  dbContext.GetCollection<TEntity>(collectionName);
         }
 
         public virtual async IAsyncEnumerable<TEntity> FindAllAsync(Expression<Func<TEntity, bool>>? predicate = default, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = default)
@@ -40,6 +40,17 @@ namespace Company.Framework.Data.Mongo.Repository
         public virtual async Task UpdateAsync(TEntity entity)
         {
             await Collection.ReplaceOneAsync(e => e.Id.Equals(entity.Id), entity);
+        }
+
+        public virtual async Task UpdateManyAsync(IEnumerable<TEntity> entities)
+        {
+            var updates = new List<WriteModel<TEntity>>();
+            foreach (var entity in entities)
+            {
+                var filter = new FilterDefinitionBuilder<TEntity>().Eq(e => e.Id, entity.Id);
+                updates.Add(new ReplaceOneModel<TEntity>(filter, entity));
+            }
+            await Collection.BulkWriteAsync(updates);
         }
 
         public virtual async Task DeleteManyAsync(Expression<Func<TEntity, bool>> filter)

@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Company.Framework.Aspect\Company.Framework.Aspect.csproj" />
+		<ProjectReference Include="..\data\Company.Framework.Data\Company.Framework.Data.csproj" />
 		<ProjectReference Include="..\messaging\Company.Framework.Messaging\Company.Framework.Messaging.csproj" />
 	</ItemGroup>
 

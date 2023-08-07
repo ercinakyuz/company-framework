@@ -1,13 +1,12 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Company.Framework.Mediator.Extensions
+namespace Company.Framework.Mediator.Extensions;
+
+public static class MediatorServiceCollectionExtensions
 {
-    public static class MediatorServiceCollectionExtensions
+    public static MediatorServiceBuilder AddMediator(this IServiceCollection services)
     {
-        public static IServiceCollection AddMediator(this IServiceCollection services)
-        {
-            return services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
-        }
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+        return new MediatorServiceBuilder(services);
     }
 }

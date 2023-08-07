@@ -17,7 +17,6 @@ public class PingCommandHandler : IRequestHandler<PingCommand, Guid>
 
     public async Task<Guid> Handle(PingCommand request, CancellationToken cancellationToken)
     {
-        //throw new DomainException(ExceptionState.UnProcessable, new DomainError("ACDE-1", "Ping implicitly failed"));
         var action = Action.Ping(new PingActionDto(Log.Load("Creator")));
         await _actionOfWork.InsertAsync(action, cancellationToken);
         return action.Id.Value;

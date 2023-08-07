@@ -43,7 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Test", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Socket", "Company.Framework.Socket\Company.Framework.Socket.csproj", "{42C2CE98-7590-46D5-B66A-3EBF1D12CB0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Messaging.Sqs", "messaging\Company.Framework.Messaging.Sqs\Company.Framework.Messaging.Sqs.csproj", "{3B9D1ED0-9B5B-47C9-BDD7-3553E27F4280}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Messaging.Sqs", "messaging\Company.Framework.Messaging.Sqs\Company.Framework.Messaging.Sqs.csproj", "{3B9D1ED0-9B5B-47C9-BDD7-3553E27F4280}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Validation", "Company.Framework.Validation\Company.Framework.Validation.csproj", "{2255D561-ED3F-4804-B885-4068A3072EF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +129,10 @@ Global
 		{3B9D1ED0-9B5B-47C9-BDD7-3553E27F4280}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B9D1ED0-9B5B-47C9-BDD7-3553E27F4280}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B9D1ED0-9B5B-47C9-BDD7-3553E27F4280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2255D561-ED3F-4804-B885-4068A3072EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2255D561-ED3F-4804-B885-4068A3072EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2255D561-ED3F-4804-B885-4068A3072EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2255D561-ED3F-4804-B885-4068A3072EF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

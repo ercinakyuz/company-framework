@@ -8,8 +8,5 @@ namespace Company.Framework.Application.Exception
         public ApplicationException(ExceptionState state, CoreError rootCause) : base(state, rootCause)
         {
         }
-        //public ApplicationException(ExceptionState state, StatelessCoreException innerException) : base(state, "An application rootCause occurred", innerException)
-        //{
-        //}
     }
 }

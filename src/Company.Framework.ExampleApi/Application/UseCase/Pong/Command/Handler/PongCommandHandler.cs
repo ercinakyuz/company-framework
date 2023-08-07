@@ -7,7 +7,7 @@ using ApplicationException = Company.Framework.Application.Exception.Application
 
 namespace Company.Framework.ExampleApi.Application.UseCase.Pong.Command.Handler;
 
-public class PongCommandHandler : AsyncRequestHandler<PongCommand>
+public class PongCommandHandler : IRequestHandler<PongCommand>
 {
     private readonly IActionBuilder _actionBuilder;
     private readonly IActionOfWork _actionOfWork;
@@ -18,7 +18,7 @@ public class PongCommandHandler : AsyncRequestHandler<PongCommand>
         _actionOfWork = actionOfWork;
     }
 
-    protected override async Task Handle(PongCommand command, CancellationToken cancellationToken)
+    public async Task Handle(PongCommand command, CancellationToken cancellationToken)
     {
         var action = (await _actionBuilder.BuildAsync(command.Id, cancellationToken))
             .ThrowOnFail(error => new ApplicationException(ExceptionState.UnProcessable, error))

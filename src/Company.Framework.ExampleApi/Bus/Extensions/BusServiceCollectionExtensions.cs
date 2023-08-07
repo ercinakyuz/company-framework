@@ -16,9 +16,9 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         public static IServiceCollection AddBusComponents(this IServiceCollection serviceCollection)
         {
             return serviceCollection.BusServiceBuilder()
-                .AddKafkaComponents()
-                .AddRabbitComponents()
-                .AddSqsComponents()
+                //.AddKafkaComponents()
+                //.AddRabbitComponents()
+                //.AddSqsComponents()
                 .BuildBusServices();
         }
 

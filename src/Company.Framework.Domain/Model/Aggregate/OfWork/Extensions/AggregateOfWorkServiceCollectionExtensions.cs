@@ -1,4 +1,5 @@
 ﻿using Company.Framework.Aspect.Extensions;
+using Company.Framework.Domain.Model.Aggregate.Event.Distribution.Handlers;
 using Company.Framework.Domain.Model.Aggregate.Event.Distribution.Processors;
 using Company.Framework.Domain.Model.Aggregate.OfWork.Processors;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ namespace Company.Framework.Domain.Model.Aggregate.OfWork.Extensions
         private static IServiceCollection AddProcessors(this IServiceCollection serviceCollection)
         {
             return serviceCollection
+                .AddSingleton<IEventDistributionHandler, EventDistributionHandler>()
                 .AddSingleton<AggregateOfWorkPostProcessor, EventDistributionProcessor>()
                 .AddSingleton<BatchAggregateOfWorkPostProcessor, BatchEventDistributionProcessor>();
         }

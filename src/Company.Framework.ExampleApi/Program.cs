@@ -17,26 +17,26 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // Add services to the container.
-var serviceCollection = builder.Services;
+var services = builder.Services;
 
-serviceCollection.AddJsonSerializer();
-serviceCollection.AddControllers()
+services.AddJsonSerializer();
+services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-serviceCollection.AddEndpointsApiExplorer();
-serviceCollection.AddSwaggerGen();
-serviceCollection.AddCorrelation();
-serviceCollection.AddApplicationComponents();
-serviceCollection.AddDomainComponents();
-serviceCollection.AddDataComponents(configuration);
-serviceCollection.AddBusComponents();
-serviceCollection.AddHttpClients();
-serviceCollection.AddApiExceptionHandler();
-serviceCollection.AddLocalization<ExampleApiResource>();
-serviceCollection.AddSocket();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+services.AddCorrelation();
+services.AddApplicationComponents();
+services.AddDomainComponents();
+services.AddDataComponents(configuration);
+services.AddBusComponents();
+services.AddHttpClients();
+services.AddApiExceptionHandler();
+services.AddLocalization<ExampleApiResource>();
+services.AddSocket();
 
 var hostBuilder = builder.Host;
 hostBuilder.WithSerilog();

@@ -24,7 +24,7 @@
     </ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">
-		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source D:\nuget\packages" />
+		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source G:\nuget\packages" />
 	</Target>
 
 </Project>

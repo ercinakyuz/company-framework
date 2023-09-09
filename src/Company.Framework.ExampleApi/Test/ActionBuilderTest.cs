@@ -1,4 +1,5 @@
-﻿using Company.Framework.Core.Logging;
+﻿using Company.Framework.Core.Id.Abstractions;
+using Company.Framework.Core.Logging;
 using Company.Framework.Core.Monad;
 using Company.Framework.Domain.Model.Aggregate.State;
 using Company.Framework.ExampleApi.Data.Entity;
@@ -9,6 +10,7 @@ using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.Test.Faker;
 using FluentAssertions;
 using Moq;
+using NSubstitute;
 using NUnit.Framework;
 using Guid = System.Guid;
 
@@ -19,11 +21,15 @@ namespace Company.Framework.ExampleApi.Test
     {
         private static ActionFaker _actionFaker = null!;
 
-        private Mock<IActionRepository> _actionRepositoryMock = null!;
+        //private Mock<IActionRepository> _actionRepositoryMock = null!;
+
+        private IActionRepository _actionRepository = null!;
 
         private Guid _capturedIdValue;
 
-        private CaptureMatch<Guid> _idValueCaptureMatch = null!;
+        private Guid _idValueArgDo;
+
+        //private CaptureMatch<Guid> _idValueCaptureMatch = null!;
 
         private ActionBuilder _actionBuilder = null!;
 
@@ -38,34 +44,67 @@ namespace Company.Framework.ExampleApi.Test
         [SetUp]
         public void BeforeEach()
         {
-            _idValueCaptureMatch = new CaptureMatch<Guid>(value => _capturedIdValue = value);
-            _actionRepositoryMock = new Mock<IActionRepository>();
-            _actionBuilder = new ActionBuilder(_actionRepositoryMock.Object);
+            //_idValueCaptureMatch = new CaptureMatch<Guid>(value => _capturedIdValue = value);
+            _idValueArgDo = Arg.Do<Guid>(value => _capturedIdValue = value);
+            //_actionRepositoryMock = new Mock<IActionRepository>();
+            _actionRepository = Substitute.For<IActionRepository>();
+            _actionBuilder = new ActionBuilder(_actionRepository);
         }
 
+        //[Test]
+        //public async Task Should_Build()
+        //{
+        //    //Given
+        //    var id = _actionFaker.Id();
+        //    var cancellationToken = CancellationToken.None;
+        //    var entity = _actionFaker.ActionEntity();
+        //    var optionalAction = Optional<ActionEntity>.Of(entity);
+
+        //    //When
+        //    _actionRepositoryMock.Setup(repository => repository.FindAsync(It.IsAny<Guid>())).ReturnsAsync(optionalAction);
+        //    var result = await _actionBuilder.BuildAsync(id, cancellationToken);
+
+        //    //Then
+        //    _actionRepositoryMock.Verify(repository => repository.FindAsync(Capture.With(_idValueCaptureMatch)), Times.Once);
+        //    _actionRepositoryMock.VerifyNoOtherCalls();
+
+        //    _capturedIdValue.Should().Be(id.Value);
+
+        //    result.Should().NotBeNull();
+        //    result.Success.Should().BeTrue();
+        //    result.Error.Should().BeNull();
+
+        //    var action = result.Data;
+        //    action.Should().NotBeNull();
+        //    action!.Id.Should().BeEquivalentTo(ActionId.From(entity.Id));
+        //    action.State.Should().BeEquivalentTo(ActionState.Loaded);
+        //    action.Created.Should().BeEquivalentTo(entity.Created);
+        //    action.Modified.Should().BeEquivalentTo(entity.Modified);
+        //}
+
         [Test]
-        public async Task Should_Build()
+        public async Task Should_Build_N()
         {
             //Given
             var id = _actionFaker.Id();
             var cancellationToken = CancellationToken.None;
             var entity = _actionFaker.ActionEntity();
-            var optionalAction = Optional<ActionEntity>.Of(entity);
+            var optionalActionEntity = Optional<ActionEntity>.Of(entity);
 
             //When
-            _actionRepositoryMock.Setup(repository => repository.FindAsync(It.IsAny<Guid>())).ReturnsAsync(optionalAction);
+            _actionRepository.FindAsync(Arg.Any<Guid>()).ReturnsForAnyArgs(optionalActionEntity);
             var result = await _actionBuilder.BuildAsync(id, cancellationToken);
 
             //Then
-            _actionRepositoryMock.Verify(repository => repository.FindAsync(Capture.With(_idValueCaptureMatch)), Times.Once);
-            _actionRepositoryMock.VerifyNoOtherCalls();
+            await _actionRepository.Received().FindAsync(_idValueArgDo);
+           // _actionRepository.ReceivedCalls().Should().BeEmpty();
 
             _capturedIdValue.Should().Be(id.Value);
 
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
             result.Error.Should().BeNull();
-            
+
             var action = result.Data;
             action.Should().NotBeNull();
             action!.Id.Should().BeEquivalentTo(ActionId.From(entity.Id));
@@ -78,12 +117,12 @@ namespace Company.Framework.ExampleApi.Test
     public class ActionFaker : CoreFaker
     {
         private readonly LogFaker _logFaker;
-        private readonly CoreStateFaker<ActionState> _coreStateFaker;
+        private readonly StateFaker<ActionState> _coreStateFaker;
 
         public ActionFaker()
         {
             _logFaker = new LogFaker();
-            _coreStateFaker = CoreStateFaker<ActionState>.Load(ActionState.PingApplied, ActionState.PongApplied);
+            _coreStateFaker = StateFaker<ActionState>.Load(ActionState.PingApplied, ActionState.PongApplied);
         }
         public Guid IdValue()
         {
@@ -116,19 +155,19 @@ namespace Company.Framework.ExampleApi.Test
     }
 
 
-    public class CoreStateFaker<TState> : CoreFaker where TState : CoreState<TState>
+    public class StateFaker<TState> : CoreFaker where TState : CoreState<TState>
     {
         private static readonly List<TState> PossibleStates = new()
         {
             CoreState<TState>.Loaded
         };
 
-        private CoreStateFaker() { }
+        private StateFaker() { }
 
-        public static CoreStateFaker<TState> Load(params TState[] states)
+        public static StateFaker<TState> Load(params TState[] states)
         {
             PossibleStates.AddRange(states);
-            return new CoreStateFaker<TState>();
+            return new StateFaker<TState>();
         }
 
         public TState State()

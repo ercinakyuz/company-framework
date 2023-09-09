@@ -1,14 +1,15 @@
-﻿using System.Reflection;
+﻿using Company.Framework.Core.Id.Abstractions;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Company.Framework.Core.Identity.Serialization;
+namespace Company.Framework.Core.Id.Serialization;
 
-public class CoreIdJsonConverterFactory : JsonConverterFactory
+public class IdJsonConverterFactory : JsonConverterFactory
 {
     public override bool CanConvert(Type typeToConvert)
     {
-        return IsSubclassOfRawGeneric(typeof(CoreId<,>), typeToConvert);
+        return IsSubclassOfRawGeneric(typeof(IId<,>), typeToConvert);
     }
 
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
@@ -17,7 +18,7 @@ public class CoreIdJsonConverterFactory : JsonConverterFactory
         var keyType = baseType.GetGenericArguments()[0];
         var valueType = baseType.GetGenericArguments()[1];
 
-        return (JsonConverter)Activator.CreateInstance(typeof(CoreIdJsonConverter<,>).MakeGenericType(keyType, valueType),
+        return (JsonConverter)Activator.CreateInstance(typeof(IdJsonConverter<,>).MakeGenericType(keyType, valueType),
             BindingFlags.Instance | BindingFlags.Public,
             binder: null,
             args: new object[] { options },

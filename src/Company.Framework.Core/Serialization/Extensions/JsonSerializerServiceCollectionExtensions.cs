@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Company.Framework.Core.Identity.Serialization;
+using Company.Framework.Core.Id.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Core.Serialization.Extensions
@@ -14,7 +14,7 @@ namespace Company.Framework.Core.Serialization.Extensions
                {
                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                   Converters = { new CoreIdJsonConverterFactory() }
+                   Converters = { new IdJsonConverterFactory() }
                })
                .AddSingleton<IJsonSerializer, CoreJsonSerializer>();
         }

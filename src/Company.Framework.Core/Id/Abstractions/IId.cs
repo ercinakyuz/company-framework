@@ -3,8 +3,10 @@
 public interface IId<TId, TValue> : IId<TId> where TId : IId<TId, TValue>
 {
     TValue? Value { get; }
-    static abstract TId From(TValue? value);
-
+    public static virtual TId From(TValue? value)
+    {
+        return (TId)Activator.CreateInstance(typeof(TId), value)!;
+    }
 }
 
 public interface IId<TId> : IId where TId : IId<TId>

@@ -7,10 +7,10 @@
 		<Title>Core Components</Title>
 	    <Authors>Erçin Akyüz</Authors>
 	    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	    <PackageVersion>1.0.2</PackageVersion>
-	    <Version>1.0.2</Version>
-	    <AssemblyVersion>1.0.2</AssemblyVersion>
-	    <FileVersion>1.0.2</FileVersion>
+	    <PackageVersion>1.0.3</PackageVersion>
+	    <Version>1.0.3</Version>
+	    <AssemblyVersion>1.0.3</AssemblyVersion>
+	    <FileVersion>1.0.3</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,7 +24,7 @@
     </ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">
-		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source D:\nuget\packages" />
+		<Exec Command="nuget add bin/Release/$(AssemblyName).$(PackageVersion).nupkg -source G:\nuget\packages" />
 	</Target>
 
 </Project>

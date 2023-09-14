@@ -1,5 +1,5 @@
 ﻿using System.Collections.Immutable;
-using Company.Framework.Core.Identity;
+using Company.Framework.Core.Id.Abstractions;
 using Company.Framework.Core.Logging;
 using Company.Framework.Domain.Model.Aggregate.Dto;
 using Company.Framework.Domain.Model.Aggregate.Event;
@@ -38,7 +38,7 @@ namespace Company.Framework.Domain.Model.Aggregate
 
     public abstract class AggregateRoot<TAggregate, TId, TState> : AggregateRoot
         where TAggregate : AggregateRoot<TAggregate, TId, TState>
-        where TId : CoreId<TId>
+        where TId : IId<TId>
         where TState : CoreState<TState>
     {
         protected static IReadOnlyDictionary<TState, Func<TAggregate, IEvent>>? EventDelegations;
@@ -49,7 +49,7 @@ namespace Company.Framework.Domain.Model.Aggregate
 
         protected AggregateRoot(CreateAggregateDto createDto) : base(createDto.Created)
         {
-            Id = CoreId<TId>.New();
+            Id = TId.New();
         }
 
         protected AggregateRoot(LoadAggregateDto<TId> loadDto) : base(loadDto.Created, loadDto.Modified)

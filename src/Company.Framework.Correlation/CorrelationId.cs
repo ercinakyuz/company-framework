@@ -1,14 +1,6 @@
-﻿using Company.Framework.Core.Identity;
+﻿using Company.Framework.Core.Id.Implementations;
 
 namespace Company.Framework.Correlation
 {
-    public class CorrelationId : CoreId<CorrelationId, string>
-    {
-        public CorrelationId(string value) : base(value)
-        {
-        }
-        public CorrelationId(IdGenerationType generationType) : base(generationType)
-        {
-        }
-    }
+    public record CorrelationId(string? Value) : IdOfString<CorrelationId>(Value);
 }

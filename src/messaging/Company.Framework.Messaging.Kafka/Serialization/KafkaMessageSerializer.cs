@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Company.Framework.Core.Identity;
+using Company.Framework.Core.Id.Abstractions;
 using Confluent.Kafka;
 
 namespace Company.Framework.Messaging.Kafka.Serialization;
@@ -18,7 +18,7 @@ public class KafkaMessageSerializer<TMessage> : ISerializer<TMessage>
     }
 }
 
-public class KafkaIdSerializer<TId> : ISerializer<TId> where TId: CoreId<TId>
+public class KafkaIdSerializer<TId> : ISerializer<TId> where TId: IId<TId>
 {
     private readonly KafkaSerializationSettings _kafkaSerializationSettings;
 

@@ -1,4 +1,5 @@
-﻿using Company.Framework.Core.Monad;
+﻿using System.Runtime.CompilerServices;
+using Company.Framework.Core.Monad;
 using Company.Framework.Core.Monad.Extensions;
 using Company.Framework.ExampleApi.Data.Entity;
 using Company.Framework.ExampleApi.Data.Repository;
@@ -23,7 +24,7 @@ namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder
                 .ToResult(() => ActionNotFound);
         }
 
-        public async IAsyncEnumerable<Action> BuildAsyncEnumerable(IEnumerable<ActionId> ids, CancellationToken cancellationToken)
+        public async IAsyncEnumerable<Action> BuildAsyncEnumerable(IEnumerable<ActionId> ids, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             await foreach (var entity in _actionRepository.FindAllAsync(e => ids.Contains(ActionId.From(e.Id))).WithCancellation(cancellationToken))
             {

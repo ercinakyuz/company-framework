@@ -1,15 +1,6 @@
-﻿using Company.Framework.Core.Identity;
+﻿using Company.Framework.Core.Id.Implementations;
 
 namespace Company.Framework.Messaging.Envelope
 {
-    public class EnvelopeId : CoreId<EnvelopeId, Guid>
-    {
-        public EnvelopeId(Guid value) : base(value)
-        {
-        }
-
-        public EnvelopeId(IdGenerationType generationType) : base(generationType)
-        {
-        }
-    }
+    public record EnvelopeId(Guid Value) : IdOfGuid<EnvelopeId>(Value);
 }

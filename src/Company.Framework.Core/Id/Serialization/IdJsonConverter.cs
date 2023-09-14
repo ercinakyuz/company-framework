@@ -1,14 +1,15 @@
-﻿using System.Text.Json;
+﻿using Company.Framework.Core.Id.Abstractions;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Company.Framework.Core.Identity.Serialization;
+namespace Company.Framework.Core.Id.Serialization;
 
-public class CoreIdJsonConverter<TId, TValue> : JsonConverter<TId> where TId : CoreId<TId, TValue>
+public class IdJsonConverter<TId, TValue> : JsonConverter<TId> where TId : IId<TId, TValue>
 {
     private readonly JsonConverter<TValue> _valueConverter;
 
 
-    public CoreIdJsonConverter(JsonSerializerOptions options)
+    public IdJsonConverter(JsonSerializerOptions options)
     {
         _valueConverter = (JsonConverter<TValue>)options.GetConverter(typeof(TValue));
     }
@@ -16,7 +17,7 @@ public class CoreIdJsonConverter<TId, TValue> : JsonConverter<TId> where TId : C
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var value = _valueConverter.Read(ref reader, typeof(TValue), options)!;
-        return CoreId<TId, TValue>.From(value);
+        return TId.From(value);
     }
 
     public override void Write(Utf8JsonWriter writer, TId id, JsonSerializerOptions options)

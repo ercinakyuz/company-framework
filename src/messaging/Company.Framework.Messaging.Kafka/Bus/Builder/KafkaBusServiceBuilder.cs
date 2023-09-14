@@ -1,4 +1,4 @@
-﻿using Company.Framework.Core.Identity;
+﻿using Company.Framework.Core.Id.Abstractions;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrying;
@@ -62,7 +62,7 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
             });
         return this;
     }
-    public KafkaBusServiceBuilder WithProducer<TId, TMessage>(string name) where TId : CoreId<TId>
+    public KafkaBusServiceBuilder WithProducer<TId, TMessage>(string name) where TId : IId<TId>
     {
         ServiceCollection.AddSingleton<ITypedKafkaProducer>(serviceProvider =>
         {

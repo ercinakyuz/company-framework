@@ -1,15 +1,9 @@
-﻿using Company.Framework.Core.Identity;
+﻿using Company.Framework.Core.Id.Abstractions;
+using Company.Framework.Core.Id.Implementations;
 
 namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.Value
 {
-    public class ActionId : CoreId<ActionId, Guid>
+    public record ActionId(Guid Value) : IdOfGuid<ActionId>(Value)
     {
-        public ActionId(Guid value) : base(value)
-        {
-        }
-
-        public ActionId(IdGenerationType generationType) : base(generationType)
-        {
-        }
     }
 }

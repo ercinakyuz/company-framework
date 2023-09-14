@@ -1,4 +1,4 @@
-﻿using Company.Framework.Core.Identity;
+﻿using Company.Framework.Core.Id.Abstractions;
 using Company.Framework.Data.Entity;
 using Company.Framework.Data.Repository;
 using Company.Framework.Domain.Model.Aggregate.Converter;
@@ -10,7 +10,7 @@ public abstract class AggregateOfWork<TRepository, TConverter, TAggregate, TAId,
     where TRepository : IRepository<TEntity, TEId>
     where TConverter : IAggregateConverter<TAggregate, TEntity>
     where TAggregate : AggregateRoot<TAggregate, TAId, TState>
-    where TAId : CoreId<TAId, TEId>
+    where TAId : IId<TAId, TEId>
     where TState : CoreState<TState>
     where TEntity : CoreEntity<TEId>
     where TEId : struct

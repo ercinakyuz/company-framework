@@ -25,7 +25,6 @@ public class Action : AggregateRoot<Action, ActionId, ActionState>
 
     private Action(LoadActionDto loadDto) : base(loadDto)
     {
-        ChangeState(ActionState.Loaded);
     }
 
     public static Action Load(LoadActionDto loadDto)

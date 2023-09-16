@@ -4,9 +4,7 @@ namespace Company.Framework.Core.Id.Implementations;
 
 public record IdOfString<TId>(string? Value) : IId<TId, string> where TId : IdOfString<TId>
 {
-    private static readonly TId _empty = From(null);
-
-    public static TId Empty { get => _empty; }
+    public static TId Empty { get; } = From(null);
 
     public static TId New()
     {

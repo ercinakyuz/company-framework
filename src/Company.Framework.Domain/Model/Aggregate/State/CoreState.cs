@@ -1,11 +1,12 @@
 ﻿namespace Company.Framework.Domain.Model.Aggregate.State;
 
-public abstract record CoreState<TState>(string Value) where TState : CoreState<TState>
+public abstract record CoreState<TState>(string Value) : IState<TState> where TState : IState<TState>
 {
-    public static readonly TState Loaded = From("Loaded")!;
+    public static TState Loaded { get; } = TState.From("Loaded");
+    public static TState Created { get; } = TState.From("Created");
 
-    public static TState? From(string? value)
+    public static TState From(string value)
     {
-        return string.IsNullOrWhiteSpace(value) ? default : (TState)Activator.CreateInstance(typeof(TState), value)!;
+        return (TState)Activator.CreateInstance(typeof(TState), value)!;
     }
 }

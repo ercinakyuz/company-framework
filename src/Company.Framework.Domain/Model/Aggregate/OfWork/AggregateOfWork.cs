@@ -11,7 +11,7 @@ public abstract class AggregateOfWork<TRepository, TConverter, TAggregate, TAId,
     where TConverter : IAggregateConverter<TAggregate, TEntity>
     where TAggregate : AggregateRoot<TAggregate, TAId, TState>
     where TAId : IId<TAId, TEId>
-    where TState : CoreState<TState>
+    where TState : IState<TState>
     where TEntity : CoreEntity<TEId>
     where TEId : struct
 {

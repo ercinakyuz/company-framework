@@ -39,22 +39,24 @@ namespace Company.Framework.Domain.Model.Aggregate
     public abstract class AggregateRoot<TAggregate, TId, TState> : AggregateRoot
         where TAggregate : AggregateRoot<TAggregate, TId, TState>
         where TId : IId<TId>
-        where TState : CoreState<TState>
+        where TState : IState<TState>
     {
         protected static IReadOnlyDictionary<TState, Func<TAggregate, IEvent>>? EventDelegations;
 
         public TId Id { get; }
 
-        public TState? State { get; private set; }
+        public TState State { get; private set; }
 
         protected AggregateRoot(CreateAggregateDto createDto) : base(createDto.Created)
         {
             Id = TId.New();
+            State = TState.Created;
         }
 
         protected AggregateRoot(LoadAggregateDto<TId> loadDto) : base(loadDto.Created, loadDto.Modified)
         {
             Id = loadDto.Id;
+            State = TState.Loaded;
         }
 
         protected override TAggregate Modify(Log modified)
@@ -69,14 +71,13 @@ namespace Company.Framework.Domain.Model.Aggregate
         }
         protected virtual TAggregate ApplyEvents()
         {
-            if (EventDelegations is not null && State is not null
-                && EventDelegations.TryGetValue(State, out var eventDelegation))
+            if (EventDelegations is not null && EventDelegations.TryGetValue(State, out var eventDelegation))
                 AddEvent(eventDelegation((TAggregate)this));
             return (TAggregate)this;
         }
         public virtual bool HasAnyChanges()
         {
-            return !CoreState<TState>.Loaded.Equals(State);
+            return TState.Loaded.Equals(State);
         }
     }
 }

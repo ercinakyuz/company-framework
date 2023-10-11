@@ -11,7 +11,7 @@ public class MongoDbContext : IMongoDbContext
         _database = database;
     }
 
-    public IMongoCollection<TEntity> GetCollection<TEntity>() => _database.GetCollection<TEntity>($"{typeof(TEntity).Name}");
+    public IMongoCollection<TEntity> GetCollection<TEntity>() => GetCollection<TEntity>($"{typeof(TEntity).Name}");
 
     public IMongoCollection<TEntity> GetCollection<TEntity>(string name) => _database.GetCollection<TEntity>(name);
 }

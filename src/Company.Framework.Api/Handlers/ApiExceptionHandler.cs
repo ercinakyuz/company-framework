@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Company.Framework.Api.Handlers
 {
-    public class ApiExceptionHandler
+    public class ApiExceptionHandler : IExceptionHandler
     {
         private readonly ILogger _logger;
         private readonly ErrorContractBuilder _errorContractBuilder;
@@ -31,9 +31,8 @@ namespace Company.Framework.Api.Handlers
             _errorContractBuilder = errorContractBuilder;
         }
 
-        public async Task Handle(HttpContext context)
+        public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            var exception = context.Features.Get<IExceptionHandlerPathFeature>()!.Error;
             var errorResponse = new ErrorResponse();
             ExceptionState exceptionState;
             if (exception is StatefulCoreException coreException)
@@ -52,8 +51,9 @@ namespace Company.Framework.Api.Handlers
             }
 
 
-            context.Response.StatusCode = (int)HttpStatusCodeFromExceptionState[exceptionState];
-            await context.Response.WriteAsJsonAsync(errorResponse);
+            httpContext.Response.StatusCode = (int)HttpStatusCodeFromExceptionState[exceptionState];
+            await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
+            return true;
         }
 
         private static Dictionary<string, object> BuildExceptionScopeState(StatefulCoreException exception)

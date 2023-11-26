@@ -6,7 +6,11 @@ public static class MediatorServiceCollectionExtensions
 {
     public static MediatorServiceBuilder AddMediator(this IServiceCollection services)
     {
-        services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+        services.AddMediatR(configuration =>
+        {
+            configuration.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            configuration.AutoRegisterRequestProcessors = true;
+        });
         return new MediatorServiceBuilder(services);
     }
 }

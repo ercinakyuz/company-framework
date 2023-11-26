@@ -6,13 +6,7 @@ public record IdOfString<TId>(string? Value) : IId<TId, string> where TId : IdOf
 {
     public static TId Empty { get; } = From(null);
 
-    public static TId New()
-    {
-        return From(Guid.NewGuid().ToString());
-    }
+    public static TId New() => From(Guid.NewGuid().ToString());
 
-    public static TId From(string? value)
-    {
-        return (TId)Activator.CreateInstance(typeof(TId), value)!;
-    }
+    public static TId From(string? value) => (TId)Activator.CreateInstance(typeof(TId), value)!;
 }

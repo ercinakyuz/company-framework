@@ -10,7 +10,7 @@ namespace Company.Framework.Api.Extensions
         {
             return services
                 .AddSingleton<ErrorContractBuilder>()
-                .AddSingleton<ApiExceptionHandler>();
+                .AddExceptionHandler<ApiExceptionHandler>();
         }
     }
 }

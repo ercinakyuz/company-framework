@@ -1,5 +1,4 @@
-﻿using Company.Framework.Application.Validation.Processors;
-using Company.Framework.Mediator.Extensions;
+﻿using Company.Framework.Mediator.Extensions;
 using Company.Framework.Validation.Extensions;
 
 namespace Company.Framework.ExampleApi.Application.Extensions
@@ -10,7 +9,10 @@ namespace Company.Framework.ExampleApi.Application.Extensions
         {
             return serviceCollection
                 .AddValidation()
-                .AddMediator().WithPreProcessor(typeof(CommandValidationProcessor<>)).Build();
+                .AddMediator()
+                //TODO: Remove when pre processors fully compatible with auto configuration
+                //.WithCommandValidation()
+                .Build();
 
         }
     }

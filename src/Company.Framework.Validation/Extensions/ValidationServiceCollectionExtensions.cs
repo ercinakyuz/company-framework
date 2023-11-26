@@ -7,7 +7,7 @@ namespace Company.Framework.Validation.Extensions
     {
         public static IServiceCollection AddValidation(this IServiceCollection services)
         {
-            return services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            return services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(),ServiceLifetime.Singleton);
         }
     }
 }

@@ -17,9 +17,7 @@ public class InternalLocalizationContext<TResource> : ILocalizationContext
     public string GetMessage(string? key = default)
     {
         if (string.IsNullOrWhiteSpace(key))
-        {
             key = GenericError.Code;
-        }
 
         var localizedString = _stringLocalizer[key];
 

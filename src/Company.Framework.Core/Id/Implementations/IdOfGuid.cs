@@ -6,10 +6,8 @@ public abstract record IdOfGuid<TId>(Guid Value) : IId<TId, Guid> where TId : Id
 {
     public static TId Empty { get; } = From(Guid.Empty);
 
-    public static TId From(Guid value) => TId.From(value);
+    public static TId New() => From(Guid.NewGuid());
 
-    public static TId New()
-    {
-        return From(Guid.NewGuid());
-    }
+    public static TId From(Guid value) => (TId)Activator.CreateInstance(typeof(TId), value)!;
+
 }

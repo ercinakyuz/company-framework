@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Company.Framework.Core.Error;
+using FluentValidation;
 using MediatR.Pipeline;
 using static Company.Framework.Core.Exception.ExceptionState;
 using ApplicationException = Company.Framework.Application.Exception.ApplicationException;
@@ -20,7 +21,7 @@ namespace Company.Framework.Application.Validation.Processors
             if (!result.IsValid)
             {
                 var error = result.Errors.First();
-                throw new ApplicationException(Invalid, new(error.ErrorCode, error.ErrorMessage));
+                throw new ApplicationException(Invalid, new CoreError(error.ErrorCode, error.ErrorMessage));
             }
         }
     }

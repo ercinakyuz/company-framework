@@ -1,9 +1,7 @@
-﻿using Company.Framework.Api.Handlers;
-using Company.Framework.Api.Localization.Extensions;
+﻿using Company.Framework.Api.Localization.Extensions;
 using Company.Framework.Api.Middlewares;
 using CorrelationId;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Api.Extensions
 {
@@ -18,8 +16,7 @@ namespace Company.Framework.Api.Extensions
                 .UseCorrelationId()
                 .UseLocalization()
                 .UseMiddleware<LogHandlerMiddleware>()
-                .UseExceptionHandler(app =>
-                    app.Run(app.ApplicationServices.GetRequiredService<ApiExceptionHandler>().Handle));
+                .UseExceptionHandler(options=>{});
 
 
         }

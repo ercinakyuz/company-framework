@@ -1,7 +1,7 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Company.Framework.Api.Extensions;
 using Company.Framework.Api.Localization.Extensions;
+using Company.Framework.Core.Id.Serialization;
 using Company.Framework.Core.Serialization.Extensions;
 using Company.Framework.Correlation.Extensions;
 using Company.Framework.ExampleApi;
@@ -25,6 +25,7 @@ services.AddControllers()
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new IdJsonConverterFactory());
     });
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();

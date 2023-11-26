@@ -21,17 +21,17 @@ namespace Company.Framework.ExampleApi.Controllers
 
         [HttpPost]
         [Route("ping")]
-        public async Task<IActionResult> Ping()
+        public async Task<IActionResult> Ping([FromBody] PingActionRequest request)
         {
-            var id = await _sender.Send(new PingCommand());
+            var id = await _sender.Send(new PingCommand(request.By));
             return Created("", id);
         }
 
         [HttpPatch]
         [Route("pong/{id}")]
-        public async Task<IActionResult> Pong(Guid id, [FromBody] PongActionRequest request)
+        public async Task<IActionResult> Pong([FromRoute] Guid id, [FromBody] PongActionRequest request)
         {
-            await _sender.Send(new PongCommand(ActionId.From(id),Log.Load(request.By)));
+            await _sender.Send(new PongCommand(id, request.By));
             return Ok();
         }
     }

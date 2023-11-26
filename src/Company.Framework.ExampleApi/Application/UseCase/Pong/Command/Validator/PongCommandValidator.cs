@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
+using FluentValidation;
 
 namespace Company.Framework.ExampleApi.Application.UseCase.Pong.Command.Validator
 {
@@ -7,6 +8,7 @@ namespace Company.Framework.ExampleApi.Application.UseCase.Pong.Command.Validato
         public PongCommandValidator()
         {
             RuleFor(command => command.Id).NotEmpty();
+            RuleFor(command => command.By).NotEmpty();
         }
     }
 }

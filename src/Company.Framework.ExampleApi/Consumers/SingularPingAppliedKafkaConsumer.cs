@@ -1,24 +1,23 @@
-﻿using Company.Framework.Core.Logging;
+﻿using Company.Framework.Domain.Model.Aggregate.Event.Dispatcher;
 using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
 using Company.Framework.ExampleApi.Consumers.Messages;
+using Company.Framework.Messaging.Envelope.Consumer;
 using MediatR;
 
 namespace Company.Framework.ExampleApi.Consumers;
 
-public class SingularPingAppliedKafkaConsumer : INotificationHandler<PingAppliedKafkaEnvelope>
+public class SingularPingAppliedKafkaConsumer : CoreEnvelopeConsumer<PingAppliedKafkaEnvelope>
 {
     private readonly ISender _sender;
-    private readonly ILogger _logger;
 
-    public SingularPingAppliedKafkaConsumer(ISender sender, ILogger<SingularPingAppliedKafkaConsumer> logger)
+    public SingularPingAppliedKafkaConsumer(ISender sender, IApplicationContextBuilder applicationContextBuilder, ILogger<SingularPingAppliedKafkaConsumer> logger) 
+        : base(applicationContextBuilder, logger)
     {
         _sender = sender;
-        _logger = logger;
     }
 
-    public async Task Handle(PingAppliedKafkaEnvelope notification, CancellationToken cancellationToken)
+    public override async Task Consume(PingAppliedKafkaEnvelope notification, CancellationToken cancellationToken)
     {
         await _sender.Send(new PongCommand(notification.Message.AggregateId.Value, notification.Created.By), cancellationToken);
-        _logger.LogInformation("Singular PingApplied KafkaEvent consumed, {notification}", notification);
     }
 }

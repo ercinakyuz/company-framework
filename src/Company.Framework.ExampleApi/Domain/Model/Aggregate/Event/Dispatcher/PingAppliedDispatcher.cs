@@ -1,7 +1,9 @@
-﻿using Company.Framework.Domain.Model.Aggregate.Event.Dispatcher;
+﻿using Company.Framework.Core.Tenancy.Models;
+using Company.Framework.Domain.Model.Aggregate.Event.Dispatcher;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.Messaging.Bus.Provider;
 using Company.Framework.Messaging.Envelope;
+using Company.Framework.Messaging.Envelope.Builder;
 using Company.Framework.Messaging.Kafka.Producer;
 using Company.Framework.Messaging.RabbitMq.Producer;
 using Company.Framework.Messaging.Sqs.Bus;
@@ -28,9 +30,9 @@ public class PingAppliedDispatcher : CoreEventDispatcher<PingApplied>
     private readonly ISqsProducer _actionSqsProducer1;
 
     public PingAppliedDispatcher(IBusProvider busProvider,
-        ICorrelationContextAccessor correlationContextAccessor,
+        EnvelopeBuilder envelopeBuilder,
         ILogger<PingAppliedDispatcher> logger)
-        : base(correlationContextAccessor, logger)
+        : base(envelopeBuilder, logger)
     {
         //var actionKafka1Bus = busProvider.Resolve<IKafkaBus>("ActionKafka-1");
         //var actionKafka2Bus = busProvider.Resolve<IKafkaBus>("ActionKafka-2");
@@ -62,7 +64,7 @@ public class PingAppliedDispatcher : CoreEventDispatcher<PingApplied>
             //_actionKafkaProducer2.ProduceAsync(kafkaProducerArgs, cancellationToken),
             //_actionRabbitProducer1.ProduceAsync(rabbitProducerArgs, cancellationToken),
             //_actionRabbitProducer2.ProduceAsync(rabbitProducerArgs, cancellationToken),
-            _actionSqsProducer1.ProduceAsync(sqsProducerArgs,cancellationToken)
+            _actionSqsProducer1.ProduceAsync(sqsProducerArgs, cancellationToken)
         );
     }
 }

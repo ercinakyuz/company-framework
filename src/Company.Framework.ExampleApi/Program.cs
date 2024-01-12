@@ -3,6 +3,7 @@ using Company.Framework.Api.Extensions;
 using Company.Framework.Api.Localization.Extensions;
 using Company.Framework.Core.Id.Serialization;
 using Company.Framework.Core.Serialization.Extensions;
+using Company.Framework.Core.Tenancy.Extensions;
 using Company.Framework.Correlation.Extensions;
 using Company.Framework.ExampleApi;
 using Company.Framework.ExampleApi.Application.Extensions;
@@ -10,6 +11,8 @@ using Company.Framework.ExampleApi.Bus.Extensions;
 using Company.Framework.ExampleApi.Data.Extensions;
 using Company.Framework.ExampleApi.Domain.Extensions;
 using Company.Framework.ExampleApi.Http.Extensions;
+using Company.Framework.ExampleApi.Tenancy.Extensions;
+using Company.Framework.Infrastructure.Application.Context.Extensions;
 using Company.Framework.Logging.Extensions;
 using Company.Framework.Socket.Extensions;
 
@@ -38,6 +41,8 @@ services.AddHttpClients();
 services.AddApiExceptionHandler();
 services.AddLocalization<ExampleApiResource>();
 services.AddSocket();
+services.AddTenancy();
+services.AddNonApiApplicationContext();
 
 var hostBuilder = builder.Host;
 hostBuilder.WithSerilog();
@@ -57,11 +62,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseApi();
 
+app.UseMultiTenantApi();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.UseSocket<MyHub>("/hub");
-
 
 app.Run();

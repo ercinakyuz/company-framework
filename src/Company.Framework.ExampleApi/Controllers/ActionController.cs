@@ -1,7 +1,5 @@
-﻿using Company.Framework.Core.Logging;
-using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
+﻿using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
 using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
-using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.ExampleApi.Models.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

@@ -1,10 +1,11 @@
 ﻿using Company.Framework.Core.Logging;
+using Company.Framework.Core.Tenancy.Models;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Event;
 using Company.Framework.Messaging.Envelope;
 using MediatR;
 
 namespace Company.Framework.ExampleApi.Consumers.Messages;
 
-public record PingAppliedKafkaEnvelope(EnvelopeId Id, PingApplied Message, Log Created, Correlation.CorrelationId? CorrelationId = null)
-    : Envelope<PingApplied>(Id, Message, Created, CorrelationId), INotification
+public record PingAppliedKafkaEnvelope(EnvelopeId Id, PingApplied Message, Log Created, TenantId? TenantId, Correlation.CorrelationId? CorrelationId = null)
+    : Envelope<PingApplied>(Id, Message, Created, TenantId, CorrelationId), INotification
 { }

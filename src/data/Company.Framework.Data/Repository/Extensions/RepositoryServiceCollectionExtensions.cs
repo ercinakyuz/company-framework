@@ -16,7 +16,8 @@ namespace Company.Framework.Data.Repository.Extensions
                 .AddSingleton<TAbstraction, TImplementation>(serviceProvider =>
                 {
                     var dbContext = serviceProvider.GetRequiredService<IDbProvider>().Resolve<IDbContextProvider<TContext>>(settings.Instance).Resolve(settings.Context);
-                    return settings.TableOrCollection is null ? ActivatorUtilities.CreateInstance<TImplementation>(serviceProvider, dbContext) : ActivatorUtilities.CreateInstance<TImplementation>(serviceProvider, dbContext, settings.TableOrCollection);
+                    return settings.TableOrCollection is null ? ActivatorUtilities.CreateInstance<TImplementation>(serviceProvider, dbContext) 
+                        : ActivatorUtilities.CreateInstance<TImplementation>(serviceProvider, dbContext, settings.TableOrCollection);
                 });
         }
     }

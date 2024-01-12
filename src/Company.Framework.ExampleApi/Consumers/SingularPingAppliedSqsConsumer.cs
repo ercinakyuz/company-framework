@@ -1,24 +1,24 @@
 ﻿using Company.Framework.Core.Logging;
+using Company.Framework.Domain.Model.Aggregate.Event.Dispatcher;
 using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
 using Company.Framework.ExampleApi.Consumers.Messages;
+using Company.Framework.Messaging.Envelope.Consumer;
 using MediatR;
 
 namespace Company.Framework.ExampleApi.Consumers;
 
-public class SingularPingAppliedSqsConsumer : INotificationHandler<PingAppliedSqsEnvelope>
+public class SingularPingAppliedSqsConsumer : CoreEnvelopeConsumer<PingAppliedSqsEnvelope>
 {
     private readonly ISender _sender;
-    private readonly ILogger _logger;
 
-    public SingularPingAppliedSqsConsumer(ISender sender, ILogger<PingAppliedSqsEnvelope> logger)
+    public SingularPingAppliedSqsConsumer(ISender sender, IApplicationContextBuilder applicationContextBuilder, ILogger<SingularPingAppliedSqsConsumer> logger)
+        : base(applicationContextBuilder, logger)
     {
-        _logger = logger;
         _sender = sender;
     }
 
-    public async Task Handle(PingAppliedSqsEnvelope notification, CancellationToken cancellationToken)
+    public override async Task Consume(PingAppliedSqsEnvelope notification, CancellationToken cancellationToken)
     {
         await _sender.Send(new PongCommand(notification.Message.AggregateId.Value, notification.Created.By), cancellationToken);
-        _logger.LogInformation("Singular PingApplied RabbitEvent consumed, {notification}", notification);
     }
 }

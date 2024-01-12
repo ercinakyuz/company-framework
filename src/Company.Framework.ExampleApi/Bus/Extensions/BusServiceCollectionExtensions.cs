@@ -5,6 +5,7 @@ using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Bus.Extensions;
 using Company.Framework.Messaging.Consumer.Retrying;
 using Company.Framework.Messaging.Envelope;
+using Company.Framework.Messaging.Extensions;
 using Company.Framework.Messaging.Kafka.Bus.Extensions;
 using Company.Framework.Messaging.RabbitMq.Bus.Extensions;
 using Company.Framework.Messaging.Sqs.Bus.Extensions;

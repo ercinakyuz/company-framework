@@ -1,0 +1,29 @@
+﻿using Company.Framework.Core.Tenancy.Models;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Company.Framework.Core.Tenancy.Extensions
+{
+    public static class TenancyServiceCollectionExtensions
+    {
+        public static IServiceCollection AddTenancy(this IServiceCollection services)
+        {
+            return services.AddProvider().AddContext();
+        }
+
+        private static IServiceCollection AddProvider(this IServiceCollection services)
+        {
+            return services
+                .AddSingleton<TenantProvider>()
+                .AddSingleton<ITenantRegistrar>(serviceProvider => serviceProvider.GetRequiredService<TenantProvider>())
+                .AddSingleton<ITenantResolver>(serviceProvider => serviceProvider.GetRequiredService<TenantProvider>());
+        }
+
+        private static IServiceCollection AddContext(this IServiceCollection services)
+        {
+            return services
+                .AddSingleton<TenantContext>()
+                .AddSingleton<ITenantBuilder>(serviceProvider => serviceProvider.GetRequiredService<TenantContext>())
+                .AddSingleton<ITenantAccessor>(serviceProvider => serviceProvider.GetRequiredService<TenantContext>());
+        }
+    }
+}

@@ -40,7 +40,7 @@ services.AddBusComponents();
 services.AddHttpClients();
 services.AddApiExceptionHandler();
 services.AddLocalization<ExampleApiResource>();
-services.AddSocket();
+//services.AddSocket();
 services.AddTenancy();
 services.AddNonApiApplicationContext();
 
@@ -68,6 +68,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseSocket<MyHub>("/hub");
+//app.UseSocket<MyHub>("/hub");
 
 app.Run();

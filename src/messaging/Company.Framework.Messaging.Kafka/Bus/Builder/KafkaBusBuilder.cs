@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Company.Framework.Messaging.Bus;
+﻿using Company.Framework.Messaging.Bus;
 using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Kafka.AdminClient.Context.Provider;
 using Company.Framework.Messaging.Kafka.Producer.Context.Provider;
@@ -21,13 +20,10 @@ public class KafkaBusBuilder : CoreBusBuilder<KafkaBusBuilder>
     internal KafkaBusBuilder WithDefaultSerialization()
     {
         ServiceCollection
-            .AddSingleton(typeof(KafkaMessageSerializer<>))
             .AddSingleton(typeof(KafkaIdSerializer<>))
-            .AddSingleton(typeof(KafkaMessageDeserializer<>))
-            .AddSingleton(_ => new KafkaSerializationSettings(new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            }));
+            .AddSingleton(typeof(KafkaMessageSerializer<>))
+            .AddSingleton(typeof(KafkaIdDeserializer<>))
+            .AddSingleton(typeof(KafkaMessageDeserializer<>));
         return this;
     }
     internal KafkaBusBuilder WithProviders()

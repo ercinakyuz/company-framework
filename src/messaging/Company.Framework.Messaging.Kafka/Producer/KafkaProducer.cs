@@ -1,4 +1,5 @@
-﻿using Company.Framework.Messaging.Kafka.Model;
+﻿using Company.Framework.Core.Id.Abstractions;
+using Company.Framework.Messaging.Kafka.Model;
 using Company.Framework.Messaging.Kafka.Producer.Args;
 using Company.Framework.Messaging.Kafka.Producer.Context;
 using Company.Framework.Messaging.Kafka.Producer.Settings;
@@ -11,9 +12,9 @@ namespace Company.Framework.Messaging.Kafka.Producer
         public string BusName { get; }
         public string Name { get; }
 
-        private readonly IProducer<Null, object> _producer;
+        private readonly IProducer<Ignore, object> _producer;
 
-        public KafkaProducer(KafkaProducerSettings settings, IProducer<Null, object> producer)
+        public KafkaProducer(KafkaProducerSettings settings, IProducer<Ignore, object> producer)
         {
             _producer = producer;
             (Name, BusName) = settings;
@@ -21,7 +22,7 @@ namespace Company.Framework.Messaging.Kafka.Producer
 
         public async Task ProduceAsync(KafkaProduceArgs args, CancellationToken cancellationToken)
         {
-            await _producer.ProduceAsync(args.Topic, new Message<Null, object>
+            await _producer.ProduceAsync(args.Topic, new Message<Ignore, object>
             {
                 Value = args.Message,
                 Headers = args.Headers as Headers
@@ -29,7 +30,7 @@ namespace Company.Framework.Messaging.Kafka.Producer
         }
     }
 
-    public class KafkaProducer<TId, TMessage> : IKafkaProducer<TId, TMessage>
+    public class KafkaProducer<TId, TMessage> : IKafkaProducer<TId, TMessage> where TId : IId<TId> where TMessage : notnull
     {
         private readonly IProducer<TId, TMessage> _producer;
 

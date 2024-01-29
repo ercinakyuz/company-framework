@@ -23,7 +23,7 @@
 		<ProjectReference Include="..\..\Company.Framework.Mediator\Company.Framework.Mediator.csproj" />
 	</ItemGroup>
 	<Target Name="NugetAdd" AfterTargets="Pack">
-		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source G:\nuget\packages" />
+		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source D:\nuget\packages" />
 	</Target>
 
 </Project>

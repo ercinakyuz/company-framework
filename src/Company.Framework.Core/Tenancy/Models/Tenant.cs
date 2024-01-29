@@ -54,11 +54,8 @@ namespace Company.Framework.Core.Tenancy.Models
         string Name { get; }
     }
 
-    public record TenantId : IdOfInteger<TenantId>
+    public record TenantId(int? Value) : IdOfInteger<TenantId>(Value)
     {
-        public TenantId(int Value) : base(Value)
-        {
-        }
     }
 
     internal class TenantContext : ITenantBuilder, ITenantAccessor

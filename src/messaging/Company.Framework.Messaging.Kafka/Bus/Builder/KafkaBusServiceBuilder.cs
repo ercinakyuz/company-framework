@@ -62,7 +62,7 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
             });
         return this;
     }
-    public KafkaBusServiceBuilder WithProducer<TId, TMessage>(string name) where TId : IId<TId>
+    public KafkaBusServiceBuilder WithProducer<TId, TMessage>(string name) where TId : IId<TId> where TMessage : notnull
     {
         ServiceCollection.AddSingleton<ITypedKafkaProducer>(serviceProvider =>
         {
@@ -94,12 +94,17 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
                 var consumerGroupId = consumerSection.GetSection("GroupId").Value;
+                var kafkaIdDeserializer = serviceProvider.GetRequiredService<KafkaIdDeserializer<TId>>();
                 var consumer = new ConsumerBuilder<TId, TMessage>(new ConsumerConfig
                 {
                     BootstrapServers = NodesFromConfiguration(configuration),
                     GroupId = consumerGroupId ?? configuration.GetSection($"{KafkaPrefix}:Defaults:ConsumerGroupId").Value,
-                    AutoOffsetReset = AutoOffsetReset.Earliest
-                }).SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>()).Build();
+                    AutoOffsetReset = AutoOffsetReset.Latest
+                })
+                //Resolve TId constraint without duplicating this method!
+                .SetKeyDeserializer(serviceProvider.GetRequiredService<KafkaIdDeserializer<TId>>())
+                .SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>())
+                .Build();
                 var topic = consumerSection.GetSection("Topic").Value;
                 var settings = new KafkaConsumerSettings(name, topic);
                 IKafkaConsumerRetryingHandler? retrialContext = default;

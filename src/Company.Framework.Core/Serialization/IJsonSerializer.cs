@@ -10,5 +10,7 @@
         TValue Deserialize<TValue>(string json);
 
         TValue Deserialize<TValue>(byte[] utf8Json);
+
+        TValue Deserialize<TValue>(ReadOnlySpan<byte> span);
     }
 }

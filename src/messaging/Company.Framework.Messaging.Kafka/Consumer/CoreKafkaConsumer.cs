@@ -92,10 +92,8 @@ namespace Company.Framework.Messaging.Kafka.Consumer
                 }
                 catch (CreateTopicsException exception)
                 {
-                    if (exception.Error.Code != ErrorCode.TopicAlreadyExists)
-                    {
+                    if (exception.Results.Any(result => result.Error.Code != ErrorCode.TopicAlreadyExists))
                         throw;
-                    }
                 }
 
                 _consumer.Subscribe(new[] { _settings.Topic, retryTopicSettings.Name });

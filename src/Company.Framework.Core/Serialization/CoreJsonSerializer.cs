@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Company.Framework.Core.Serialization;
 
@@ -37,5 +38,10 @@ public class CoreJsonSerializer : IJsonSerializer
     public TValue Deserialize<TValue>(byte[] utf8Json)
     {
         return JsonSerializer.Deserialize<TValue>(utf8Json, _options) ?? throw new SerializationException();
+    }
+
+    public TValue Deserialize<TValue>(ReadOnlySpan<byte> span)
+    {
+        return Deserialize<TValue>(span.ToArray());
     }
 }

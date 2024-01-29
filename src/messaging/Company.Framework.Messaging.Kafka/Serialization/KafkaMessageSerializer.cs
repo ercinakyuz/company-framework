@@ -1,33 +1,20 @@
 ﻿using System.Text.Json;
-using Company.Framework.Core.Id.Abstractions;
+using Company.Framework.Core.Serialization;
 using Confluent.Kafka;
 
 namespace Company.Framework.Messaging.Kafka.Serialization;
 
-public class KafkaMessageSerializer<TMessage> : ISerializer<TMessage>
+public class KafkaMessageSerializer<TMessage> : ISerializer<TMessage> where TMessage : notnull
 {
-    private readonly KafkaSerializationSettings _kafkaSerializationSettings;
+    private readonly IJsonSerializer _serializer;
 
-    public KafkaMessageSerializer(KafkaSerializationSettings kafkaSerializationSettings)
+    public KafkaMessageSerializer(IJsonSerializer serializer)
     {
-        _kafkaSerializationSettings = kafkaSerializationSettings;
+        _serializer = serializer;
     }
+
     public byte[] Serialize(TMessage message, SerializationContext context)
     {
-        return JsonSerializer.SerializeToUtf8Bytes(message, _kafkaSerializationSettings.JsonSerializerOptions);
-    }
-}
-
-public class KafkaIdSerializer<TId> : ISerializer<TId> where TId: IId<TId>
-{
-    private readonly KafkaSerializationSettings _kafkaSerializationSettings;
-
-    public KafkaIdSerializer(KafkaSerializationSettings kafkaSerializationSettings)
-    {
-        _kafkaSerializationSettings = kafkaSerializationSettings;
-    }
-    public byte[] Serialize(TId id, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(id.ToString(), _kafkaSerializationSettings.JsonSerializerOptions);
+        return _serializer.SerializeToUtf8Bytes(message);
     }
 }

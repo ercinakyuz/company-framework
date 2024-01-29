@@ -5,7 +5,6 @@ using Company.Framework.Messaging.Bus.Builder;
 using Company.Framework.Messaging.Bus.Extensions;
 using Company.Framework.Messaging.Consumer.Retrying;
 using Company.Framework.Messaging.Envelope;
-using Company.Framework.Messaging.Extensions;
 using Company.Framework.Messaging.Kafka.Bus.Extensions;
 using Company.Framework.Messaging.RabbitMq.Bus.Extensions;
 using Company.Framework.Messaging.Sqs.Bus.Extensions;
@@ -17,7 +16,7 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         public static IServiceCollection AddBusComponents(this IServiceCollection serviceCollection)
         {
             return serviceCollection.BusServiceBuilder()
-                //.AddKafkaComponents()
+                .AddKafkaComponents()
                 //.AddRabbitComponents()
                 //.AddSqsComponents()
                 .BuildBusServices();
@@ -29,11 +28,11 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
             return mainBusServiceBuilder.WithKafka()
                 .WithBus("ActionKafka-1")
                 .WithProducer<ActionId, Envelope<PingApplied>>("PingApplied")
-                .ThatConsume<PingAppliedKafkaEnvelope>("PingApplied", ConsumerRetriability.Default)
+                .ThatConsume<ActionId, PingAppliedKafkaEnvelope>("PingApplied", ConsumerRetriability.Default)
                 .BuildBus()
-                .WithBus("ActionKafka-2")
-                .WithProducer<ActionId, Envelope<PingApplied>>("PingApplied")
-                .BuildBus()
+                //.WithBus("ActionKafka-2")
+                //.WithProducer<ActionId, Envelope<PingApplied>>("PingApplied")
+                //.BuildBus()
                 .BuildKafka();
         }
 
@@ -41,7 +40,7 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         {
             return mainBusServiceBuilder.WithRabbit()
                 .WithBus("ActionRabbit-1")
-                .ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
+                //.ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
                 .BuildBus()
                 //.WithBus("ActionRabbit-2")
                 //.ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)

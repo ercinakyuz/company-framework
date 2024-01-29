@@ -1,22 +1,22 @@
 ﻿using System.Runtime.Serialization;
-using System.Text.Json;
+using Company.Framework.Core.Serialization;
 using Confluent.Kafka;
 
 namespace Company.Framework.Messaging.Kafka.Serialization;
 
 public class KafkaMessageDeserializer<TMessage> : IDeserializer<TMessage>
 {
-    private readonly KafkaSerializationSettings _kafkaSerializationSettings;
+    private readonly IJsonSerializer _jsonSerializer;
 
-    public KafkaMessageDeserializer(KafkaSerializationSettings kafkaSerializationSettings)
+    public KafkaMessageDeserializer(IJsonSerializer jsonSerializer)
     {
-        _kafkaSerializationSettings = kafkaSerializationSettings;
+        _jsonSerializer = jsonSerializer;
     }
+
     public TMessage Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
     {
         if (isNull)
             throw new SerializationException("Byte array of message cannot be null");
-        return JsonSerializer.Deserialize<TMessage>(data, _kafkaSerializationSettings.JsonSerializerOptions) 
-               ?? throw new SerializationException("Cannot serialize given message");
+        return _jsonSerializer.Deserialize<TMessage>(data) ?? throw new SerializationException("Cannot serialize given message");
     }
 }

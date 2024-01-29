@@ -13,7 +13,7 @@ public abstract record IdOfGuid<TId>(Guid Value) : IId<TId, Guid> where TId : Id
 
     public static TId FromBytes(ReadOnlySpan<byte> bytes)
     {
-        return Guid.TryParse(Encoding.UTF8.GetString(bytes), out var value) ? From(value) : Empty;
+        return From(new Guid(bytes));
     }
 
     public byte[] GetBytes()

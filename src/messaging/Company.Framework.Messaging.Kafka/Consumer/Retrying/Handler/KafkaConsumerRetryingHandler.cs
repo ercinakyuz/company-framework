@@ -8,7 +8,6 @@ using Company.Framework.Messaging.Kafka.Producer;
 using Company.Framework.Messaging.Kafka.Producer.Args;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Company.Framework.Messaging.Kafka.Consumer.Retrying.Handler;
 
@@ -38,16 +37,15 @@ public class KafkaConsumerRetryingHandler : IKafkaConsumerRetryingHandler
         {
             var currentHeaders = (Headers)args.Attributes;
             var retryAttempts = currentHeaders.TryGetLastBytes(RetryAttemptsHeaderKey, out var lastHeader)
-                ? JsonSerializer.Deserialize<short>(lastHeader)
+                ? BitConverter.ToInt16(lastHeader)
                 : (short)0;
             if (_settings.Count > retryAttempts)
             {
                 retryAttempts++;
                 await _delayStrategy.DelayAsync(new DelayStrategyArgs(_settings.Delay.Interval, retryAttempts), cancellationToken).ConfigureAwait(false);
-                var nextHeaders = new Headers { { RetryAttemptsHeaderKey, JsonSerializer.SerializeToUtf8Bytes(retryAttempts) } };
+                var nextHeaders = new Headers { { RetryAttemptsHeaderKey, BitConverter.GetBytes(retryAttempts) } };
                 await _producer.ProduceAsync(new KafkaProduceArgs(TopicSettings.Name, args.Message, nextHeaders), cancellationToken).ConfigureAwait(false);
-                _logger.LogInformation("Timestamp: {0} Message sent to the retry topic: {1} for number of {2} tries: {3}", DateTime.Now, _settings.Topic,
-                    retryAttempts, args.Message);
+                _logger.LogInformation("Message sent to the retry topic: {topic} for number of {attempts} tries: {message}", _settings.Topic, retryAttempts, args.Message);
             }
         }
     }

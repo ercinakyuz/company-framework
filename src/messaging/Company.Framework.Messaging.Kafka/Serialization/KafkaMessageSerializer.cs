@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Company.Framework.Core.Serialization;
+﻿using Company.Framework.Core.Serialization;
 using Confluent.Kafka;
 
 namespace Company.Framework.Messaging.Kafka.Serialization;

@@ -82,59 +82,106 @@ public class KafkaBusServiceBuilder : CoreBusServiceBuilder<KafkaBusBuilder>
     public KafkaBusServiceBuilder WithConsumer<TConsumer, TMessage>(string name, ConsumerRetriability? retriability = default)
         where TConsumer : CoreKafkaConsumer<TMessage>
     {
-        return WithConsumer<TConsumer, Ignore, TMessage>(name, retriability);
+        return WithConsumerInternal<TConsumer, Null, TMessage>(name, BuildConsumer<TMessage>, retriability);
     }
 
     public KafkaBusServiceBuilder WithConsumer<TConsumer, TId, TMessage>(string name, ConsumerRetriability? retriability = default)
     where TConsumer : CoreKafkaConsumer<TId, TMessage>
+        where TId : IId<TId>
     {
-        ServiceCollection
-            .AddSingleton<IConsumer, TConsumer>(serviceProvider =>
-            {
-                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
-                var consumerGroupId = consumerSection.GetSection("GroupId").Value;
-                var kafkaIdDeserializer = serviceProvider.GetRequiredService<KafkaIdDeserializer<TId>>();
-                var consumer = new ConsumerBuilder<TId, TMessage>(new ConsumerConfig
-                {
-                    BootstrapServers = NodesFromConfiguration(configuration),
-                    GroupId = consumerGroupId ?? configuration.GetSection($"{KafkaPrefix}:Defaults:ConsumerGroupId").Value,
-                    AutoOffsetReset = AutoOffsetReset.Latest
-                })
-                //Resolve TId constraint without duplicating this method!
-                .SetKeyDeserializer(serviceProvider.GetRequiredService<KafkaIdDeserializer<TId>>())
-                .SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>())
-                .Build();
-                var topic = consumerSection.GetSection("Topic").Value;
-                var settings = new KafkaConsumerSettings(name, topic);
-                IKafkaConsumerRetryingHandler? retrialContext = default;
-                if (retriability != default)
-                {
-                    var kafkaRetrySettings = consumerSection.GetSection("Retry").Get<KafkaRetrySettings>();
-                    kafkaRetrySettings.Topic.Name = $"retry_{topic}";
-                    var producer = serviceProvider.GetRequiredService<IKafkaProducerContextProvider>().Resolve(BusName).Default();
-                    retrialContext = ActivatorUtilities.CreateInstance<KafkaConsumerRetryingHandler>(serviceProvider, producer, retriability, kafkaRetrySettings);
-                }
-                var adminClientContext = serviceProvider.GetRequiredService<IKafkaAdminClientContextProvider>().Resolve(BusName);
-                var context = new KafkaConsumerContext<TId, TMessage>(consumer, settings, adminClientContext, retrialContext);
-                return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
-            });
-        return this;
+        return WithConsumerInternal<TConsumer, TId, TMessage>(name, BuildConsumer<TId, TMessage>, retriability);
     }
 
     public KafkaBusServiceBuilder ThatConsume<TMessage>(string name, ConsumerRetriability? retriability = default) where TMessage : INotification
     {
-        return ThatConsume<Ignore, TMessage>(name, retriability);
+        return ThatConsumeInternal(name, BuildConsumer<TMessage>, retriability);
     }
 
-    public KafkaBusServiceBuilder ThatConsume<TId, TMessage>(string name, ConsumerRetriability? retriability = default) where TMessage : INotification
+    public KafkaBusServiceBuilder ThatConsume<TId, TMessage>(string name, ConsumerRetriability? retriability = default)
+        where TId : IId<TId>
+        where TMessage : INotification
     {
-        return WithConsumer<DefaultKafkaConsumer<TId, TMessage>, TId, TMessage>(name, retriability);
+        return ThatConsumeInternal(name, BuildConsumer<TId, TMessage>, retriability);
+    }
+
+    public KafkaBusServiceBuilder ThatConsumeInternal<TId, TMessage>(
+        string name,
+        Func<IServiceProvider, IConfiguration, IConfigurationSection, IConsumer<TId, TMessage>> consumerFactory,
+        ConsumerRetriability? retriability = default)
+        where TMessage : INotification
+    {
+        return WithConsumerInternal<DefaultKafkaConsumer<TId, TMessage>, TId, TMessage>(name, consumerFactory, retriability);
     }
 
     private string NodesFromConfiguration(IConfiguration configuration)
     {
         return configuration.GetSection($"{_namedBusPrefix}:Nodes").Value;
     }
+
+    private KafkaBusServiceBuilder WithConsumerInternal<TConsumer, TId, TMessage>(
+        string name,
+        Func<IServiceProvider, IConfiguration, IConfigurationSection, IConsumer<TId, TMessage>> consumerFactory,
+        ConsumerRetriability? retriability = default)
+        where TConsumer : CoreKafkaConsumer<TId, TMessage>
+    {
+        ServiceCollection
+            .AddSingleton<IConsumer, TConsumer>(serviceProvider =>
+            {
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var consumerSection = configuration.GetSection($"{_namedBusPrefix}:Consumers:{name}");
+                var consumer = consumerFactory(serviceProvider, configuration, consumerSection);
+                var topic = consumerSection.GetSection("Topic").Value;
+                var settings = new KafkaConsumerSettings(name, topic);
+                var retryingHandler = BuildRetryingHandler(retriability, serviceProvider, consumerSection, topic);
+                var adminClientContext = serviceProvider.GetRequiredService<IKafkaAdminClientContextProvider>().Resolve(BusName);
+                var context = new KafkaConsumerContext<TId, TMessage>(consumer, settings, adminClientContext, retryingHandler);
+                return ActivatorUtilities.CreateInstance<TConsumer>(serviceProvider, context);
+            });
+        return this;
+    }
+
+    private IKafkaConsumerRetryingHandler? BuildRetryingHandler(ConsumerRetriability? retriability, IServiceProvider serviceProvider, IConfigurationSection consumerSection, string topic)
+    {
+        if (retriability == default)
+            return default;
+
+        var kafkaRetrySettings = consumerSection.GetSection("Retry").Get<KafkaRetrySettings>();
+        kafkaRetrySettings.Topic.Name = $"retry_{topic}";
+        var producer = serviceProvider.GetRequiredService<IKafkaProducerContextProvider>().Resolve(BusName).Default();
+        return ActivatorUtilities.CreateInstance<KafkaConsumerRetryingHandler>(serviceProvider, producer, retriability, kafkaRetrySettings);
+
+    }
+
+    private IConsumer<Null, TMessage> BuildConsumer<TMessage>(IServiceProvider serviceProvider, IConfiguration configuration, IConfigurationSection consumerSection)
+    {
+        return ConsumerBuilder<Null, TMessage>(configuration, consumerSection)
+        .SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>())
+        .Build();
+    }
+
+    private IConsumer<TId, TMessage> BuildConsumer<TId, TMessage>(IServiceProvider serviceProvider, IConfiguration configuration, IConfigurationSection consumerSection)
+        where TId : IId<TId>
+    {
+        return ConsumerBuilder<TId, TMessage>(configuration, consumerSection)
+        .SetKeyDeserializer(serviceProvider.GetRequiredService<KafkaIdDeserializer<TId>>())
+        .SetValueDeserializer(serviceProvider.GetRequiredService<KafkaMessageDeserializer<TMessage>>())
+        .Build();
+    }
+
+    private ConsumerBuilder<TId, TMessage> ConsumerBuilder<TId, TMessage>(IConfiguration configuration, IConfigurationSection consumerSection)
+    {
+        return new ConsumerBuilder<TId, TMessage>(new ConsumerConfig
+        {
+            BootstrapServers = NodesFromConfiguration(configuration),
+            GroupId = BuildGroupId(configuration, consumerSection),
+            AutoOffsetReset = AutoOffsetReset.Latest
+        });
+    }
+
+    private string? BuildGroupId(IConfiguration configuration, IConfigurationSection consumerSection)
+    {
+        return consumerSection.GetSection("GroupId").Value ?? configuration.GetSection($"{KafkaPrefix}:Defaults:ConsumerGroupId").Value;
+    }
+
 
 }

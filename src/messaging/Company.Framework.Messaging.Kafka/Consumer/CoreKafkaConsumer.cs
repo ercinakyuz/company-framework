@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Company.Framework.Messaging.Kafka.Consumer
 {
-    public abstract class CoreKafkaConsumer<TMessage> : CoreKafkaConsumer<Ignore, TMessage>
+    public abstract class CoreKafkaConsumer<TMessage> : CoreKafkaConsumer<Null, TMessage>
     {
         protected CoreKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger logger) : base(consumerContext, logger)
         {

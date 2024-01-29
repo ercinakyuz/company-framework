@@ -3,12 +3,10 @@ using Company.Framework.Messaging.Producer;
 
 namespace Company.Framework.Messaging.Kafka.Producer;
 
-public interface IKafkaProducer : IProducer
+public interface IKafkaProducer : IProducer<KafkaProduceArgs>
 {
-    Task ProduceAsync(KafkaProduceArgs args, CancellationToken cancellationToken);
 }
 
-public interface IKafkaProducer<TId, TMessage> : ITypedKafkaProducer
+public interface IKafkaProducer<TId, TMessage> : ITypedKafkaProducer, IProducer<KafkaProduceArgs<TId, TMessage>>
 {
-    Task ProduceAsync(KafkaProduceArgs<TId, TMessage> args, CancellationToken cancellationToken);
 }

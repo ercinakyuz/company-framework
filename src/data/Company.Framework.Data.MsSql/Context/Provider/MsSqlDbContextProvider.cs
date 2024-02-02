@@ -11,9 +11,15 @@ public class MsSqlDbContextProvider : IMsSqlDbContextProvider
     public MsSqlDbContextProvider(DbProviderSettings settings)
     {
         _dbContextDictionary = new ConcurrentDictionary<string, IMsSqlDbContext>();
-        var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(settings.Connection.String).Options;
+
         Array.ForEach(settings.Contexts, context =>
         {
+            var modelBuilder = new ModelBuilder();
+            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), assembly => modelBuilder.ApplyConfigurationsFromAssembly(assembly));
+            var dbContextOptions = new DbContextOptionsBuilder()
+            .UseModel(modelBuilder.FinalizeModel())
+            .UseSqlServer(settings.Connection.String)
+            .Options;
             _dbContextDictionary[context.Key] = new MsSqlDbContext(new DbContext(dbContextOptions));
         });
     }

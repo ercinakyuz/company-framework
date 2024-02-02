@@ -15,10 +15,6 @@ namespace Company.Framework.Data.MsSql.Repository
         {
             DbSet = dbContext.GetDbSet<TEntity>();
         }
-        protected CoreMsSqlRepository(IMsSqlDbContext dbContext, string dbSetName)
-        {
-            DbSet =  dbContext.GetDbSet<TEntity>(dbSetName);
-        }
 
         public virtual async IAsyncEnumerable<TEntity> FindAllAsync(Expression<Func<TEntity, bool>>? predicate = default, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = default)
         {

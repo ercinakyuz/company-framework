@@ -8,7 +8,7 @@
 		<!--Add required nuget packages necessary for ApiClient build-->
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="NSwag.MSBuild" Version="14.0.1">
+		<PackageReference Include="NSwag.MSBuild" Version="14.0.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

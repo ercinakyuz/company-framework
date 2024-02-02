@@ -7,6 +7,4 @@ public interface IMsSqlDbContext : IDbContext
 {
     DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class;
 
-    DbSet<TEntity> GetDbSet<TEntity>(string name) where TEntity : class;
-
 }

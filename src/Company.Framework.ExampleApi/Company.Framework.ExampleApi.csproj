@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-	  <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+	  <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 	</ItemGroup>
 
@@ -22,6 +22,7 @@
 	  <ProjectReference Include="..\Company.Framework.Socket\Company.Framework.Socket.csproj" />
 	  <ProjectReference Include="..\Company.Framework.Test\Company.Framework.Test.csproj" />
 	  <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
+	  <ProjectReference Include="..\data\Company.Framework.Data.MsSql\Company.Framework.Data.MsSql.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Kafka\Company.Framework.Messaging.Kafka.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.RabbitMq\Company.Framework.Messaging.RabbitMq.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Sqs\Company.Framework.Messaging.Sqs.csproj" />

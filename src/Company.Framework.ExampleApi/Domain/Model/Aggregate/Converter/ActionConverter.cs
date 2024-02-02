@@ -7,11 +7,17 @@ public class ActionConverter : IActionConverter
 {
     public ActionEntity Convert(Action aggregate)
     {
-        return new ActionEntity(aggregate.Id.Value, aggregate.State?.Value, aggregate.Created, aggregate.Modified);
+        return new ActionEntity
+        {
+            Id = aggregate.Id.Value,
+            State = aggregate.State?.Value,
+            Created = aggregate.Created,
+            Modified = aggregate.Modified ?? new Core.Logging.Log()
+        };
     }
 }
 
-public interface IActionConverter: IAggregateConverter<Action, ActionEntity>
+public interface IActionConverter : IAggregateConverter<Action, ActionEntity>
 {
 
 }

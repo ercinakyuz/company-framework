@@ -16,5 +16,9 @@ namespace Company.Framework.Data.MsSql.Context
             return _dbContext.Set<TEntity>();
         }
 
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

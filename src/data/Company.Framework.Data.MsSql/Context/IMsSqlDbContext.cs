@@ -7,4 +7,6 @@ public interface IMsSqlDbContext : IDbContext
 {
     DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class;
 
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
+
 }

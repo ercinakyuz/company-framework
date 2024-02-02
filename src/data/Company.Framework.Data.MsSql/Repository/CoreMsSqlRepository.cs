@@ -11,8 +11,10 @@ namespace Company.Framework.Data.MsSql.Repository
     public abstract class CoreMsSqlRepository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : CoreEntity<TId> where TId : struct
     {
         protected readonly DbSet<TEntity> DbSet;
+        protected readonly IMsSqlDbContext DbContext;
         protected CoreMsSqlRepository(IMsSqlDbContext dbContext)
         {
+            DbContext = dbContext;
             DbSet = dbContext.GetDbSet<TEntity>();
         }
 
@@ -34,6 +36,7 @@ namespace Company.Framework.Data.MsSql.Repository
         public virtual async Task InsertAsync(TEntity entity)
         {
             await DbSet.AddAsync(entity).ConfigureAwait(false);
+            await DbContext.SaveChangesAsync();
         }
         public virtual async Task InsertManyAsync(IEnumerable<TEntity> entities)
         {

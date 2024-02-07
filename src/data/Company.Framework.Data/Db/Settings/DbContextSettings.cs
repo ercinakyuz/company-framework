@@ -6,4 +6,6 @@ public class DbContextSettings
 
     public string Key { get; init; }
 
+    public string Assembly { get; init; }
+
 }

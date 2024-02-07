@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Company.Framework.Core\Company.Framework.Core.csproj" />
+		<ProjectReference Include="..\..\Company.Framework.Infrastructure\Company.Framework.Infrastructure.csproj" />
 	</ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">

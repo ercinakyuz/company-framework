@@ -12,7 +12,7 @@ namespace Company.Framework.Data.Db.Provider
 
         public DbProvider(IOptions<DbSettings> options)
         {
-            _registeredDbProviderDictionary= options.Value.Instances.ToImmutableDictionary(instance => instance.Name,
+            _registeredDbProviderDictionary = options.Value.Instances.ToImmutableDictionary(instance => instance.Name,
                 instance => DbProviderRegistry.Resolve(instance.Type).Invoke(instance.Provider));
         }
 
@@ -26,6 +26,11 @@ namespace Company.Framework.Data.Db.Provider
             if (!_registeredDbProviderDictionary.TryGetValue(key, out var dbProvider))
                 throw new InvalidOperationException($"Database provider does not exist for given key: {key}");
             return dbProvider;
+        }
+
+        public IEnumerable<TProvider> ResolveAll<TProvider>() where TProvider : class, IDbContextProvider
+        {
+            return _registeredDbProviderDictionary.Values.Select(provider => provider as TProvider).Where(provider => provider is not null)!;
         }
     }
 }

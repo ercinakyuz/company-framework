@@ -77,7 +77,7 @@ namespace Company.Framework.Domain.Model.Aggregate
         }
         public virtual bool HasAnyChanges()
         {
-            return TState.Loaded.Equals(State);
+            return !TState.Loaded.Equals(State);
         }
     }
 }

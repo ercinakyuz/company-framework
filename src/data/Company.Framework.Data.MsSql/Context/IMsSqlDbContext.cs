@@ -1,12 +1,16 @@
 ﻿using Company.Framework.Data.Db.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Company.Framework.Data.MsSql.Context;
+namespace Company.Framework.Data.MySql.Context;
 
 public interface IMsSqlDbContext : IDbContext
 {
-    DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class;
+    DbSet<TEntity> Set<TEntity>() where TEntity : class;
 
-    Task SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    void Migrate();
+
+
 
 }

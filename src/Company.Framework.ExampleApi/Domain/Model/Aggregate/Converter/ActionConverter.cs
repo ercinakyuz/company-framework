@@ -1,4 +1,5 @@
-﻿using Company.Framework.Domain.Model.Aggregate.Converter;
+﻿using Company.Framework.Core.Logging;
+using Company.Framework.Domain.Model.Aggregate.Converter;
 using Company.Framework.ExampleApi.Data.Entity;
 
 namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.Converter;
@@ -10,9 +11,9 @@ public class ActionConverter : IActionConverter
         return new ActionEntity
         {
             Id = aggregate.Id.Value,
-            State = aggregate.State?.Value,
+            State = aggregate.State.Value,
             Created = aggregate.Created,
-            Modified = aggregate.Modified ?? new Core.Logging.Log()
+            Modified = aggregate.Modified ?? Log.Load(aggregate.Created.By)
         };
     }
 }

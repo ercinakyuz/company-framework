@@ -1,5 +1,4 @@
 ﻿using Company.Framework.Core.Id.Abstractions;
-using System.Text;
 
 namespace Company.Framework.Core.Id.Implementations;
 

@@ -43,7 +43,7 @@ public class Optional<TData>
 
     public bool IsEmpty()
     {
-        return Equals(Empty);
+        return Data is null;
     }
 
     public bool IsPresent()

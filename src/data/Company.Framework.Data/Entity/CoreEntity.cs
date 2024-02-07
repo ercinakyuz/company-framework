@@ -6,10 +6,10 @@ namespace Company.Framework.Data.Entity;
 
 public abstract class CoreEntity<TId>
 {
-    public TId Id { get; set; }
+    public virtual TId Id { get; set; }
 
-    public string State { get; set; }
-    public Log Created { get; set; }
+    public virtual string State { get; set; }
+    public virtual Log Created { get; set; }
 
-    public Log Modified { get; set; }
+    public virtual Log Modified { get; set; }
 }

@@ -1,24 +1,42 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Company.Framework.Data.Db.Settings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Company.Framework.Data.MsSql.Context
+namespace Company.Framework.Data.MySql.Context
 {
-    public class MsSqlDbContext : IMsSqlDbContext
+    public class MsSqlDbContext : DbContext, IMsSqlDbContext
     {
-        private readonly DbContext _dbContext;
+        private readonly DbConnectionSettings _dbConnectionSettings;
 
-        public MsSqlDbContext(DbContext dbContext)
+        public MsSqlDbContext(DbConnectionSettings dbConnectionSettings)
         {
-            _dbContext = dbContext;
+            _dbConnectionSettings = dbConnectionSettings;
         }
 
-        public DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class
+        public void Migrate()
         {
-            return _dbContext.Set<TEntity>();
+            Database.Migrate();
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            optionsBuilder.UseSqlServer(_dbConnectionSettings.String, b => b.MigrationsAssembly("Company.Framework.Api")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), asembly => modelBuilder.ApplyConfigurationsFromAssembly(asembly));
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var rowCount = await base.SaveChangesAsync();
+            ChangeTracker.Clear();
+            return rowCount;
+        }
+
+
     }
+
 }

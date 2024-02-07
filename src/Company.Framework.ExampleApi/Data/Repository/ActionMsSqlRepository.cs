@@ -1,12 +1,20 @@
-﻿using Company.Framework.Data.MsSql.Context;
-using Company.Framework.Data.MsSql.Repository;
+﻿
+using Company.Framework.Data.Rdbms.Context;
+using Company.Framework.Data.Rdbms.Repository;
 using Company.Framework.ExampleApi.Data.Entity;
 
 namespace Company.Framework.ExampleApi.Data.Repository
 {
-    public class ActionMsSqlRepository : CoreMsSqlRepository<ActionEntity, Guid>, IActionRepository
+    public class ActionMsSqlRepository : CoreRdbmsRepository<ActionEntity, Guid>, IActionRepository
     {
-        public ActionMsSqlRepository(IMsSqlDbContext dbContext) : base(dbContext)
+        public ActionMsSqlRepository(IRdbmsDbContext dbContext) : base(dbContext)
+        {
+        }
+    }
+
+    public class FooMsSqlRepository : CoreRdbmsRepository<Foo, int>, IFooRepository
+    {
+        public FooMsSqlRepository(IRdbmsDbContext dbContext) : base(dbContext)
         {
         }
     }

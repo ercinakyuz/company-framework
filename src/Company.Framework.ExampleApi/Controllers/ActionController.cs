@@ -26,7 +26,7 @@ namespace Company.Framework.ExampleApi.Controllers
         }
 
         [HttpPatch]
-        [Route("pong/{id}")]
+        [Route("{id}/pong")]
         public async Task<IActionResult> Pong([FromRoute] Guid id, [FromBody] PongActionRequest request)
         {
             await _sender.Send(new PongCommand(id, request.By));

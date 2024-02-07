@@ -1,27 +1,17 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using Company.Framework.Data.Db.Settings;
-using Microsoft.EntityFrameworkCore;
 
-namespace Company.Framework.Data.MsSql.Context.Provider;
+namespace Company.Framework.Data.MySql.Context.Provider;
 
 public class MsSqlDbContextProvider : IMsSqlDbContextProvider
 {
-    private readonly IDictionary<string, IMsSqlDbContext> _dbContextDictionary;
+    private readonly IReadOnlyDictionary<string, IMsSqlDbContext> _dbContextDictionary;
 
     public MsSqlDbContextProvider(DbProviderSettings settings)
     {
-        _dbContextDictionary = new ConcurrentDictionary<string, IMsSqlDbContext>();
-
-        Array.ForEach(settings.Contexts, context =>
-        {
-            var modelBuilder = new ModelBuilder();
-            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), assembly => modelBuilder.ApplyConfigurationsFromAssembly(assembly));
-            var dbContextOptions = new DbContextOptionsBuilder()
-            .UseModel(modelBuilder.FinalizeModel())
-            .UseSqlServer(settings.Connection.String)
-            .Options;
-            _dbContextDictionary[context.Key] = new MsSqlDbContext(new DbContext(dbContextOptions));
-        });
+        _dbContextDictionary = settings.Contexts.ToImmutableDictionary(
+            context => context.Key, context => (IMsSqlDbContext)new MsSqlDbContext(settings.Connection));
     }
 
     public IMsSqlDbContext Resolve(string key)
@@ -29,5 +19,10 @@ public class MsSqlDbContextProvider : IMsSqlDbContextProvider
         if (!_dbContextDictionary.TryGetValue(key, out var dbContext))
             throw new EntryPointNotFoundException($"Db context does not exist for key: {key}");
         return dbContext;
+    }
+
+    public IEnumerable<IMsSqlDbContext> ResolveAll()
+    {
+        return _dbContextDictionary.Values;
     }
 }

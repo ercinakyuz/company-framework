@@ -2,11 +2,11 @@
 using Company.Framework.Core.Linq.Extensions;
 using Company.Framework.Core.Monad;
 using Company.Framework.Data.Entity;
-using Company.Framework.Data.MsSql.Context;
+using Company.Framework.Data.EntityFramework.Context;
 using Company.Framework.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace Company.Framework.Data.MsSql.Repository
+namespace Company.Framework.Data.EntityFramework.Repository
 {
     public abstract class CoreMsSqlRepository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : CoreEntity<TId> where TId : struct
     {

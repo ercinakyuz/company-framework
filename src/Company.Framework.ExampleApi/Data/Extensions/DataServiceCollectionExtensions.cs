@@ -1,8 +1,8 @@
 ﻿using Company.Framework.Data.Db.Provider.Extensions;
 using Company.Framework.Data.Mongo.Extensions;
-using Company.Framework.Data.MsSql.Extensions;
 using Company.Framework.Data.Repository.Extensions;
 using Company.Framework.ExampleApi.Data.Repository;
+using Company.Framework.Data.EntityFramework.Extensions;
 
 namespace Company.Framework.ExampleApi.Data.Extensions
 {

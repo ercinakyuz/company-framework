@@ -3,6 +3,7 @@ using Company.Framework.Messaging.Consumer.Retrying.Args;
 using Company.Framework.Messaging.Kafka.Consumer.Context;
 using Company.Framework.Messaging.Kafka.Consumer.Retrying.Handler;
 using Company.Framework.Messaging.Kafka.Consumer.Settings;
+using Company.Framework.Messaging.Kafka.Model;
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
 {
     public abstract class CoreKafkaConsumer<TMessage> : CoreKafkaConsumer<Null, TMessage>
     {
-        protected CoreKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger logger) : base(consumerContext, logger)
+        protected CoreKafkaConsumer(IKafkaConsumerContext<Null, TMessage> consumerContext, ILogger logger) : base(consumerContext, logger)
         {
         }
     }
@@ -22,7 +23,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
 
         private readonly KafkaConsumerSettings _settings;
 
-        private readonly IKafkaConsumerRetryingHandler? _retryingHandler;
+        private readonly IKafkaConsumerRetryingHandler<TId, TMessage>? _retryingHandler;
 
         private readonly IAdminClient _adminClient;
 
@@ -31,11 +32,11 @@ namespace Company.Framework.Messaging.Kafka.Consumer
         protected readonly ILogger Logger;
 
 
-        protected CoreKafkaConsumer(IKafkaConsumerContext consumerContext, ILogger logger)
+        protected CoreKafkaConsumer(IKafkaConsumerContext<TId, TMessage> consumerContext, ILogger logger)
         {
             _consumer = consumerContext.Resolve<IConsumer<TId, TMessage>>();
             _settings = consumerContext.Settings;
-            _retryingHandler = consumerContext.RetrialContext;
+            _retryingHandler = consumerContext.RetryingHandler;
             _adminClient = consumerContext.AdminClientContext.Resolve<IAdminClient>();
             _hasRetrial = _retryingHandler != default;
             Logger = logger;
@@ -69,7 +70,7 @@ namespace Company.Framework.Messaging.Kafka.Consumer
                 Logger.LogError(exception, exception.Message);
                 if (_hasRetrial)
                     await Task.Run(() =>
-                        _retryingHandler!.HandleAsync(new ConsumerRetrialArgs(message.Value!, message.Headers, exception.GetType()), cancellationToken)
+                        _retryingHandler!.HandleAsync(new KafkaConsumerRetrialArgs<TId, TMessage>(message.Key, message.Value, KafkaHeaders.From(message.Headers), exception.GetType()), cancellationToken)
                         .ConfigureAwait(false), cancellationToken);
             }
         }

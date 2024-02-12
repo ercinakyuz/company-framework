@@ -1,5 +1,4 @@
-﻿using Company.Framework.Core.Id.Abstractions;
-using Company.Framework.Messaging.Kafka.Model;
+﻿using Company.Framework.Messaging.Kafka.Model;
 using Company.Framework.Messaging.Kafka.Producer.Args;
 using Company.Framework.Messaging.Kafka.Producer.Context;
 using Company.Framework.Messaging.Kafka.Producer.Settings;
@@ -30,7 +29,7 @@ namespace Company.Framework.Messaging.Kafka.Producer
         }
     }
 
-    public class KafkaProducer<TId, TMessage> : IKafkaProducer<TId, TMessage> where TId : IId<TId> where TMessage : notnull
+    public class KafkaProducer<TId, TMessage> : IKafkaProducer<TId, TMessage>
     {
         private readonly IProducer<TId, TMessage> _producer;
 
@@ -48,10 +47,11 @@ namespace Company.Framework.Messaging.Kafka.Producer
 
         public async Task ProduceAsync(KafkaProduceArgs<TId, TMessage> args, CancellationToken cancellationToken)
         {
-            await _producer.ProduceAsync(_settings.Topic, new Message<TId, TMessage>
+            var topic = args.Topic ?? _settings.Topic;
+            await _producer.ProduceAsync(topic, new Message<TId, TMessage>
             {
                 Key = args.Id,
-                Value = args.TypedMessage,
+                Value = args.Message,
                 Headers = KafkaHeaders.To(args.Headers)
             }, cancellationToken).ConfigureAwait(false);
         }

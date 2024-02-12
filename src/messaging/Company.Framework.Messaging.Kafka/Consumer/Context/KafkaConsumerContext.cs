@@ -5,20 +5,20 @@ using Confluent.Kafka;
 
 namespace Company.Framework.Messaging.Kafka.Consumer.Context
 {
-    public class KafkaConsumerContext<TId, TMessage> : IKafkaConsumerContext
+    public class KafkaConsumerContext<TId, TMessage> : IKafkaConsumerContext<TId, TMessage>
     {
         private readonly IConsumer<TId, TMessage> _consumer;
 
         public KafkaConsumerSettings Settings { get; }
-        public IKafkaConsumerRetryingHandler? RetrialContext { get; }
+        public IKafkaConsumerRetryingHandler<TId, TMessage>? RetryingHandler { get; }
         public IKafkaAdminClientContext AdminClientContext { get; }
 
-        public KafkaConsumerContext(IConsumer<TId, TMessage> consumer, KafkaConsumerSettings settings, IKafkaAdminClientContext adminClientContext, IKafkaConsumerRetryingHandler? consumerRetrialContext = default)
+        public KafkaConsumerContext(IConsumer<TId, TMessage> consumer, KafkaConsumerSettings settings, IKafkaAdminClientContext adminClientContext, IKafkaConsumerRetryingHandler<TId,TMessage>? retryingHandler = default)
         {
             _consumer = consumer;
             Settings = settings;
             AdminClientContext = adminClientContext;
-            RetrialContext = consumerRetrialContext;
+            RetryingHandler = retryingHandler;
         }
 
         public TConsumer Resolve<TConsumer>()
@@ -26,6 +26,11 @@ namespace Company.Framework.Messaging.Kafka.Consumer.Context
             if (typeof(TConsumer) != typeof(IConsumer<TId, TMessage>))
                 throw new InvalidOperationException("Consumer type is not valid");
             return (TConsumer)_consumer;
+        }
+
+        public IKafkaConsumerRetryingHandler<TId, TMessage>? ResolveRetringHandler()
+        {
+            throw new NotImplementedException();
         }
     }
 }

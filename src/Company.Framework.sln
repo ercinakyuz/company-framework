@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Data", "d
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Data.Mongo", "data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj", "{258BE3D1-C4B5-4872-AD1B-C7C34729DDF7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Data.EntityFramework", "data\Company.Framework.Data.EntityFramework\Company.Framework.Data.EntityFramework.csproj", "{56653E07-D73B-46A7-85A5-1AA90862423F}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Http", "Company.Framework.Http\Company.Framework.Http.csproj", "{85C1BB6E-954D-45F6-BD7C-1FBB759D83D3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.ExampleApi.SwaggerClient", "Company.Framework.ExampleApi.Client\Company.Framework.ExampleApi.SwaggerClient.csproj", "{F3CC26AB-F193-414E-9142-BB8CA9904497}"
@@ -47,11 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Messaging
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Validation", "Company.Framework.Validation\Company.Framework.Validation.csproj", "{2255D561-ED3F-4804-B885-4068A3072EF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Data.MsSql", "data\Company.Framework.Data.MsSql\Company.Framework.Data.MsSql.csproj", "{56653E07-D73B-46A7-85A5-1AA90862423F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Tenancy", "Company.Framework.Tenancy\Company.Framework.Tenancy.csproj", "{F368D980-B25A-461F-BC6F-E71C6A78BE51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Tenancy", "Company.Framework.Tenancy\Company.Framework.Tenancy.csproj", "{F368D980-B25A-461F-BC6F-E71C6A78BE51}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Framework.Infrastructure", "Company.Framework.Infrastructure\Company.Framework.Infrastructure.csproj", "{623C1ED1-3D1F-4090-813E-D8E67A229502}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company.Framework.Infrastructure", "Company.Framework.Infrastructure\Company.Framework.Infrastructure.csproj", "{623C1ED1-3D1F-4090-813E-D8E67A229502}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

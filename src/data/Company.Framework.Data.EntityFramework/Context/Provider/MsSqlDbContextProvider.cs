@@ -2,7 +2,7 @@
 using Company.Framework.Data.Db.Settings;
 using Microsoft.EntityFrameworkCore;
 
-namespace Company.Framework.Data.MsSql.Context.Provider;
+namespace Company.Framework.Data.EntityFramework.Context.Provider;
 
 public class MsSqlDbContextProvider : IMsSqlDbContextProvider
 {

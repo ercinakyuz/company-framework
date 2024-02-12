@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Company.Framework.Data.MsSql.Context
+namespace Company.Framework.Data.EntityFramework.Context
 {
     public class MsSqlDbContext : IMsSqlDbContext
     {

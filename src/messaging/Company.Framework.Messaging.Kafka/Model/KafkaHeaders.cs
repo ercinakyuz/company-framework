@@ -24,6 +24,12 @@ public class KafkaHeaders
         _headerDictionary.TryAdd(key, value);
     }
 
+    public void Replace(string key, object value)
+    {
+        _headerDictionary[key]= value;
+    }
+
+
     public object GetValue(string key)
     {
         return _headerDictionary[key];
@@ -32,6 +38,13 @@ public class KafkaHeaders
     public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value)
     {
         return _headerDictionary.TryGetValue(key, out value);
+    }
+
+    public bool TryGetValue<TValue>(string key, [MaybeNullWhen(false)] out TValue? typedValue)
+    {
+        var result = _headerDictionary.TryGetValue(key, out var value);
+        typedValue = result ? (TValue?)value : default;
+        return result;
     }
 
     internal static KafkaHeaders From(Headers headers)

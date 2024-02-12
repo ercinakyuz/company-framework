@@ -1,5 +1,5 @@
-﻿using Company.Framework.Data.MsSql.Context;
-using Company.Framework.Data.MsSql.Repository;
+﻿using Company.Framework.Data.EntityFramework.Context;
+using Company.Framework.Data.EntityFramework.Repository;
 using Company.Framework.ExampleApi.Data.Entity;
 
 namespace Company.Framework.ExampleApi.Data.Repository

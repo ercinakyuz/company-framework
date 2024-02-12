@@ -1,8 +1,6 @@
-﻿using Company.Framework.Messaging.Consumer.Settings;
+﻿namespace Company.Framework.Messaging.Kafka.Consumer.Settings;
 
-namespace Company.Framework.Messaging.Kafka.Consumer.Settings;
-
-public class KafkaTopicSettings : CoreRetrySettings
+public class KafkaTopicSettings
 {
     public required string Name { get; set; }
 

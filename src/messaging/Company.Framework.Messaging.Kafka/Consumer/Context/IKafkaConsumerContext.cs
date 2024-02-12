@@ -5,11 +5,11 @@ using Company.Framework.Messaging.Kafka.Consumer.Settings;
 
 namespace Company.Framework.Messaging.Kafka.Consumer.Context;
 
-public interface IKafkaConsumerContext : IConsumerContext
+public interface IKafkaConsumerContext<TId, TMessage> : IConsumerContext
 {
     KafkaConsumerSettings Settings { get; }
-    IKafkaConsumerRetryingHandler? RetrialContext { get; }
     IKafkaAdminClientContext AdminClientContext { get; }
+    IKafkaConsumerRetryingHandler<TId, TMessage>? RetryingHandler { get; }
     TConsumer Resolve<TConsumer>();
 
 }

@@ -1,8 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using Company.Framework.Data.Db.Settings;
 
-namespace Company.Framework.Data.MySql.Context.Provider;
+namespace Company.Framework.Data.EntityFramework.Context.Provider;
 
 public class MsSqlDbContextProvider : IMsSqlDbContextProvider
 {

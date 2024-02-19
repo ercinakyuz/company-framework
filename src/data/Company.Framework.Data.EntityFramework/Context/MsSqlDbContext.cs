@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Company.Framework.Data.MySql.Context
+namespace Company.Framework.Data.EntityFramework.Context
 {
     public class MsSqlDbContext : DbContext, IMsSqlDbContext
     {

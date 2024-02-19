@@ -1,9 +1,9 @@
 ﻿using Company.Framework.Data.Db.Provider;
-using Company.Framework.Data.MySql.Context.Provider;
+using Company.Framework.Data.EntityFramework.Context.Provider;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Company.Framework.Data.MySql.Extensions
+namespace Company.Framework.Data.EntityFramework.Extensions
 {
     public static class MsSqlDbApplicationBuilderExtensions
     {

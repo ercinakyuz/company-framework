@@ -1,7 +1,7 @@
 ﻿using Company.Framework.Data.Db.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Company.Framework.Data.MySql.Context;
+namespace Company.Framework.Data.EntityFramework.Context;
 
 public interface IMsSqlDbContext : IDbContext
 {

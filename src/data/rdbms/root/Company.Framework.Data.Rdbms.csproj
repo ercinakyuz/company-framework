@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Title>Core Components</Title>
+		<Title>Company.Framework.Data.Rdbms</Title>
 		<Authors>Erçin Akyüz</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageVersion>1.0.0</PackageVersion>
@@ -14,12 +14,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentNHibernate" Version="3.3.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+		<PackageReference Include="NHibernate" Version="5.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Company.Framework.Data\Company.Framework.Data.csproj" />
+	  <ProjectReference Include="..\..\Company.Framework.Data\Company.Framework.Data.csproj" />
 	</ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">

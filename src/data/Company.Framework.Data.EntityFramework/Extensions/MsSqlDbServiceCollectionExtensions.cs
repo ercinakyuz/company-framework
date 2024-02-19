@@ -1,12 +1,12 @@
 ﻿using Company.Framework.Data.Db.Provider.Registry;
 using Company.Framework.Data.Db.Settings;
-using Company.Framework.Data.MsSql.Context;
-using Company.Framework.Data.MsSql.Context.Provider;
+using Company.Framework.Data.EntityFramework.Context;
+using Company.Framework.Data.EntityFramework.Context.Provider;
 using Company.Framework.Data.Repository;
 using Company.Framework.Data.Repository.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Company.Framework.Data.MsSql.Extensions
+namespace Company.Framework.Data.EntityFramework.Extensions
 {
     public static class MsSqlDbServiceCollectionExtensions
     {

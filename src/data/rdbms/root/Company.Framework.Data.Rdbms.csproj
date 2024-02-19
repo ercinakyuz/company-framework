@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Title>Company.Framework.Data.Rdbms</Title>
+		<Authors>Erçin Akyüz</Authors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageVersion>1.0.0</PackageVersion>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NHibernate" Version="5.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Company.Framework.Data\Company.Framework.Data.csproj" />
+	</ItemGroup>
+
+	<Target Name="NugetAdd" AfterTargets="Pack">
+		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source D:\nuget\packages" />
+	</Target>
+
+</Project>
+

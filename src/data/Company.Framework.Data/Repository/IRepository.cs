@@ -4,7 +4,7 @@ using Company.Framework.Data.Entity;
 
 namespace Company.Framework.Data.Repository
 {
-    public interface IRepository<TEntity, in TId> : IRepository where TEntity : CoreEntity<TId> where TId : struct
+    public interface IRepository<TEntity, in TId> : IRepository where TEntity : CoreEntity<TId>
     {
         IAsyncEnumerable<TEntity> FindAllAsync(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
         Task<Optional<TEntity>> FindAsync(TId id);

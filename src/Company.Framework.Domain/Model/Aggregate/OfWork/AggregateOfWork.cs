@@ -13,7 +13,6 @@ public abstract class AggregateOfWork<TRepository, TConverter, TAggregate, TAId,
     where TAId : IId<TAId, TEId>
     where TState : IState<TState>
     where TEntity : CoreEntity<TEId>
-    where TEId : struct
 {
     protected readonly TRepository Repository;
 

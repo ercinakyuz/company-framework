@@ -4,7 +4,7 @@ using Company.Framework.ExampleApi.Data.Entity;
 
 namespace Company.Framework.ExampleApi.Data.Repository
 {
-    public class ActionMongoRepository : CoreMongoRepository<ActionEntity, Guid>, IActionRepository
+    public class ActionMongoRepository : CoreMongoRepository<ActionEntity, Guid>, IAction4Repository
     {
         public ActionMongoRepository(IMongoDbContext dbContext) : base(dbContext)
         {

@@ -8,6 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 	  <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
@@ -22,13 +26,16 @@
 	  <ProjectReference Include="..\Company.Framework.Socket\Company.Framework.Socket.csproj" />
 	  <ProjectReference Include="..\Company.Framework.Test\Company.Framework.Test.csproj" />
 	  <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
-	  <ProjectReference Include="..\data\Company.Framework.Data.MsSql\Company.Framework.Data.MsSql.csproj" />
+	  <ProjectReference Include="..\data\rdbms\mssql\Company.Framework.Data.Rdbms.MsSql.csproj" />
+	  <ProjectReference Include="..\data\rdbms\mysql\Company.Framework.Data.Rdbms.MySql.csproj" />
+	  <ProjectReference Include="..\data\rdbms\postgresql\Company.Framework.Data.Rdbms.PostgreSql.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Kafka\Company.Framework.Messaging.Kafka.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.RabbitMq\Company.Framework.Messaging.RabbitMq.csproj" />
 	  <ProjectReference Include="..\messaging\Company.Framework.Messaging.Sqs\Company.Framework.Messaging.Sqs.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Data\Migrations\" />
 	  <Folder Include="Socket\" />
 	</ItemGroup>
 </Project>

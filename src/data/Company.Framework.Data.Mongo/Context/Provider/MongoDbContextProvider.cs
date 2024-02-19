@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Immutable;
 using Company.Framework.Data.Db.Settings;
 using MongoDB.Driver;
 
@@ -6,16 +6,13 @@ namespace Company.Framework.Data.Mongo.Context.Provider;
 
 public class MongoDbContextProvider : IMongoDbContextProvider
 {
-    private readonly IDictionary<string, IMongoDbContext> _dbContextDictionary;
+    private readonly IReadOnlyDictionary<string, IMongoDbContext> _dbContextDictionary;
 
     public MongoDbContextProvider(DbProviderSettings settings)
     {
-        _dbContextDictionary = new ConcurrentDictionary<string, IMongoDbContext>();
         var mongoClient = new MongoClient(settings.Connection.String);
-        Array.ForEach(settings.Contexts, context =>
-        {
-            _dbContextDictionary[context.Key] = new MongoDbContext(mongoClient.GetDatabase(context.DbName));
-        });
+        _dbContextDictionary = settings.Contexts.ToImmutableDictionary(
+            context => context.Key, context => (IMongoDbContext)new MongoDbContext(mongoClient.GetDatabase(context.DbName)));
     }
 
     public IMongoDbContext Resolve(string key)
@@ -23,5 +20,10 @@ public class MongoDbContextProvider : IMongoDbContextProvider
         if (!_dbContextDictionary.TryGetValue(key, out var dbContext))
             throw new EntryPointNotFoundException($"Db context does not exist for key: {key}");
         return dbContext;
+    }
+
+    public IEnumerable<IMongoDbContext> ResolveAll()
+    {
+        return _dbContextDictionary.Values;
     }
 }

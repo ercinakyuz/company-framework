@@ -2,6 +2,7 @@
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.State;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.Test.Faker;
+using StackExchange.Redis;
 
 namespace Company.Framework.ExampleApi.Domain.Test.Faker;
 
@@ -27,7 +28,14 @@ public class ActionFaker : CoreFaker
 
     public ActionEntity ActionEntity()
     {
-        return new ActionEntity(IdValue(), _coreStateFaker.StateValue(), _logFaker.Log(), _logFaker.Log());
+        return new ActionEntity
+        {
+            Id = IdValue(),
+            State = _coreStateFaker.StateValue(),
+            Created = _logFaker.Log(),
+            Modified = _logFaker.Log()
+        };
+        //return new ActionEntity(IdValue(), _coreStateFaker.StateValue(), _logFaker.Log(), _logFaker.Log());
     }
 
 }

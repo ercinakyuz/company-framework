@@ -7,7 +7,7 @@ using MongoDB.Driver;
 
 namespace Company.Framework.Data.Mongo.Repository
 {
-    public abstract class CoreMongoRepository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : CoreEntity<TId> where TId : struct
+    public abstract class CoreMongoRepository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : CoreEntity<TId>
     {
         protected readonly IMongoCollection<TEntity> Collection;
         protected CoreMongoRepository(IMongoDbContext dbContext)

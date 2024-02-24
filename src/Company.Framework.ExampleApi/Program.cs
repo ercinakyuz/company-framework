@@ -14,6 +14,7 @@ using Company.Framework.ExampleApi.Http.Extensions;
 using Company.Framework.ExampleApi.Tenancy.Extensions;
 using Company.Framework.Infrastructure.Application.Context.Extensions;
 using Company.Framework.Logging.Extensions;
+using Company.Framework.Socket.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -39,7 +40,7 @@ services.AddBusComponents();
 services.AddHttpClients();
 services.AddApiExceptionHandler();
 services.AddLocalization<ExampleApiResource>();
-//services.AddSocket();
+services.AddSocket();
 services.AddTenancy();
 services.AddNonApiApplicationContext();
 
@@ -67,6 +68,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//app.UseSocket<MyHub>("/hub");
+app.UseSocket<MyHub>("/hub");
 
 app.Run();

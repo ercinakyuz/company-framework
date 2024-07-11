@@ -14,11 +14,4 @@ public class MyHub : Hub
         return base.OnDisconnectedAsync(exception);
     }
 
-
-    public async Task NotifyAll(string message)
-    {
-        //await Clients.All.SendAsync("PodName", Environment.GetEnvironmentVariable("PodName"));
-        //await Clients.All.SendAsync("ChatMessageReceived", chatMessage);
-        await Clients.All.SendAsync("greetingResponse", message);
-    }
 }

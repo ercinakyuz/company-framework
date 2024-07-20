@@ -7,22 +7,31 @@ namespace Company.Framework.Aspect.Proxy
     {
         private TDecoration? _decoration;
 
-        private ISet<IPreProcessor>? _preProcessors;
+        private ISet<IPreProcessor> _preProcessors;
 
-        private ISet<IPostProcessor>? _postProcessors;
+        private ISet<IPostProcessor> _postProcessors;
+
+        public CoreProxy()
+        {
+            _preProcessors = new HashSet<IPreProcessor>();
+            _postProcessors = new HashSet<IPostProcessor>();
+        }
 
         public void SetDecoration(TDecoration decoration)
         {
             _decoration = decoration;
         }
-        public void SetPreProcessors<TPreProcessor>(IEnumerable<TPreProcessor> preProcessors) where TPreProcessor : IPreProcessor
+
+        public void AddPreProcessor(IPreProcessor processor)
         {
-            _preProcessors = preProcessors.Select(processor => (IPreProcessor)processor).ToHashSet();
+            _preProcessors.Add(processor);
         }
-        public void SetPostProcessors<TPostProcessor>(IEnumerable<TPostProcessor> postProcessors) where TPostProcessor : IPostProcessor
+
+        public void AddPostProcessor(IPostProcessor processor)
         {
-            _postProcessors = postProcessors.Select(processor => (IPostProcessor)processor).ToHashSet();
+            _postProcessors.Add(processor);
         }
+
         protected sealed override object? Invoke(MethodInfo? targetMethod, object?[]? args)
         {
             var cancellationToken = CancellationToken.None;

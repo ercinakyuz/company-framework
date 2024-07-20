@@ -1,4 +1,6 @@
-﻿using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
+﻿using Company.Framework.ExampleApi.Application.UseCase.GetAllActions.Query;
+using Company.Framework.ExampleApi.Application.UseCase.GetAllActions.Stream;
+using Company.Framework.ExampleApi.Application.UseCase.Ping.Command;
 using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
 using Company.Framework.ExampleApi.Models.Request;
 using MediatR;
@@ -31,6 +33,20 @@ namespace Company.Framework.ExampleApi.Controllers
         {
             await _sender.Send(new PongCommand(id, request.By));
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("stream")]
+        public IAsyncEnumerable<Domain.Model.Aggregate.Action> GetStream()
+        {
+            return _sender.CreateStream(new GetActionStream());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var actions = await _sender.Send(new GetActionsQuery());
+            return Ok(actions);
         }
     }
 }

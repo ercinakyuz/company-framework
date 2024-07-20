@@ -26,7 +26,9 @@ public abstract class AggregateOfWork<TRepository, TConverter, TAggregate, TAId,
 
     public async Task InsertAsync(TAggregate aggregate, CancellationToken cancellationToken)
     {
+        aggregate.Id = TAId.New();
         await Repository.InsertAsync(Converter.Convert(aggregate));
+
     }
 
     public async Task InsertManyAsync(IEnumerable<TAggregate> aggregates, CancellationToken cancellationToken)

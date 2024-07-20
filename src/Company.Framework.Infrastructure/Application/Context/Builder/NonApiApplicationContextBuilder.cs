@@ -1,4 +1,4 @@
-﻿using Company.Framework.Core.Tenancy.Models;
+﻿using Company.Framework.Core.Tenancy.Components;
 using Company.Framework.Infrastructure.Application.Context.Builder.Args;
 using CorrelationId.Abstractions;
 

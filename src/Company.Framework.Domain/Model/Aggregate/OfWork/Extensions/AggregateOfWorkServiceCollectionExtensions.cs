@@ -1,7 +1,6 @@
 ﻿using Company.Framework.Aspect.Extensions;
 using Company.Framework.Domain.Model.Aggregate.Event.Distribution.Handlers;
 using Company.Framework.Domain.Model.Aggregate.Event.Distribution.Processors;
-using Company.Framework.Domain.Model.Aggregate.OfWork.Processors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Domain.Model.Aggregate.OfWork.Extensions
@@ -13,17 +12,11 @@ namespace Company.Framework.Domain.Model.Aggregate.OfWork.Extensions
             where TImplementation : class, TAbstraction
         {
             return serviceCollection
-                .AddProcessors()
-                .AddProxiedComponent<TAbstraction, TImplementation, AggregateOfWorkPreProcessor, AggregateOfWorkPostProcessor>();
-        }
-
-        private static IServiceCollection AddProcessors(this IServiceCollection serviceCollection)
-        {
-            return serviceCollection
                 .AddSingleton<IEventDistributionHandler, EventDistributionHandler>()
-                .AddSingleton<AggregateOfWorkPostProcessor, EventDistributionProcessor>()
-                .AddSingleton<BatchAggregateOfWorkPostProcessor, BatchEventDistributionProcessor>();
+                .ProxyServiceBuilder<TAbstraction>()
+                .WithPostProcessor<EventDistributionProcessor>()
+                .WithPostProcessor<BatchEventDistributionProcessor>()
+                .Build<TImplementation>();
         }
-                        
     }
 }

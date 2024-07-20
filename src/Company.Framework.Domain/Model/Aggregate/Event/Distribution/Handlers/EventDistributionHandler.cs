@@ -12,6 +12,7 @@ public class EventDistributionHandler : IEventDistributionHandler
 
     public async Task Handle(AggregateRoot aggregate, CancellationToken cancellationToken)
     {
+        aggregate.ApplyEvents();
         await Task.WhenAll(aggregate.Events.Select(@event => _publisher.Publish(@event, cancellationToken)));
         aggregate.ClearEvents();
     }

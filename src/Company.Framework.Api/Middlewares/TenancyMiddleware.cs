@@ -1,4 +1,5 @@
-﻿using Company.Framework.Core.Tenancy.Models;
+﻿using Company.Framework.Core.Tenancy.Components;
+using Company.Framework.Core.Tenancy.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Company.Framework.Tenancy
@@ -17,7 +18,7 @@ namespace Company.Framework.Tenancy
         public async Task InvokeAsync(HttpContext context)
         {
             var tenantIdFromHeader = context.Request.Headers["tenant-id"];
-            if (string.IsNullOrWhiteSpace(tenantIdFromHeader) || !int.TryParse(tenantIdFromHeader, out var tenantIdValue))
+            if (!int.TryParse(tenantIdFromHeader, out var tenantIdValue))
                 throw TenantNotAvailable();
             var tenantId = TenantId.From(tenantIdValue);
             _tenantBuilder.Build(tenantId);

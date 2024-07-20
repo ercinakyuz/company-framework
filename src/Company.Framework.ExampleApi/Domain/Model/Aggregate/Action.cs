@@ -1,24 +1,21 @@
 ﻿using System.Collections.Concurrent;
-using Company.Framework.Core.Logging;
 using Company.Framework.Domain.Model.Aggregate;
-using Company.Framework.Domain.Model.Aggregate.Dto;
 using Company.Framework.Domain.Model.Aggregate.Event;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Event;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.State;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
+using Company.Framework.ExampleApi.Domain.Model.Dto;
 
 namespace Company.Framework.ExampleApi.Domain.Model.Aggregate;
 
 public class Action : AggregateRoot<Action, ActionId, ActionState>
 {
-    static Action()
+    protected override IReadOnlyDictionary<ActionState, Func<Action, IEvent>>? EventDelegations => new ConcurrentDictionary<ActionState, Func<Action, IEvent>>
     {
-        EventDelegations = new ConcurrentDictionary<ActionState, Func<Action, IEvent>>
-        {
-            [ActionState.PingApplied] = action => new PingApplied(action.Id),
-            [ActionState.PongApplied] = action => new PongApplied(action.Id)
-        };
-    }
+        [ActionState.PingApplied] = action => new PingApplied(action.Id),
+        [ActionState.PongApplied] = action => new PongApplied(action.Id)
+    };
+
     private Action(PingActionDto pingDto) : base(pingDto)
     {
     }
@@ -42,9 +39,3 @@ public class Action : AggregateRoot<Action, ActionId, ActionState>
         return Modify(dto.Modified).ChangeState(ActionState.PongApplied);
     }
 }
-
-public record LoadActionDto(ActionId Id, Log Created, Log? Modified) : LoadAggregateDto<ActionId>(Id, Created, Modified);
-
-public record PingActionDto(Log Created) : CreateAggregateDto(Created);
-
-public record PongActionDto(Log Modified);

@@ -1,4 +1,4 @@
-﻿using Company.Framework.Core.Tenancy.Models;
+﻿using Company.Framework.Core.Tenancy.Components;
 using CorrelationId.Abstractions;
 
 namespace Company.Framework.Messaging.Envelope.Builder

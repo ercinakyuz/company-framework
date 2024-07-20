@@ -20,7 +20,7 @@ namespace Company.Framework.Data.EntityFramework.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_dbConnectionSettings.String, b => b.MigrationsAssembly("Company.Framework.Api")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            optionsBuilder.UseSqlServer(_dbConnectionSettings.String, b => b.MigrationsAssembly("Company.Framework.ExampleApi")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,9 +1,9 @@
 ﻿using Company.Framework.Core.Exception;
 using Company.Framework.Core.Logging;
-using Company.Framework.ExampleApi.Domain.Model.Aggregate;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
+using Company.Framework.ExampleApi.Domain.Model.Dto;
 using MediatR;
 using ApplicationException = Company.Framework.Application.Exception.ApplicationException;
 

@@ -28,6 +28,7 @@ namespace Company.Framework.Domain.Model.Aggregate
             _events.Add(@event);
             return this;
         }
+        internal abstract AggregateRoot ApplyEvents();
 
         internal AggregateRoot ClearEvents()
         {
@@ -41,15 +42,15 @@ namespace Company.Framework.Domain.Model.Aggregate
         where TId : IId<TId>
         where TState : IState<TState>
     {
-        protected static IReadOnlyDictionary<TState, Func<TAggregate, IEvent>>? EventDelegations;
+        protected abstract IReadOnlyDictionary<TState, Func<TAggregate, IEvent>>? EventDelegations { get; }
 
-        public TId Id { get; }
+        public TId Id { get; internal set; }
 
         public TState State { get; private set; }
 
         protected AggregateRoot(CreateAggregateDto createDto) : base(createDto.Created)
         {
-            Id = TId.New();
+            Id = TId.Empty;
             State = TState.Created;
         }
 
@@ -59,6 +60,10 @@ namespace Company.Framework.Domain.Model.Aggregate
             State = TState.Loaded;
         }
 
+        protected TAggregate Build()
+        {
+            return (TAggregate)this;
+        }
         protected override TAggregate Modify(Log modified)
         {
             return (TAggregate)base.Modify(modified);
@@ -67,17 +72,18 @@ namespace Company.Framework.Domain.Model.Aggregate
         protected TAggregate ChangeState(TState state)
         {
             State = state;
-            return ApplyEvents();
+            return Build();
         }
-        protected virtual TAggregate ApplyEvents()
+        internal override AggregateRoot ApplyEvents()
         {
             if (EventDelegations is not null && EventDelegations.TryGetValue(State, out var eventDelegation))
                 AddEvent(eventDelegation((TAggregate)this));
-            return (TAggregate)this;
+            return this;
         }
         public virtual bool HasAnyChanges()
         {
             return !TState.Loaded.Equals(State);
         }
+
     }
 }

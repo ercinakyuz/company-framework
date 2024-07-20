@@ -1,4 +1,5 @@
-﻿using Company.Framework.Core.Tenancy.Models;
+﻿using Company.Framework.Core.Tenancy.Components;
+using Company.Framework.Core.Tenancy.Models;
 using Company.Framework.Tenancy;
 
 namespace Company.Framework.ExampleApi.Tenancy.Extensions

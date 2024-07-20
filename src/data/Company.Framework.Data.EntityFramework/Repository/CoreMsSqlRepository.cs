@@ -18,7 +18,7 @@ namespace Company.Framework.Data.EntityFramework.Repository
             Set = context.Set<TEntity>();
         }
 
-        public virtual async IAsyncEnumerable<TEntity> FindAllAsync(Expression<Func<TEntity, bool>>? predicate = default, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = default)
+        public virtual IAsyncEnumerable<TEntity> FindAllAsync(Expression<Func<TEntity, bool>>? predicate = default, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = default)
         {
             IQueryable<TEntity> queryable = Set;
             if (predicate is not null)
@@ -26,7 +26,7 @@ namespace Company.Framework.Data.EntityFramework.Repository
                 queryable = queryable.Where(predicate);
             }
 
-            await foreach (var entity in queryable.ToAsyncEnumerable()) yield return entity;
+            return queryable.AsAsyncEnumerable();
         }
 
         public virtual async Task<Optional<TEntity>> FindAsync(TId id)
@@ -35,9 +35,8 @@ namespace Company.Framework.Data.EntityFramework.Repository
         }
         public virtual async Task InsertAsync(TEntity entity)
         {
-            Set.Attach(entity).State = EntityState.Added;
-            //await Set.AddAsync(entity).ConfigureAwait(false);
-            //await Context.SaveChangesAsync();
+            await Set.AddAsync(entity).ConfigureAwait(false);
+            await Context.SaveChangesAsync();
         }
         public virtual async Task InsertManyAsync(IEnumerable<TEntity> entities)
         {

@@ -1,8 +1,8 @@
 ﻿using Company.Framework.Core.Logging;
-using Company.Framework.Core.Tenancy.Models;
-using Company.Framework.ExampleApi.Domain.Model.Aggregate;
+using Company.Framework.Core.Tenancy.Components;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
+using Company.Framework.ExampleApi.Domain.Model.Dto;
 using MediatR;
 using Action = Company.Framework.ExampleApi.Domain.Model.Aggregate.Action;
 

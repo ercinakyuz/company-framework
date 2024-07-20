@@ -26,10 +26,10 @@ namespace Company.Framework.Data.Rdbms.Repository
             Context = context;
         }
 
-        public virtual async IAsyncEnumerable<TEntity> FindAllAsync(Expression<Func<TEntity, bool>>? predicate = default, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = default)
+        public virtual IAsyncEnumerable<TEntity> FindAllAsync(Expression<Func<TEntity, bool>>? predicate = default, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = default)
         {
             var queryable = predicate is null ? Queryable : Queryable.Where(predicate);
-            await foreach (var entity in queryable.ToAsyncEnumerable()) yield return entity;
+            return queryable.ToAsyncEnumerable();
         }
 
         public virtual async Task<Optional<TEntity>> FindAsync(TId id)

@@ -1,4 +1,4 @@
-﻿using Company.Framework.Core.Tenancy.Models;
+﻿using Company.Framework.Core.Tenancy.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.Framework.Core.Tenancy.Extensions

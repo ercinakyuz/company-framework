@@ -12,5 +12,16 @@
             }
         }
 
+        public static async Task<IEnumerable<T>> ToEnumerable<T>(this IAsyncEnumerable<T> asyncEnumerable)
+        {
+            var list = new List<T>();
+            var asyncEnumerator = asyncEnumerable.GetAsyncEnumerator();
+            while (await asyncEnumerator.MoveNextAsync())
+            {
+                list.Add(asyncEnumerator.Current);
+            }
+            return list;
+        }
+
     }
 }

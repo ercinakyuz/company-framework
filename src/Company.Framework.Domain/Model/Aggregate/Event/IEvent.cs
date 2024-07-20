@@ -2,4 +2,4 @@
 
 namespace Company.Framework.Domain.Model.Aggregate.Event;
 
-public interface IEvent : INotification {}
+public interface IEvent : INotification;

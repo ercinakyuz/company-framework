@@ -7,5 +7,9 @@ public interface IActionBuilder
 {
     Task<Result<Action>> BuildAsync(ActionId id, CancellationToken cancellationToken);
 
-    IAsyncEnumerable<Action> BuildAsyncEnumerable(IEnumerable<ActionId> ids, CancellationToken cancellationToken);
+    IAsyncEnumerable<Action> BuildAllStreaming(IEnumerable<ActionId> ids, CancellationToken cancellationToken);
+
+    IAsyncEnumerable<Action> BuildAllStreaming(CancellationToken cancellationToken);
+
+    Task<IEnumerable<Action>> BuildAllAsync(CancellationToken cancellationToken);
 }

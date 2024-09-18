@@ -1,7 +1,7 @@
 ﻿using Company.Framework.Messaging.Envelope.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Company.Framework.Correlation.Extensions
+namespace Company.Framework.Messaging.Envelope.Builder.Extensions
 {
     public static class EnvelopeServiceCollectionExtensions
     {

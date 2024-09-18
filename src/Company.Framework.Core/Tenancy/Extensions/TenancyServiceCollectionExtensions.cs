@@ -21,9 +21,9 @@ namespace Company.Framework.Core.Tenancy.Extensions
         private static IServiceCollection AddContext(this IServiceCollection services)
         {
             return services
-                .AddScoped<TenantContext>()
-                .AddScoped<ITenantBuilder>(serviceProvider => serviceProvider.GetRequiredService<TenantContext>())
-                .AddScoped<ITenantAccessor>(serviceProvider => serviceProvider.GetRequiredService<TenantContext>());
+                .AddSingleton<TenantContext>()
+                .AddSingleton<ITenantBuilder>(serviceProvider => serviceProvider.GetRequiredService<TenantContext>())
+                .AddSingleton<ITenantAccessor>(serviceProvider => serviceProvider.GetRequiredService<TenantContext>());
         }
     }
 }

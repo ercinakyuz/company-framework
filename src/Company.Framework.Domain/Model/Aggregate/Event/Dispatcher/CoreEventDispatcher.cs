@@ -20,7 +20,7 @@ public abstract class CoreEventDispatcher<TEvent> : IEventDispatcher<TEvent> whe
     {
         var envelope = _envelopeBuilder.Build(@event, $"{GetType()}");
         await DispatchAsync(envelope, cancellationToken);
-        _logger.LogInformation("{eventName} event dispatched, {envelope}", typeof(TEvent).Name, envelope);
+        _logger.LogInformation("{eventName} event dispatched, {envelope}", nameof(TEvent), envelope);
     }
 
     public abstract Task DispatchAsync(Envelope<TEvent> envelope, CancellationToken cancellationToken);

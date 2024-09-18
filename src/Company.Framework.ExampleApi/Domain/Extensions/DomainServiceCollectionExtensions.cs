@@ -1,8 +1,9 @@
-﻿using Company.Framework.Correlation.Extensions;
+﻿using Company.Framework.Domain.Model.Aggregate.Event.Distribution.Extensions;
 using Company.Framework.Domain.Model.Aggregate.OfWork.Extensions;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Builder;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Converter;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
+using Company.Framework.Messaging.Envelope.Builder.Extensions;
 
 namespace Company.Framework.ExampleApi.Domain.Extensions
 {
@@ -11,8 +12,15 @@ namespace Company.Framework.ExampleApi.Domain.Extensions
         public static IServiceCollection AddDomainComponents(this IServiceCollection serviceCollection)
         {
             return serviceCollection
-                .AddActionAggregation()
-                .AddEnvelope();
+                .AddEnvelope()
+                .AddEventDistribution()
+                .AddAggregations();
+        }
+
+        private static IServiceCollection AddAggregations(this IServiceCollection serviceCollection)
+        {
+            return serviceCollection
+                .AddActionAggregation();
         }
 
         private static IServiceCollection AddActionAggregation(this IServiceCollection serviceCollection)

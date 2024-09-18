@@ -5,20 +5,26 @@ namespace Company.Framework.Core.Tenancy.Components
 {
     internal class TenantContext : ITenantBuilder, ITenantAccessor
     {
+        private static readonly AsyncLocal<ITenant> TenantHolder;
+
         private readonly ITenantResolver _resolver;
 
-        private ITenant? _tenant;
+        static TenantContext()
+        {
+            TenantHolder = new AsyncLocal<ITenant>();
+        }
 
         public TenantContext(ITenantResolver resolver)
         {
             _resolver = resolver;
         }
 
-        public Optional<ITenant> Get() => Optional<ITenant>.OfNullable(_tenant);
+        public Optional<ITenant> Get() => Optional<ITenant>.OfNullable(TenantHolder.Value);
 
         public void Build(TenantId? id)
         {
-            _tenant = _resolver.Resolve(id).OrElseThrow(() => new System.Exception());
+            var tenant = _resolver.Resolve(id).OrElseThrow(() => new System.Exception());
+            TenantHolder.Value = tenant;
         }
     }
 }

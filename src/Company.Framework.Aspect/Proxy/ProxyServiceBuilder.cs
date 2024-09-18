@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Company.Framework.Aspect.Processors;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Company.Framework.Aspect.Proxy;
 
@@ -35,14 +36,12 @@ public class ProxyServiceBuilder<TAbstraction> where TAbstraction : class
 
     public ProxyServiceBuilder<TAbstraction> WithPreProcessor<TPreProcessor>() where TPreProcessor : class, IPreProcessor
     {
-        _serviceCollection.AddSingleton<TPreProcessor>();
         _preProcessorTypes.Add(typeof(TPreProcessor));
         return this;
     }
 
     public ProxyServiceBuilder<TAbstraction> WithPostProcessor<TPostProcessor>() where TPostProcessor : class, IPostProcessor
     {
-        _serviceCollection.AddSingleton<TPostProcessor>();
         _postProcessorTypes.Add(typeof(TPostProcessor));
         return this;
     }

@@ -19,7 +19,7 @@ namespace Company.Framework.Messaging.Envelope.Builder
         {
             var tenantId = _tenantAccessor.Get().Data?.Id;
             var correlationId = Correlation.CorrelationId.From(_correlationContextAccessor.CorrelationContext.CorrelationId);
-            return Envelope<TMessage>.Create(message, by, tenantId, correlationId);
+            return Envelope<TMessage>.Fill(message, by, tenantId, correlationId);
         }
     }
 }

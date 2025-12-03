@@ -22,10 +22,10 @@ namespace Company.Framework.ExampleApi.Data.Extensions
         private static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
         {
             return serviceCollection
-                .AddMongoRepositories()
-                .AddMsSqlRepositories()
-                .AddMySqlRepositories()
-                .AddPostgreSqlRepositories();
+                .AddMongoRepositories();
+                //.AddMsSqlRepositories()
+                //.AddMySqlRepositories()
+                //.AddPostgreSqlRepositories();
         }
 
         private static IServiceCollection AddMsSqlRepositories(this IServiceCollection serviceCollection)
@@ -56,7 +56,7 @@ namespace Company.Framework.ExampleApi.Data.Extensions
         {
             return serviceCollection
                 .AddMongoDb()
-                .AddMongoRepository<IAction4Repository, ActionMongoRepository>(new RepositorySettings("task-management-mongo-instance", "task-management-context", "actions"));
+                .AddMongoRepository<IActionRepository, ActionMongoRepository>(new RepositorySettings("task-management-mongo-instance", "task-management-context", "actions"));
         }
     }
 }

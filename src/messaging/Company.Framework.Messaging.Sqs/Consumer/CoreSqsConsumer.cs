@@ -31,8 +31,9 @@ namespace Company.Framework.Messaging.Sqs.Consumer
             await SubscribeToQueue(_settings, cancellationToken).ConfigureAwait(false);
         }
 
-        public void Unsubscribe()
+        public Task UnsubscribeAsync()
         {
+            return Task.CompletedTask;
         }
 
         protected abstract Task ConsumeAsync(TMessage message, CancellationToken cancellationToken);

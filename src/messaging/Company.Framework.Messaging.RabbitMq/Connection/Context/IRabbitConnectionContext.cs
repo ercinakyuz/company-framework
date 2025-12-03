@@ -1,7 +1,9 @@
-﻿namespace Company.Framework.Messaging.RabbitMq.Connection.Context;
+﻿using RabbitMQ.Client;
+
+namespace Company.Framework.Messaging.RabbitMq.Connection.Context;
 
 public interface IRabbitConnectionContext
 {
     string BusName { get; }
-    TConnection Resolve<TConnection>();
+    Task<TConnection> ResolveAsync<TConnection>(CancellationToken cancellationToken);
 }

@@ -14,20 +14,12 @@ namespace Company.Framework.Messaging.HostedServices
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            foreach (var consumer in _consumers)
-            {
-                Task.Run(() => consumer.SubscribeAsync(cancellationToken).ConfigureAwait(false), cancellationToken);
-            }
-            return Task.CompletedTask;
+            return Task.WhenAll(_consumers.Select(c => c.SubscribeAsync(cancellationToken)));
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            foreach (var consumer in _consumers)
-            {
-                consumer.Unsubscribe();
-            }
-            return Task.CompletedTask;
+            return Task.WhenAll(_consumers.Select(c => c.UnsubscribeAsync()));
         }
     }
 }

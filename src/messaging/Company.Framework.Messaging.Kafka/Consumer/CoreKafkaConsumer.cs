@@ -51,9 +51,9 @@ namespace Company.Framework.Messaging.Kafka.Consumer
             }
         }
 
-        public void Unsubscribe()
+        public Task UnsubscribeAsync()
         {
-            _consumer.Close();
+            return Task.Run(_consumer.Close);
         }
 
         public abstract Task ConsumeAsync(TMessage message, CancellationToken cancellationToken);

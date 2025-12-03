@@ -2,7 +2,7 @@
 
 public interface IConsumer
 {
-    void Unsubscribe();
+    Task UnsubscribeAsync();
 
     Task SubscribeAsync(CancellationToken cancellationToken);
 

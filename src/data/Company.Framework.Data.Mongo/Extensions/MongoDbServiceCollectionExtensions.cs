@@ -2,6 +2,7 @@
 using Company.Framework.Data.Db.Settings;
 using Company.Framework.Data.Mongo.Context;
 using Company.Framework.Data.Mongo.Context.Provider;
+using Company.Framework.Data.Mongo.Serializers;
 using Company.Framework.Data.Repository;
 using Company.Framework.Data.Repository.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,7 @@ namespace Company.Framework.Data.Mongo.Extensions
         public static IServiceCollection AddMongoDb(this IServiceCollection serviceCollection)
         {
             BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
+            BsonSerializer.RegisterSerializer(new UlidSerializer());
             ConventionRegistry.Register("camelCase", new ConventionPack { new CamelCaseElementNameConvention() }, _ => true);
             DbProviderRegistry.Register(DbType.Mongo, settings => new MongoDbContextProvider(settings));
             return serviceCollection;

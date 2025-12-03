@@ -1,10 +1,11 @@
 ﻿using Company.Framework.Data.Rdbms.Context;
 using Company.Framework.Data.Rdbms.Repository;
 using Company.Framework.ExampleApi.Data.Entity;
+using NUlid;
 
 namespace Company.Framework.ExampleApi.Data.Repository
 {
-    public class ActionRdbmsRepository : CoreRdbmsRepository<ActionEntity, Guid>, IActionRepository, IAction2Repository, IAction3Repository
+    public class ActionRdbmsRepository : CoreRdbmsRepository<ActionEntity, Ulid>, IActionRepository, IAction2Repository, IAction3Repository
     {
         public ActionRdbmsRepository(IRdbmsDbContext dbContext) : base(dbContext)
         {

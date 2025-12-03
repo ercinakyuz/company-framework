@@ -4,11 +4,12 @@ using Company.Framework.ExampleApi.Data.Repository;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Converter;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.State;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
+using NUlid;
 
 namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
 
 
-public class ActionOfWork : AggregateOfWork<IActionRepository, IActionConverter, Action, ActionId, ActionState, ActionEntity, Guid>, IActionOfWork
+public class ActionOfWork : AggregateOfWork<IActionRepository, IActionConverter, Action, ActionId, ActionState, ActionEntity, Ulid>, IActionOfWork
 {
     public ActionOfWork(IActionRepository repository, IActionConverter converter) : base(repository, converter)
     {

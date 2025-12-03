@@ -1,7 +1,7 @@
-﻿using System.Runtime.Serialization;
-using Company.Framework.Core.Serialization;
+﻿using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.Consumer;
 using Company.Framework.Messaging.Consumer.Retrying.Args;
+using Company.Framework.Messaging.RabbitMq.Connection.Context;
 using Company.Framework.Messaging.RabbitMq.Consumer.Context;
 using Company.Framework.Messaging.RabbitMq.Consumer.Extensions;
 using Company.Framework.Messaging.RabbitMq.Consumer.Retrying.Handler;
@@ -9,6 +9,8 @@ using Company.Framework.Messaging.RabbitMq.Consumer.Settings;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System;
+using System.Runtime.Serialization;
 
 namespace Company.Framework.Messaging.RabbitMq.Consumer
 {
@@ -16,43 +18,52 @@ namespace Company.Framework.Messaging.RabbitMq.Consumer
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly RabbitConsumerSettings _settings;
-        private readonly IChannel _mainChannel;
-        private readonly IChannel? _retryingChannel;
+        private readonly IRabbitConnectionContext _connectionContext;
         private readonly ILogger _logger;
         private readonly IRabbitConsumerRetryingHandler? _retryingHandler;
+        private IChannel? _mainChannel;
+        private IChannel? _retryingChannel;
 
         protected CoreRabbitConsumer(IRabbitConsumerContext context, ILogger logger)
         {
             _jsonSerializer = context.JsonSerializer;
             _settings = context.Settings;
-            var connection = context.ConnectionContext.Resolve<IConnection>();
-            _mainChannel = connection.BuildChannelAsync(_settings.Declaration).Result;
+            _connectionContext = context.ConnectionContext;
             _logger = logger;
             _retryingHandler = context.RetryingHandler;
-            if (_retryingHandler is not null)
-            {
-                _retryingChannel = connection.BuildChannelAsync(_retryingHandler.DeclarationArgs).Result;
-            }
+
         }
 
         public async Task SubscribeAsync(CancellationToken cancellationToken)
         {
+            var connection = await _connectionContext.ResolveAsync<IConnection>(cancellationToken);
+            _mainChannel = await connection.BuildChannelAsync(_settings.Declaration);
             var subscriptionTasks = new List<Task>
             {
                 _mainChannel.SubscribeToQueueAsync(OnMessage, _settings.Declaration.Queue, cancellationToken)
             };
-
-            var retryingSubscription = _retryingChannel?.SubscribeToQueueAsync(OnMessage, _retryingHandler!.DeclarationArgs.Queue, cancellationToken);
-            if (retryingSubscription is not null) subscriptionTasks.Add(retryingSubscription);
-
+            if (_retryingHandler is not null)
+            {
+                _retryingChannel = await connection.BuildChannelAsync(_retryingHandler.DeclarationArgs);
+                var retryingSubscription = _retryingChannel.SubscribeToQueueAsync(OnMessage, _retryingHandler!.DeclarationArgs.Queue, cancellationToken);
+                if (retryingSubscription is not null) subscriptionTasks.Add(retryingSubscription);
+            }
             await Task.WhenAll(subscriptionTasks);
 
         }
 
-        public void Unsubscribe()
+        public async Task UnsubscribeAsync()
         {
-            _mainChannel.CloseAsync();
-            _retryingChannel?.CloseAsync();
+            var tasks = new List<Task>();
+            if (_mainChannel is not null)
+            {
+                tasks.Add(_mainChannel.CloseAsync());
+            }
+            if (_retryingChannel is not null)
+            {
+                tasks.Add(_retryingChannel.CloseAsync());
+            }
+            await Task.WhenAll(tasks);
         }
 
         protected abstract Task ConsumeAsync(TMessage message, CancellationToken cancellationToken);

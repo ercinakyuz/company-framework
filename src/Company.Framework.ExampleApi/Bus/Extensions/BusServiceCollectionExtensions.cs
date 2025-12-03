@@ -16,8 +16,8 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         public static IServiceCollection AddBusComponents(this IServiceCollection serviceCollection)
         {
             return serviceCollection.BusServiceBuilder()
-                .AddKafkaComponents()
-                //.AddRabbitComponents()
+                //.AddKafkaComponents()
+                .AddRabbitComponents()
                 //.AddSqsComponents()
                 .BuildBusServices();
         }
@@ -40,7 +40,7 @@ namespace Company.Framework.ExampleApi.Bus.Extensions
         {
             return mainBusServiceBuilder.WithRabbit()
                 .WithBus("ActionRabbit-1")
-                //.ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
+                .ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)
                 .BuildBus()
                 //.WithBus("ActionRabbit-2")
                 //.ThatConsume<PingAppliedRabbitEnvelope>("PingApplied", ConsumerRetriability.Default)

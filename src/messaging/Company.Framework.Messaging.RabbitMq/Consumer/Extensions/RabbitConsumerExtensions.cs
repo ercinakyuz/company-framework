@@ -17,10 +17,10 @@ public static class RabbitConsumerExtensions
         return channel;
     }
 
-    public static async Task SubscribeToQueueAsync(this IChannel model, Func<BasicDeliverEventArgs, CancellationToken, Task> receivingDelegate, string queue, CancellationToken cancellationToken)
+    public static async Task SubscribeToQueueAsync(this IChannel channel, Func<BasicDeliverEventArgs, CancellationToken, Task> receivingDelegate, string queue, CancellationToken cancellationToken)
     {
-        var consumer = new AsyncEventingBasicConsumer(model);
+        var consumer = new AsyncEventingBasicConsumer(channel);
         consumer.ReceivedAsync += (_, args) => receivingDelegate(args, cancellationToken);
-        await model.BasicConsumeAsync(queue, true, consumer);
+        await channel.BasicConsumeAsync(queue, true, consumer);
     }
 }

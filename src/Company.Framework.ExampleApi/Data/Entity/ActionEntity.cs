@@ -1,9 +1,9 @@
-﻿using Company.Framework.Core.Logging;
-using Company.Framework.Data.Entity;
+﻿using Company.Framework.Data.Entity;
+using NUlid;
 
 namespace Company.Framework.ExampleApi.Data.Entity
 {
-    public class ActionEntity : CoreEntity<Guid>
+    public class ActionEntity : CoreEntity<Ulid>
     {
     }
 

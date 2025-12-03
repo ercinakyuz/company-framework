@@ -41,11 +41,7 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
             };
             if (settings?.Port != null)
                 connectionFactory.Port = settings.Port.Value;
-
-            var connectionTask = settings?.Nodes != null
-                ? connectionFactory.CreateConnectionAsync(settings.Nodes.Split(";"))
-                : connectionFactory.CreateConnectionAsync();
-            return new RabbitConnectionContext(BusName, connectionTask.Result);
+            return new RabbitConnectionContext(BusName, connectionFactory, settings?.Nodes);
         });
         return this;
     }

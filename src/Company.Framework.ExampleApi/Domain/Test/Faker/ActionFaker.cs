@@ -2,7 +2,7 @@
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.State;
 using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.Test.Faker;
-using StackExchange.Redis;
+using NUlid;
 
 namespace Company.Framework.ExampleApi.Domain.Test.Faker;
 
@@ -16,7 +16,7 @@ public class ActionFaker : CoreFaker
         _logFaker = new LogFaker();
         _coreStateFaker = StateFaker<ActionState>.Load(ActionState.PingApplied, ActionState.PongApplied);
     }
-    public Guid IdValue()
+    public Ulid IdValue()
     {
         return Id().Value;
     }
@@ -35,7 +35,6 @@ public class ActionFaker : CoreFaker
             Created = _logFaker.Log(),
             Modified = _logFaker.Log()
         };
-        //return new ActionEntity(IdValue(), _coreStateFaker.StateValue(), _logFaker.Log(), _logFaker.Log());
     }
 
 }

@@ -5,6 +5,7 @@ using Company.Framework.ExampleApi.Application.UseCase.Pong.Command;
 using Company.Framework.ExampleApi.Models.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using NUlid;
 
 namespace Company.Framework.ExampleApi.Controllers
 {
@@ -29,7 +30,7 @@ namespace Company.Framework.ExampleApi.Controllers
 
         [HttpPatch]
         [Route("{id}/pong")]
-        public async Task<IActionResult> Pong([FromRoute] Guid id, [FromBody] PongActionRequest request)
+        public async Task<IActionResult> Pong([FromRoute] Ulid id, [FromBody] PongActionRequest request)
         {
             await _sender.Send(new PongCommand(id, request.By));
             return Ok();

@@ -8,7 +8,6 @@ namespace Company.Framework.Domain.Model.Aggregate.Event.Dispatcher
     {
         private readonly ICorrelationContextFactory _correlationContextFactory;
 
-
         private readonly ITenantBuilder _tenantBuilder;
 
         public NonApiApplicationContextBuilder(ICorrelationContextFactory correlationContextFactory, ITenantBuilder tenantBuilder)

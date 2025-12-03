@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using Company.Framework.Core.Serialization;
+﻿using Company.Framework.Core.Serialization;
 using Company.Framework.Messaging.RabbitMq.Connection.Context;
 using Company.Framework.Messaging.RabbitMq.Producer.Args;
 using RabbitMQ.Client;
@@ -11,24 +10,25 @@ namespace Company.Framework.Messaging.RabbitMq.Producer
         public string BusName { get; }
         public string Name { get; }
 
-        private readonly IConnection _connection;
+        private readonly IRabbitConnectionContext _connectionContext;
 
         private readonly IJsonSerializer _jsonSerializer;
 
         public RabbitProducer(string name, string busName, IRabbitConnectionContext connectionContext, IJsonSerializer jsonSerializer)
         {
             _jsonSerializer = jsonSerializer;
+            _connectionContext = connectionContext;
             Name = name;
             BusName = busName;
-            _connection = connectionContext.Resolve<IConnection>();
         }
 
         public async Task ProduceAsync(RabbitProduceArgs args, CancellationToken cancellationToken)
         {
+            var connection = await _connectionContext.ResolveAsync<IConnection>(cancellationToken);
             var (exchange, routing, message, headers) = args;
             var (exchangeName, exchangeType) = exchange;
 
-            using var channel = await _connection.CreateChannelAsync();
+            using var channel = await connection.CreateChannelAsync();
 
             var basicProperties = new BasicProperties
             {

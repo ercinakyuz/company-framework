@@ -1,9 +1,10 @@
 ﻿using Company.Framework.Data.Rdbms.Mappings;
 using NHibernate.Mapping.ByCode;
+using NUlid;
 
 namespace Company.Framework.ExampleApi.Data.Entity.Configuration;
 
-public class ActionEntityMap : CoreEntityMap<Guid, ActionEntity>
+public class ActionEntityMap : CoreEntityMap<Ulid, ActionEntity>
 {
     public ActionEntityMap()
     {

@@ -7,6 +7,7 @@ using Company.Framework.ExampleApi.Domain.Model.Aggregate.Value;
 using Company.Framework.ExampleApi.Domain.Test.Faker;
 using FluentAssertions;
 using NSubstitute;
+using NUlid;
 using NUnit.Framework;
 using Guid = System.Guid;
 
@@ -52,15 +53,15 @@ namespace Company.Framework.ExampleApi.Domain.Test
             var cancellationToken = CancellationToken.None;
             var entity = _actionFaker.ActionEntity();
             var optionalActionEntity = Optional<ActionEntity>.Of(entity);
-            var capturedEntityId = Guid.Empty;
-            var entityIdCaptor = Arg.Do<Guid>(entityId => capturedEntityId = entityId);
+            var capturedEntityId = Ulid.Empty;
+            var entityIdCaptor = Arg.Do<Ulid>(entityId => capturedEntityId = entityId);
 
             //When
             _actionRepository.FindAsync(entityIdCaptor).Returns(optionalActionEntity);
             var result = await _actionBuilder.BuildAsync(id, cancellationToken);
 
             //Then
-            await _actionRepository.Received().FindAsync(Arg.Any<Guid>());
+            await _actionRepository.Received().FindAsync(Arg.Any<Ulid>());
 
             capturedEntityId.Should().Be(id.Value);
 

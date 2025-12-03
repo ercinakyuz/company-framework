@@ -37,15 +37,15 @@ public class RabbitBusServiceBuilder : CoreBusServiceBuilder<RabbitBusBuilder>
             var settings = configuration.GetSection($"{_namedBusPrefix}:Connection").Get<RabbitConnectionSettings>();
             var connectionFactory = new ConnectionFactory
             {
-                DispatchConsumersAsync = true
+                ConsumerDispatchConcurrency = 1
             };
             if (settings?.Port != null)
                 connectionFactory.Port = settings.Port.Value;
 
-            var connection = settings?.Nodes != null
-                ? connectionFactory.CreateConnection(settings.Nodes.Split(";"))
-                : connectionFactory.CreateConnection();
-            return new RabbitConnectionContext(BusName, connection);
+            var connectionTask = settings?.Nodes != null
+                ? connectionFactory.CreateConnectionAsync(settings.Nodes.Split(";"))
+                : connectionFactory.CreateConnectionAsync();
+            return new RabbitConnectionContext(BusName, connectionTask.Result);
         });
         return this;
     }

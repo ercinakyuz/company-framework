@@ -46,6 +46,11 @@ services.AddNonApiApplicationContext();
 
 var hostBuilder = builder.Host;
 hostBuilder.WithSerilog();
+hostBuilder.UseDefaultServiceProvider((_, options) =>
+{
+    options.ValidateScopes = true;
+    options.ValidateOnBuild = true;
+});
 
 var app = builder.Build();
 

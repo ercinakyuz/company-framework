@@ -19,8 +19,6 @@ namespace Company.Framework.Core.Tenancy.Components
 
         public Optional<ITenant> Resolve(TenantId? id)
         {
-            if (id is null)
-                throw new System.Exception();
             return Optional<ITenant>.OfNullable(_registeredTenants.FirstOrDefault(t => t.Id == id));
         }
 

@@ -16,8 +16,8 @@ namespace Company.Framework.Messaging.RabbitMq.Consumer
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly RabbitConsumerSettings _settings;
-        private readonly IModel _mainModel;
-        private readonly IModel? _retryingModel;
+        private readonly IChannel _mainChannel;
+        private readonly IChannel? _retryingChannel;
         private readonly ILogger _logger;
         private readonly IRabbitConsumerRetryingHandler? _retryingHandler;
 
@@ -26,12 +26,12 @@ namespace Company.Framework.Messaging.RabbitMq.Consumer
             _jsonSerializer = context.JsonSerializer;
             _settings = context.Settings;
             var connection = context.ConnectionContext.Resolve<IConnection>();
-            _mainModel = connection.BuildModel(_settings.Declaration);
+            _mainChannel = connection.BuildChannelAsync(_settings.Declaration).Result;
             _logger = logger;
             _retryingHandler = context.RetryingHandler;
             if (_retryingHandler is not null)
             {
-                _retryingModel = connection.BuildModel(_retryingHandler.DeclarationArgs);
+                _retryingChannel = connection.BuildChannelAsync(_retryingHandler.DeclarationArgs).Result;
             }
         }
 
@@ -39,10 +39,10 @@ namespace Company.Framework.Messaging.RabbitMq.Consumer
         {
             var subscriptionTasks = new List<Task>
             {
-                _mainModel.SubscribeToQueue(OnMessage, _settings.Declaration.Queue, cancellationToken)
+                _mainChannel.SubscribeToQueueAsync(OnMessage, _settings.Declaration.Queue, cancellationToken)
             };
 
-            var retryingSubscription = _retryingModel?.SubscribeToQueue(OnMessage, _retryingHandler!.DeclarationArgs.Queue, cancellationToken);
+            var retryingSubscription = _retryingChannel?.SubscribeToQueueAsync(OnMessage, _retryingHandler!.DeclarationArgs.Queue, cancellationToken);
             if (retryingSubscription is not null) subscriptionTasks.Add(retryingSubscription);
 
             await Task.WhenAll(subscriptionTasks);
@@ -51,8 +51,8 @@ namespace Company.Framework.Messaging.RabbitMq.Consumer
 
         public void Unsubscribe()
         {
-            _mainModel.Close();
-            _retryingModel?.Close();
+            _mainChannel.CloseAsync();
+            _retryingChannel?.CloseAsync();
         }
 
         protected abstract Task ConsumeAsync(TMessage message, CancellationToken cancellationToken);

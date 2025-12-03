@@ -23,28 +23,19 @@ namespace Company.Framework.Messaging.RabbitMq.Producer
             _connection = connectionContext.Resolve<IConnection>();
         }
 
-        public Task ProduceAsync(RabbitProduceArgs args, CancellationToken cancellationToken)
+        public async Task ProduceAsync(RabbitProduceArgs args, CancellationToken cancellationToken)
         {
             var (exchange, routing, message, headers) = args;
             var (exchangeName, exchangeType) = exchange;
 
-            using (var model = _connection.CreateModel())
-            {
-                var basicProperties = model.CreateBasicProperties();
-                basicProperties.Headers ??= new ConcurrentDictionary<string, object>();
-                
-                if (headers != null)
-                {
-                    foreach (var header in headers)
-                    {
-                        basicProperties.Headers.Add(header.Key, header.Value);
-                    }
-                }
-                model.ExchangeDeclare(exchangeName, exchangeType);
-                model.BasicPublish(exchangeName, routing, false, basicProperties, _jsonSerializer.SerializeToUtf8Bytes(message));
-            }
+            using var channel = await _connection.CreateChannelAsync();
 
-            return Task.CompletedTask;
+            var basicProperties = new BasicProperties
+            {
+                Headers = headers!
+            };
+            await channel.ExchangeDeclareAsync(exchangeName, exchangeType);
+            await channel.BasicPublishAsync(exchangeName, routing, false, basicProperties, _jsonSerializer.SerializeToUtf8Bytes(message));
         }
     }
 }

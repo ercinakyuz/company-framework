@@ -18,9 +18,10 @@ namespace Company.Framework.Tenancy
         public async Task InvokeAsync(HttpContext context)
         {
             var tenantIdFromHeader = context.Request.Headers["tenant-id"];
-            if (!int.TryParse(tenantIdFromHeader, out var tenantIdValue))
-                throw TenantNotAvailable();
-            var tenantId = TenantId.From(tenantIdValue);
+            TenantId tenantId = !int.TryParse(tenantIdFromHeader, out var tenantIdValue)
+                ? TenantId.From(1)
+                //throw TenantNotAvailable();
+                : TenantId.From(tenantIdValue);
             _tenantBuilder.Build(tenantId);
             await _next(context);
         }

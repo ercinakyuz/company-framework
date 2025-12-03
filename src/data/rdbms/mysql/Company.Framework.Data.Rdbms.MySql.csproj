@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Title>Company.Framework.Data.Rdbms.MySql</Title>
@@ -14,7 +14,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="8.3.0" />
+		<PackageReference Include="MySql.Data" Version="9.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -22,7 +22,7 @@
 	</ItemGroup>
 
 	<Target Name="NugetAdd" AfterTargets="Pack">
-		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source D:\nuget\packages" />
+		<Exec Command="nuget add bin/release/$(AssemblyName).$(PackageVersion).nupkg -source J:\nuget\packages" />
 	</Target>
 
 </Project>

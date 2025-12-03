@@ -2,6 +2,8 @@
 
 namespace Company.Framework.ExampleApi.Domain.Model.Aggregate.OfWork;
 
-public interface IActionOfWork : IAggregateOfWork<Action>
-{
-}
+public interface IActionOfWork : ISingleActionOfWork, IBatchActionOfWork;
+
+public interface ISingleActionOfWork : ISingleAggregateOfWork<Action>;
+
+public interface IBatchActionOfWork : IBatchAggregateOfWork<Action>;

@@ -27,7 +27,8 @@ namespace Company.Framework.ExampleApi.Domain.Extensions
         {
             return serviceCollection
                 .AddSingleton<IActionBuilder, ActionBuilder>()
-                .AddAggregateOfWork<IActionOfWork, ActionOfWork>()
+                .AddSingleAggregateOfWork<ISingleActionOfWork, ActionOfWork>()
+                .AddBatchAggregateOfWork<IBatchActionOfWork, ActionOfWork>()
                 .AddSingleton<IActionConverter, ActionConverter>();
         }
     }

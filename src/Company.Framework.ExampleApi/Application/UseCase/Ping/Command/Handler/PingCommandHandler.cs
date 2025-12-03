@@ -10,10 +10,10 @@ namespace Company.Framework.ExampleApi.Application.UseCase.Ping.Command.Handler;
 
 public class PingCommandHandler : IRequestHandler<PingCommand, ActionId>
 {
-    private readonly IActionOfWork _actionOfWork;
+    private readonly ISingleActionOfWork _actionOfWork;
     private readonly ITenantAccessor _tenantAccessor;
 
-    public PingCommandHandler(IActionOfWork actionOfWork, ITenantAccessor tenantAccessor)
+    public PingCommandHandler(ISingleActionOfWork actionOfWork, ITenantAccessor tenantAccessor)
     {
         _actionOfWork = actionOfWork;
         _tenantAccessor = tenantAccessor;

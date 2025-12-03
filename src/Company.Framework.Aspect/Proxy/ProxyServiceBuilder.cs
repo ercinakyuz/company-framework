@@ -22,7 +22,8 @@ public class ProxyServiceBuilder<TAbstraction> where TAbstraction : class
 
     public IServiceCollection Build<TImplementation>() where TImplementation : class, TAbstraction
     {
-        return _serviceCollection.AddSingleton<TImplementation>()
+        return _serviceCollection
+            .AddSingleton<TImplementation>()
             .AddSingleton(serviceProvider =>
             {
                 object proxy = DispatchProxy.Create<TAbstraction, CoreProxy<TAbstraction>>();

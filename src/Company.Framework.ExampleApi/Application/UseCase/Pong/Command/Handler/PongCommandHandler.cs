@@ -12,9 +12,9 @@ namespace Company.Framework.ExampleApi.Application.UseCase.Pong.Command.Handler;
 public class PongCommandHandler : IRequestHandler<PongCommand>
 {
     private readonly IActionBuilder _actionBuilder;
-    private readonly IActionOfWork _actionOfWork;
+    private readonly ISingleActionOfWork _actionOfWork;
 
-    public PongCommandHandler(IActionBuilder actionBuilder, IActionOfWork actionOfWork)
+    public PongCommandHandler(IActionBuilder actionBuilder, ISingleActionOfWork actionOfWork)
     {
         _actionBuilder = actionBuilder;
         _actionOfWork = actionOfWork;

@@ -23,9 +23,9 @@ namespace Company.Framework.ExampleApi.Data.Extensions
         private static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
         {
             return serviceCollection
-                .AddRavenRepositories()
+                //.AddRavenRepositories()
                 //.AddMongoRepositories()
-                //.AddMsSqlRepositories()
+                .AddMsSqlRepositories()
                 //.AddMySqlRepositories()
                 //.AddPostgreSqlRepositories()
                 ;

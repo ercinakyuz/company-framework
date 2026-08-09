@@ -14,9 +14,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Asp.Versioning.Http" Version="8.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+		<PackageReference Include="Asp.Versioning.Http" Version="10.2.1" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.10" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
 	</ItemGroup>
 
 	<ItemGroup>

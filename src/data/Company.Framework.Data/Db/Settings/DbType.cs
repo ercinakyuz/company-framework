@@ -6,5 +6,6 @@ public enum DbType
     Mongo = 1,
     MsSql = 2,
     MySql = 3,
-    PostgreSql = 4
+    PostgreSql = 4,
+    Raven = 5
 }

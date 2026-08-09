@@ -26,6 +26,7 @@
 	  <ProjectReference Include="..\Company.Framework.Socket\Company.Framework.Socket.csproj" />
 	  <ProjectReference Include="..\Company.Framework.Test\Company.Framework.Test.csproj" />
 	  <ProjectReference Include="..\data\Company.Framework.Data.Mongo\Company.Framework.Data.Mongo.csproj" />
+	  <ProjectReference Include="..\data\Company.Framework.Data.RavenDb\Company.Framework.Data.Raven.csproj" />
 	  <ProjectReference Include="..\data\rdbms\mssql\Company.Framework.Data.Rdbms.MsSql.csproj" />
 	  <ProjectReference Include="..\data\rdbms\mysql\Company.Framework.Data.Rdbms.MySql.csproj" />
 	  <ProjectReference Include="..\data\rdbms\postgresql\Company.Framework.Data.Rdbms.PostgreSql.csproj" />

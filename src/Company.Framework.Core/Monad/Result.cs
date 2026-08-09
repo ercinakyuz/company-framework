@@ -99,25 +99,4 @@ namespace Company.Framework.Core.Monad
         }
     }
 
-    public record ReportCarrier(IEnumerable<Report> Reports)
-    {
-        public bool Success { get; } = !Reports.Any(message => message.IsError());
-    }
-
-    public record Report(ReportType Type, string Code, string Message, string? UserMessage = default)
-    {
-        public bool IsError()
-        {
-            return Type.Equals(ReportType.Error);
-        }
-    }
-
-    public enum ReportType
-    {
-        Info = 1,
-        Warn = 2,
-        Error = 3,
-    }
-
-
 }

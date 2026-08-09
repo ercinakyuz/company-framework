@@ -22,10 +22,12 @@ namespace Company.Framework.ExampleApi.Data.Extensions
         private static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
         {
             return serviceCollection
-                .AddMongoRepositories();
+                .AddRavenRepositories()
+                //.AddMongoRepositories()
                 //.AddMsSqlRepositories()
                 //.AddMySqlRepositories()
-                //.AddPostgreSqlRepositories();
+                //.AddPostgreSqlRepositories()
+                ;
         }
 
         private static IServiceCollection AddMsSqlRepositories(this IServiceCollection serviceCollection)
@@ -57,6 +59,13 @@ namespace Company.Framework.ExampleApi.Data.Extensions
             return serviceCollection
                 .AddMongoDb()
                 .AddMongoRepository<IActionRepository, ActionMongoRepository>(new RepositorySettings("task-management-mongo-instance", "task-management-context", "actions"));
+        }
+
+        private static IServiceCollection AddRavenRepositories(this IServiceCollection serviceCollection)
+        {
+            return serviceCollection
+                .AddRavenDb()
+                .AddRavenRepositories<IActionRepository, ActionMongoRepository>(new RepositorySettings("task-management-raven-instance", "task-management-context", "actions"));
         }
     }
 }

@@ -11,7 +11,7 @@ public static class RavenDbApplicationBuilderExtensions
         var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
 
         // Ensure indexes are created and persisted
-        documentStore.Maintenance.Send(new Raven.Client.Documents.Operations.Indexes.GetIndexesOperation(0, 128));
+        documentStore.Maintenance.Send(new global::Raven.Client.Documents.Operations.Indexes.GetIndexesOperation(0, 128));
 
         return app;
     }

@@ -1,5 +1,6 @@
 ﻿using Company.Framework.Data.Db.Provider.Extensions;
 using Company.Framework.Data.Mongo.Extensions;
+using Company.Framework.Data.Raven.Extensions;
 using Company.Framework.ExampleApi.Data.Repository;
 using Company.Framework.Data.Repository.Extensions;
 using Company.Framework.Data.Rdbms.Extensions;
@@ -65,7 +66,7 @@ namespace Company.Framework.ExampleApi.Data.Extensions
         {
             return serviceCollection
                 .AddRavenDb()
-                .AddRavenRepositories<IActionRepository, ActionMongoRepository>(new RepositorySettings("task-management-raven-instance", "task-management-context", "actions"));
+                .AddRavenRepository<IActionRepository, ActionRavenRepository>(new RepositorySettings("task-management-raven-instance", "task-management-context", "actions"));
         }
     }
 }
